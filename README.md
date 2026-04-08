@@ -86,163 +86,186 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <div align="center">
 
 ### 🚀 Onboarding & Authentication
-<table>
-  <tr>
-    <td><img src="screenShots/onBoardingScreen1.png" width="30%" /></td>
-    <td><img src="screenShots/onBoardingScreen2.jpg" width="30%" /></td>
-    <td><img src="screenShots/onBoardingScreen3.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Onboarding 1</td>
-    <td align="center">Onboarding 2</td>
-    <td align="center">Onboarding 3</td>
-  </tr>
-</table>
 
-<table>
-  <tr>
-    <td><img src="screenShots/create an account 2.png" width="30%" /></td>
-    <td><img src="screenShots/create an account 3.png" width="30%" /></td>
-    <td><img src="screenShots/login.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Create Account 1</td>
-    <td align="center">Create Account 2</td>
-    <td align="center">Login</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/onBoardingScreen1.png" width="100%" style="border-radius: 8px;" />
+  <p>Onboarding 1</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/onBoardingScreen2.jpg" width="100%" style="border-radius: 8px;" />
+  <p>Onboarding 2</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/onBoardingScreen3.png" width="100%" style="border-radius: 8px;" />
+  <p>Onboarding 3</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/create an account 2.png" width="100%" style="border-radius: 8px;" />
+  <p>Create Account 1</p>
+</div>
+
+<br/><br/>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/create an account 3.png" width="100%" style="border-radius: 8px;" />
+  <p>Create Account 2</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/login.png" width="100%" style="border-radius: 8px;" />
+  <p>Login</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/splash screen.jpg" width="100%" style="border-radius: 8px;" />
+  <p>Splash Screen</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Submit a complaint.png" width="100%" style="border-radius: 8px;" />
+  <p>Submit Complaint</p>
+</div>
 
 ---
 
 ### 🏠 Home & Services
-<table>
-  <tr>
-    <td><img src="screenShots/home.png" width="30%" /></td>
-    <td><img src="screenShots/sevice details.png" width="30%" /></td>
-    <td><img src="screenShots/Adding a volunteer service.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Home Screen</td>
-    <td align="center">Service Details</td>
-    <td align="center">Add Volunteer Service</td>
-  </tr>
-</table>
 
-<table>
-  <tr>
-    <td><img src="screenShots/Add an exchange service.png" width="30%" /></td>
-    <td><img src="screenShots/Add a paid service.png" width="30%" /></td>
-    <td><img src="screenShots/my.hours.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Add Exchange Service</td>
-    <td align="center">Add Paid Service</td>
-    <td align="center">My Hours Balance</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/home.png" width="100%" style="border-radius: 8px;" />
+  <p>Home Screen</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/sevice details.png" width="100%" style="border-radius: 8px;" />
+  <p>Service Details</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Adding a volunteer service.png" width="100%" style="border-radius: 8px;" />
+  <p>Add Volunteer Service</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Add an exchange service.png" width="100%" style="border-radius: 8px;" />
+  <p>Add Exchange Service</p>
+</div>
+
+<br/><br/>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Add a paid service.png" width="100%" style="border-radius: 8px;" />
+  <p>Add Paid Service</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/my.hours.png" width="100%" style="border-radius: 8px;" />
+  <p>My Hours Balance</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/fill a complaint.png" width="100%" style="border-radius: 8px;" />
+  <p>Fill Complaint</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/complain details.png" width="100%" style="border-radius: 8px;" />
+  <p>Complaint Details</p>
+</div>
 
 ---
 
 ### 💬 Chat & Communication
-<table>
-  <tr>
-    <td><img src="screenShots/chats.png" width="30%" /></td>
-    <td><img src="screenShots/chat1.png" width="30%" /></td>
-    <td><img src="screenShots/chat2.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Chats List</td>
-    <td align="center">Chat Conversation 1</td>
-    <td align="center">Chat Conversation 2</td>
-  </tr>
-</table>
 
-<table>
-  <tr>
-    <td><img src="screenShots/chats in a group.png" width="30%" /></td>
-    <td><img src="screenShots/create a group.png" width="30%" /></td>
-    <td><img src="screenShots/group details.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Group Chats</td>
-    <td align="center">Create Group</td>
-    <td align="center">Group Details</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/chats.png" width="100%" style="border-radius: 8px;" />
+  <p>Chats List</p>
+</div>
 
-<table>
-  <tr>
-    <td><img src="screenShots/comments.png" width="30%" /></td>
-    <td><img src="screenShots/Volunteer conversations.png" width="30%" /></td>
-    <td><img src="screenShots/Viewing other people's profiles.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Comments & Reviews</td>
-    <td align="center">Volunteer Conversations</td>
-    <td align="center">View Other Profile</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/chat1.png" width="100%" style="border-radius: 8px;" />
+  <p>Chat 1</p>
+</div>
 
----
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/chat2.png" width="100%" style="border-radius: 8px;" />
+  <p>Chat 2</p>
+</div>
 
-### 📋 Activity & Requests
-<table>
-  <tr>
-    <td><img src="screenShots/My Requests Activity Log.png" width="30%" /></td>
-    <td><img src="screenShots/My Services Activity Log.png" width="30%" /></td>
-    <td><img src="screenShots/drawer.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">My Requests Log</td>
-    <td align="center">My Services Log</td>
-    <td align="center">Navigation Drawer</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/chats in a group.png" width="100%" style="border-radius: 8px;" />
+  <p>Group Chats</p>
+</div>
+
+<br/><br/>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/create a group.png" width="100%" style="border-radius: 8px;" />
+  <p>Create Group</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/group details.png" width="100%" style="border-radius: 8px;" />
+  <p>Group Details</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/comments.png" width="100%" style="border-radius: 8px;" />
+  <p>Comments</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Volunteer conversations.png" width="100%" style="border-radius: 8px;" />
+  <p>Volunteer Chat</p>
+</div>
 
 ---
 
-### 📝 Complaints System
-<table>
-  <tr>
-    <td><img src="screenShots/Submit a complaint.png" width="30%" /></td>
-    <td><img src="screenShots/fill a complaint.png" width="30%" /></td>
-    <td><img src="screenShots/complain details.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Submit Complaint</td>
-    <td align="center">Fill Complaint Form</td>
-    <td align="center">Complaint Details</td>
-  </tr>
-</table>
+### 📋 Activity & Profile
 
-<table>
-  <tr>
-    <td><img src="screenShots/complain state.png" width="30%" /></td>
-    <td><img src="screenShots/Honor board.png" width="30%" /></td>
-    <td><img src="screenShots/profile.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">Complaint Status</td>
-    <td align="center">Honor Board</td>
-    <td align="center">User Profile</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/My Requests Activity Log.png" width="100%" style="border-radius: 8px;" />
+  <p>My Requests Log</p>
+</div>
 
----
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/My Services Activity Log.png" width="100%" style="border-radius: 8px;" />
+  <p>My Services Log</p>
+</div>
 
-### 👤 Profile Management
-<table>
-  <tr>
-    <td><img src="screenShots/profile.png" width="30%" /></td>
-    <td><img src="screenShots/update profile.png" width="30%" /></td>
-    <td><img src="screenShots/Viewing other people's profiles.png" width="30%" /></td>
-  </tr>
-  <tr>
-    <td align="center">My Profile</td>
-    <td align="center">Update Profile</td>
-    <td align="center">View Other Profile</td>
-  </tr>
-</table>
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/drawer.png" width="100%" style="border-radius: 8px;" />
+  <p>Navigation Drawer</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/profile.png" width="100%" style="border-radius: 8px;" />
+  <p>My Profile</p>
+</div>
+
+<br/><br/>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/update profile.png" width="100%" style="border-radius: 8px;" />
+  <p>Update Profile</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Viewing other people's profiles.png" width="100%" style="border-radius: 8px;" />
+  <p>View Other Profile</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/complain state.png" width="100%" style="border-radius: 8px;" />
+  <p>Complaint Status</p>
+</div>
+
+<div style="display: inline-block; width: 23%; margin: 1%;">
+  <img src="screenShots/Honor board.png" width="100%" style="border-radius: 8px;" />
+  <p>Honor Board</p>
+</div>
 
 </div>
 
