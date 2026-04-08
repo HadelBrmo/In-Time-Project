@@ -101,7 +101,7 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <img src="screenShots/Adding a volunteer service.png" width="30%" />
 <img src="screenShots/Add an exchange service.png" width="30%" />
 <img src="screenShots/Add a paid service.png" width="30%" />
-<img src="screenShots/my.hours.png" width="30%" />
+<img src="screenShots/my hours.png" width="30%" />
 <img src="screenShots/drawer.png" width="30%" />
 
 ### 💬 Chat & Communication
