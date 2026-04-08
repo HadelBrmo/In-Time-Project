@@ -86,11 +86,12 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <div align="center">
 
 ### 🚀 Onboarding & Authentication
+<img src="screenShots/splash screen.jpg" width="30%" />
 <img src="screenShots/onBoardingScreen1.png" width="30%" />
 <img src="screenShots/onBoardingScreen2.jpg" width="30%" />
 <img src="screenShots/onBoardingScreen3.png" width="30%" />
-<img src="screenShots/splash screen.jpg" width="30%" />
 <img src="screenShots/login.png" width="30%" />
+<img src="screenShots/create an account 1.png" width="30%" />
 <img src="screenShots/create an account 2.png" width="30%" />
 <img src="screenShots/create an account 3.png" width="30%" />
 
