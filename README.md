@@ -82,85 +82,173 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 ---
 
 
-### 📱 Screenshots
+## 📸 Screenshots
 
-#### 🚀 Onboarding & Authentication
+<div align="center">
+
+### 🚀 Onboarding & Authentication
 <table>
   <tr>
-    <td><img src="screenshots/splash screen.jpg" width="30%" /></td>
-    <td><img src="screenshots/onBoardingScreen1.png" width="30%" /></td>
-    <td><img src="screenshots/onBoardingScreen2.jpg" width="30%" /></td>
+    <td><img src="screenShots/onBoardingScreen1.png" width="30%" /></td>
+    <td><img src="screenShots/onBoardingScreen2.jpg" width="30%" /></td>
+    <td><img src="screenShots/onBoardingScreen3.png" width="30%" /></td>
   </tr>
   <tr>
-    <td align="center">Splash Screen</td>
     <td align="center">Onboarding 1</td>
     <td align="center">Onboarding 2</td>
-  </tr>
-</table>
-
-<br>
-
-<table>
-  <tr>
-    <td><img src="screenshots/onBoardingScreen3.png" width="30%" /></td>
-    <td><img src="screenshots/login.png" width="30%" /></td>
-    <td><img src="screenshots/Submit a complaint.png" width="30%" /></td>
-  </tr>
-  <tr>
     <td align="center">Onboarding 3</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="screenShots/create an account 2.png" width="30%" /></td>
+    <td><img src="screenShots/create an account 3.png" width="30%" /></td>
+    <td><img src="screenShots/login.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Create Account 1</td>
+    <td align="center">Create Account 2</td>
     <td align="center">Login</td>
-    <td align="center">Submit Complaint</td>
   </tr>
 </table>
 
 ---
 
-#### 🛠️ Services & Exchange
+### 🏠 Home & Services
 <table>
   <tr>
-    <td><img src="screenshots/sevice details.png" width="30%" /></td>
-    <td><img src="screenshots/my.hours.png" width="30%" /></td>
-    <td><img src="screenshots/My Requests Activity Log.png" width="30%" /></td>
+    <td><img src="screenShots/home.png" width="30%" /></td>
+    <td><img src="screenShots/sevice details.png" width="30%" /></td>
+    <td><img src="screenShots/Adding a volunteer service.png" width="30%" /></td>
   </tr>
   <tr>
+    <td align="center">Home Screen</td>
     <td align="center">Service Details</td>
-    <td align="center">My Hours</td>
-    <td align="center">Requests Log</td>
+    <td align="center">Add Volunteer Service</td>
   </tr>
 </table>
 
-<br>
-
 <table>
   <tr>
-    <td><img src="screenshots/My Services Activity Log.png" width="30%" /></td>
-    <td><img src="screenshots/Volunteer conversations.png" width="30%" /></td>
-    <td><img src="screenshots/Viewing other people's profiles.png" width="30%" /></td>
+    <td><img src="screenShots/Add an exchange service.png" width="30%" /></td>
+    <td><img src="screenShots/Add a paid service.png" width="30%" /></td>
+    <td><img src="screenShots/my.hours.png" width="30%" /></td>
   </tr>
   <tr>
-    <td align="center">Services Log</td>
-    <td align="center">Volunteer Chat</td>
-    <td align="center">Other Profile</td>
+    <td align="center">Add Exchange Service</td>
+    <td align="center">Add Paid Service</td>
+    <td align="center">My Hours Balance</td>
   </tr>
 </table>
 
 ---
 
-#### 👤 Profile Management
+### 💬 Chat & Communication
 <table>
   <tr>
-    <td><img src="screenshots/profile.png" width="30%" /></td>
-    <td><img src="screenshots/update profile.png" width="30%" /></td>
-    <td><img src="screenshots/sevice details.png" width="30%" /></td>
+    <td><img src="screenShots/chats.png" width="30%" /></td>
+    <td><img src="screenShots/chat1.png" width="30%" /></td>
+    <td><img src="screenShots/chat2.png" width="30%" /></td>
   </tr>
   <tr>
-    <td align="center">Main Profile</td>
-    <td align="center">Update Profile</td>
-    <td align="center">Service View</td>
+    <td align="center">Chats List</td>
+    <td align="center">Chat Conversation 1</td>
+    <td align="center">Chat Conversation 2</td>
   </tr>
 </table>
+
+<table>
+  <tr>
+    <td><img src="screenShots/chats in a group.png" width="30%" /></td>
+    <td><img src="screenShots/create a group.png" width="30%" /></td>
+    <td><img src="screenShots/group details.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Group Chats</td>
+    <td align="center">Create Group</td>
+    <td align="center">Group Details</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="screenShots/comments.png" width="30%" /></td>
+    <td><img src="screenShots/Volunteer conversations.png" width="30%" /></td>
+    <td><img src="screenShots/Viewing other people's profiles.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Comments & Reviews</td>
+    <td align="center">Volunteer Conversations</td>
+    <td align="center">View Other Profiles</td>
+  </tr>
+</table>
+
+---
+
+### 📋 Activity & Requests
+<table>
+  <tr>
+    <td><img src="screenShots/My Requests Activity Log.png" width="30%" /></td>
+    <td><img src="screenShots/My Services Activity Log.png" width="30%" /></td>
+    <td><img src="screenShots/drawer.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">My Requests Log</td>
+    <td align="center">My Services Log</td>
+    <td align="center">Navigation Drawer</td>
+  </tr>
+</table>
+
+---
+
+### 📝 Complaints System
+<table>
+  <tr>
+    <td><img src="screenShots/Submit a complaint.png" width="30%" /></td>
+    <td><img src="screenShots/fill a complaint.png" width="30%" /></td>
+    <td><img src="screenShots/complain details.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Submit Complaint</td>
+    <td align="center">Fill Complaint Form</td>
+    <td align="center">Complaint Details</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="screenShots/complain state.png" width="30%" /></td>
+    <td><img src="screenShots/Honor board.png" width="30%" /></td>
+    <td><img src="screenShots/profile.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Complaint Status</td>
+    <td align="center">Honor Board</td>
+    <td align="center">User Profile</td>
+  </tr>
+</table>
+
+---
+
+### 👤 Profile Management
+<table>
+  <tr>
+    <td><img src="screenShots/profile.png" width="30%" /></td>
+    <td><img src="screenShots/update profile.png" width="30%" /></td>
+    <td><img src="screenShots/Viewing other people's profiles.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">My Profile</td>
+    <td align="center">Update Profile</td>
+    <td align="center">View Other Profile</td>
+  </tr>
+</table>
+
+---
 
 </div>
+
 
 ---
 
