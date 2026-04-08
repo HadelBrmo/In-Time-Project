@@ -3,7 +3,7 @@
 
 <div align="center">
 
-![In Time Logo]<img src="screenshots/logo.png" width="20%" />
+<img src="screenShots/logo.png" width="20%" />
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-green.svg)]()
@@ -80,7 +80,6 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 | **Factory / DI Pattern** | `injection_container.dart` | Centralized, type-safe dependency resolution. Simplifies lifecycle management. |
 
 ---
-
 
 ## 📸 Screenshots
 
@@ -180,7 +179,7 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
   <tr>
     <td align="center">Comments & Reviews</td>
     <td align="center">Volunteer Conversations</td>
-    <td align="center">View Other Profiles</td>
+    <td align="center">View Other Profile</td>
   </tr>
 </table>
 
@@ -245,51 +244,44 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
   </tr>
 </table>
 
----
-
 </div>
-
 
 ---
 
 ## 📂 Project Structure
+```text
 lib/
 ├── core/
-│ ├── constants/ # API, Colors, Strings, Routes
-│ ├── error/ # Exceptions & Failures
-│ ├── network/ # Dio, Endpoints, Decorators (Cache/Retry/Log)
-│ ├── strategies/ # Service Pricing Strategies
-│ ├── services/ # SecureStorage, Notifications, Geolocation
-│ ├── utils/ # Validators, Formatters, Extensions
-│ ├── widgets/ # Shared UI Components
-│ └── usecase/ # Base UseCase Contract
+│   ├── constants/          # API, Colors, Strings, Routes
+│   ├── error/              # Exceptions & Failures
+│   ├── network/            # Dio, Endpoints, Decorators
+│   ├── strategies/         # Service Pricing Strategies
+│   ├── services/           # SecureStorage, Notifications, Geo
+│   ├── utils/              # Validators, Formatters
+│   ├── widgets/            # Shared UI Components
+│   └── usecase/            # Base UseCase Contract
 │
 ├── features/
-│ ├── auth/ # UC-02, UC-13: Login, Register, OCR Verification
-│ ├── home/ # UC-04, UC-14: Search, Filters, Guest Browse
-│ ├── services/ # UC-03, UC-17: Add Services, Details, Comments
-│ ├── exchange/ # UC-01, UC-07: Requests, Activity Log
-│ ├── chat/ # UC-05: Real-time Negotiation & Messaging
-│ ├── complaints/ # UC-06: Submit & Track Complaints
-│ ├── profile/ # UC-10: Edit Profile, Portfolio, Ratings
-│ ├── nearby/ # UC-11: GPS-based Service Discovery
-│ └── rewards/ # UC-15, UC-16: Hours, Badges, Leaderboard
+│   ├── auth/               # UC-02, UC-13: Login, Register, OCR
+│   ├── home/               # UC-04, UC-14: Search, Filters
+│   ├── services/           # UC-03, UC-17: Add Services
+│   ├── exchange/           # UC-01, UC-07: Requests
+│   ├── chat/               # UC-05: Real-time Messaging
+│   ├── complaints/         # UC-06: Submit & Track
+│   ├── profile/            # UC-10: Edit Profile, Ratings
+│   ├── nearby/             # UC-11: GPS Discovery
+│   └── rewards/            # UC-15, UC-16: Hours, Leaderboard
 │
-├── injection_container.dart # Dependency Injection Setup
-└── main.dart # App Entry, Theme, DI Initialization
+├── injection_container.dart
+└── main.dart
 
----
+🚀 Getting Started
+Prerequisites
+Flutter SDK (3.x or higher)
+Dart SDK
+Android Studio / VS Code
+Emulator or Physical Device
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Flutter SDK (3.x or higher)
-- Dart SDK
-- Android Studio / VS Code
-- Emulator or Physical Device
-
-### Installation
-```bash
 # Clone the repository
 git clone https://github.com/HadelBrmo/In-Time-Project.git
 cd in-time-platform
@@ -300,22 +292,20 @@ flutter pub get
 # Run the app
 flutter run
 
-# Build for Production
+Build for Production
 flutter build apk --release      # Android
 flutter build ios --release      # iOS
 
-
-## 🧪 Testing & Quality Assurance
-
+🧪 Testing & Quality Assurance
 Unit Testing: bloc_test + mocktail for Business Logic & Repositories
 Widget Testing: UI component validation
-Code Generation: freezed + json_serializable for immutable models & serialization
+Code Generation: freezed + json_serializable for immutable models
 Performance: Pagination, compute() for heavy tasks, Firebase Performance Monitoring
 Offline-First: Isar/Hive caching with connectivity_plus sync queues
 Security: flutter_secure_storage for tokens, Dio interceptors for auto-refresh
 Logging: logger (dev) + Firebase Crashlytics (prod)
 
-## 👥 Team & University
+👥 Team & University
 Developers: Hadel Brmo & Baraa Alahmed
 University: Damascus University
 Project Type: Graduation Project
