@@ -86,188 +86,51 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <div align="center">
 
 ### 🚀 Onboarding & Authentication
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/onBoardingScreen1.png" width="100%" style="border-radius: 8px;" />
-  <p>Onboarding 1</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/onBoardingScreen2.jpg" width="100%" style="border-radius: 8px;" />
-  <p>Onboarding 2</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/onBoardingScreen3.png" width="100%" style="border-radius: 8px;" />
-  <p>Onboarding 3</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/create an account 2.png" width="100%" style="border-radius: 8px;" />
-  <p>Create Account 1</p>
-</div>
-
-<br/><br/>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/create an account 3.png" width="100%" style="border-radius: 8px;" />
-  <p>Create Account 2</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/login.png" width="100%" style="border-radius: 8px;" />
-  <p>Login</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/splash screen.jpg" width="100%" style="border-radius: 8px;" />
-  <p>Splash Screen</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Submit a complaint.png" width="100%" style="border-radius: 8px;" />
-  <p>Submit Complaint</p>
-</div>
-
----
+<img src="screenShots/onBoardingScreen1.png" width="30%" />
+<img src="screenShots/onBoardingScreen2.jpg" width="30%" />
+<img src="screenShots/onBoardingScreen3.png" width="30%" />
+<img src="screenShots/splash screen.jpg" width="30%" />
+<img src="screenShots/login.png" width="30%" />
+<img src="screenShots/create an account 2.png" width="30%" />
+<img src="screenShots/create an account 3.png" width="30%" />
 
 ### 🏠 Home & Services
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/home.png" width="100%" style="border-radius: 8px;" />
-  <p>Home Screen</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/sevice details.png" width="100%" style="border-radius: 8px;" />
-  <p>Service Details</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Adding a volunteer service.png" width="100%" style="border-radius: 8px;" />
-  <p>Add Volunteer Service</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Add an exchange service.png" width="100%" style="border-radius: 8px;" />
-  <p>Add Exchange Service</p>
-</div>
-
-<br/><br/>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Add a paid service.png" width="100%" style="border-radius: 8px;" />
-  <p>Add Paid Service</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/my.hours.png" width="100%" style="border-radius: 8px;" />
-  <p>My Hours Balance</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/fill a complaint.png" width="100%" style="border-radius: 8px;" />
-  <p>Fill Complaint</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/complain details.png" width="100%" style="border-radius: 8px;" />
-  <p>Complaint Details</p>
-</div>
-
----
+<img src="screenShots/home.png" width="30%" />
+<img src="screenShots/sevice details.png" width="30%" />
+<img src="screenShots/Adding a volunteer service.png" width="30%" />
+<img src="screenShots/Add an exchange service.png" width="30%" />
+<img src="screenShots/Add a paid service.png" width="30%" />
+<img src="screenShots/my.hours.png" width="30%" />
+<img src="screenShots/drawer.png" width="30%" />
 
 ### 💬 Chat & Communication
+<img src="screenShots/chats.png" width="30%" />
+<img src="screenShots/chat1.png" width="30%" />
+<img src="screenShots/chat2.png" width="30%" />
+<img src="screenShots/chats in a group.png" width="30%" />
+<img src="screenShots/create a group.png" width="30%" />
+<img src="screenShots/group details.png" width="30%" />
+<img src="screenShots/comments.png" width="30%" />
+<img src="screenShots/Volunteer conversations.png" width="30%" />
+<img src="screenShots/Viewing other people's profiles.png" width="30%" />
 
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/chats.png" width="100%" style="border-radius: 8px;" />
-  <p>Chats List</p>
-</div>
+### 📋 Activity & Requests
+<img src="screenShots/My Requests Activity Log.png" width="30%" />
+<img src="screenShots/My Services Activity Log.png" width="30%" />
+<img src="screenShots/fill a complaint.png" width="30%" />
+<img src="screenShots/complain details.png" width="30%" />
+<img src="screenShots/Submit a complaint.png" width="30%" />
+<img src="screenShots/complain state.png" width="30%" />
 
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/chat1.png" width="100%" style="border-radius: 8px;" />
-  <p>Chat 1</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/chat2.png" width="100%" style="border-radius: 8px;" />
-  <p>Chat 2</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/chats in a group.png" width="100%" style="border-radius: 8px;" />
-  <p>Group Chats</p>
-</div>
-
-<br/><br/>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/create a group.png" width="100%" style="border-radius: 8px;" />
-  <p>Create Group</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/group details.png" width="100%" style="border-radius: 8px;" />
-  <p>Group Details</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/comments.png" width="100%" style="border-radius: 8px;" />
-  <p>Comments</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Volunteer conversations.png" width="100%" style="border-radius: 8px;" />
-  <p>Volunteer Chat</p>
-</div>
-
----
-
-### 📋 Activity & Profile
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/My Requests Activity Log.png" width="100%" style="border-radius: 8px;" />
-  <p>My Requests Log</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/My Services Activity Log.png" width="100%" style="border-radius: 8px;" />
-  <p>My Services Log</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/drawer.png" width="100%" style="border-radius: 8px;" />
-  <p>Navigation Drawer</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/profile.png" width="100%" style="border-radius: 8px;" />
-  <p>My Profile</p>
-</div>
-
-<br/><br/>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/update profile.png" width="100%" style="border-radius: 8px;" />
-  <p>Update Profile</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Viewing other people's profiles.png" width="100%" style="border-radius: 8px;" />
-  <p>View Other Profile</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/complain state.png" width="100%" style="border-radius: 8px;" />
-  <p>Complaint Status</p>
-</div>
-
-<div style="display: inline-block; width: 23%; margin: 1%;">
-  <img src="screenShots/Honor board.png" width="100%" style="border-radius: 8px;" />
-  <p>Honor Board</p>
-</div>
+### 👤 Profile & Rewards
+<img src="screenShots/profile.png" width="30%" />
+<img src="screenShots/update profile.png" width="30%" />
+<img src="screenShots/Honor board.png" width="30%" />
 
 </div>
+
+
+
 
 ---
 
