@@ -3,7 +3,7 @@
 
 <div align="center">
 
-![In Time Logo](screenshots/logo.png)
+![In Time Logo]<img src="screenshots/logo.png" width="20%" />
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-green.svg)]()
@@ -81,54 +81,82 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 
 ---
 
-## 📱 Screenshots
-<div align="center">
 
-### Onboarding & Authentication
+### 📱 Screenshots
+
+#### 🚀 Onboarding & Authentication
 <table>
   <tr>
-    <td><img src="screenshots/onboarding.png" width="200"></td>
-    <td><img src="screenshots/login.png" width="200"></td>
-    <td><img src="screenshots/register.png" width="200"></td>
-    <td><img src="screenshots/identity_verification.png" width="200"></td>
+    <td><img src="screenshots/splash screen.jpg" width="30%" /></td>
+    <td><img src="screenshots/onBoardingScreen1.png" width="30%" /></td>
+    <td><img src="screenshots/onBoardingScreen2.jpg" width="30%" /></td>
   </tr>
   <tr>
-    <td>Onboarding</td>
-    <td>Login</td>
-    <td>Register</td>
-    <td>OCR Verification</td>
+    <td align="center">Splash Screen</td>
+    <td align="center">Onboarding 1</td>
+    <td align="center">Onboarding 2</td>
   </tr>
 </table>
 
-### Services & Exchange
+<br>
+
 <table>
   <tr>
-    <td><img src="screenshots/add_service_barter.png" width="200"></td>
-    <td><img src="screenshots/add_service_paid.png" width="200"></td>
-    <td><img src="screenshots/service_details.png" width="200"></td>
-    <td><img src="screenshots/comments.png" width="200"></td>
+    <td><img src="screenshots/onBoardingScreen3.png" width="30%" /></td>
+    <td><img src="screenshots/login.png" width="30%" /></td>
+    <td><img src="screenshots/Submit a complaint.png" width="30%" /></td>
   </tr>
   <tr>
-    <td>Add Barter Service</td>
-    <td>Add Paid Service</td>
-    <td>Service Details</td>
-    <td>Threaded Comments</td>
+    <td align="center">Onboarding 3</td>
+    <td align="center">Login</td>
+    <td align="center">Submit Complaint</td>
   </tr>
 </table>
 
-### Gamification & Profile
+---
+
+#### 🛠️ Services & Exchange
 <table>
   <tr>
-    <td><img src="screenshots/hour_wallet.png" width="200"></td>
-    <td><img src="screenshots/leaderboard.png" width="200"></td>
-    <td><img src="screenshots/profile.png" width="200"></td>
-    <td><img src="screenshots/complaints_status.png" width="200"></td>
+    <td><img src="screenshots/sevice details.png" width="30%" /></td>
+    <td><img src="screenshots/my.hours.png" width="30%" /></td>
+    <td><img src="screenshots/My Requests Activity Log.png" width="30%" /></td>
   </tr>
   <tr>
-    <td>Hour Wallet</td>
-    <td>Leaderboard</td>
-    <td>Profile</td>
-    <td>Complaint Tracking</td>
+    <td align="center">Service Details</td>
+    <td align="center">My Hours</td>
+    <td align="center">Requests Log</td>
+  </tr>
+</table>
+
+<br>
+
+<table>
+  <tr>
+    <td><img src="screenshots/My Services Activity Log.png" width="30%" /></td>
+    <td><img src="screenshots/Volunteer conversations.png" width="30%" /></td>
+    <td><img src="screenshots/Viewing other people's profiles.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Services Log</td>
+    <td align="center">Volunteer Chat</td>
+    <td align="center">Other Profile</td>
+  </tr>
+</table>
+
+---
+
+#### 👤 Profile Management
+<table>
+  <tr>
+    <td><img src="screenshots/profile.png" width="30%" /></td>
+    <td><img src="screenshots/update profile.png" width="30%" /></td>
+    <td><img src="screenshots/sevice details.png" width="30%" /></td>
+  </tr>
+  <tr>
+    <td align="center">Main Profile</td>
+    <td align="center">Update Profile</td>
+    <td align="center">Service View</td>
   </tr>
 </table>
 
