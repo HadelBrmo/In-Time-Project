@@ -1,13 +1,4 @@
-// DECORATOR PATTERN for caching
-abstract class DataSourceDecorator<T> {
-  Future<T> fetchData();
-}
+﻿abstract class DataSourceDecorator {}
 
-class CachingDataSource<T> implements DataSourceDecorator<T> {
-  // NFR: Availability & Performance
-  @override
-  Future<T> fetchData() async {
-    // Implement caching logic
-    throw UnimplementedError();
-  }
-}
+class CachingDataSource {}
+

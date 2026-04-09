@@ -1,7 +1,2 @@
-class LeaderboardUserEntity {
-  final String id;
-  final String name;
-  final int hours;
+﻿class LeaderboardUserEntity {}
 
-  LeaderboardUserEntity({required this.id, required this.name, required this.hours});
-}

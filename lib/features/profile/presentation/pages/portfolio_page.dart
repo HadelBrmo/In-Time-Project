@@ -1,11 +1,2 @@
-import 'package:flutter/material.dart';
+﻿class PortfolioPage {}
 
-class PortfolioPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Portfolio')),
-      body: Center(child: Text('Portfolio Page')),
-    );
-  }
-}

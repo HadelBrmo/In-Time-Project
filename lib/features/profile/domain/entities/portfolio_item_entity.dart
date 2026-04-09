@@ -1,7 +1,2 @@
-class PortfolioItemEntity {
-  final String id;
-  final String title;
-  final String description;
+﻿class PortfolioItemEntity {}
 
-  PortfolioItemEntity({required this.id, required this.title, required this.description});
-}

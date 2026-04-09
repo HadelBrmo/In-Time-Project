@@ -1,7 +1,2 @@
-class IdDocumentModel {
-  final String id;
-  final String type; // passport, id card
-  final String imageUrl;
+﻿class IdDocumentModel {}
 
-  IdDocumentModel({required this.id, required this.type, required this.imageUrl});
-}

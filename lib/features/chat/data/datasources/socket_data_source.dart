@@ -1,10 +1,2 @@
-class SocketDataSource {
-  // WebSocket/Socket.io
-  void connect() {
-    // Implement connection
-  }
+﻿class SocketDataSource {}
 
-  void sendMessage(String message) {
-    // Implement send
-  }
-}

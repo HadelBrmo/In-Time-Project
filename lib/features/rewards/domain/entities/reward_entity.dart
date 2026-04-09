@@ -1,7 +1,2 @@
-class RewardEntity {
-  final String id;
-  final String name;
-  final int cost; // in hours
+﻿class RewardEntity {}
 
-  RewardEntity({required this.id, required this.name, required this.cost});
-}

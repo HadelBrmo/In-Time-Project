@@ -1,11 +1,4 @@
-abstract class NetworkInfo {
-  Future<bool> get isConnected;
-}
+﻿abstract class NetworkInfo {}
 
-class NetworkInfoImpl implements NetworkInfo {
-  @override
-  Future<bool> get isConnected async {
-    // Implement connectivity check
-    return true; // Placeholder
-  }
-}
+class NetworkInfoImpl {}
+

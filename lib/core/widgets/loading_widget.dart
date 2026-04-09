@@ -1,8 +1,2 @@
-import 'package:flutter/material.dart';
+﻿class LoadingWidget {}
 
-class LoadingWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CircularProgressIndicator();
-  }
-}

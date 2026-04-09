@@ -1,7 +1,2 @@
-class ProfileEntity {
-  final String id;
-  final String name;
-  final String bio;
+﻿class ProfileEntity {}
 
-  ProfileEntity({required this.id, required this.name, required this.bio});
-}

@@ -1,6 +1,2 @@
-class HoursBalanceEntity {
-  final String userId;
-  final int balance;
+﻿class HoursBalanceEntity {}
 
-  HoursBalanceEntity({required this.userId, required this.balance});
-}
