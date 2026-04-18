@@ -107,16 +107,21 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <img src="screenShots/Add a paid service.png" width="30%" />
 <img src="screenShots/my hours.png" width="30%" />
 
-### 💬 Chat & Communication
+### 💬 Chat & Groups
 <img src="screenShots/chats.png" width="30%" />
 <img src="screenShots/chat1.png" width="30%" />
 <img src="screenShots/chat2.png" width="30%" />
 <img src="screenShots/chats in a group.png" width="30%" />
 <img src="screenShots/create a group.png" width="30%" />
 <img src="screenShots/group details.png" width="30%" />
-<img src="screenShots/comments.png" width="30%" />
-<img src="screenShots/Volunteer conversations.png" width="30%" />
-<img src="screenShots/Viewing other people's profiles.png" width="30%" />
+<img src="screenShots/Confirmation of receipt.png" width="30%" />
+<img src="screenShots/savedMessages.png" width="30%" />
+<img src="screenShots/notifications.png" width="30%" />
+
+### ⚙️ Settings & Additional Features
+<img src="screenShots/settings.png" width="30%" />
+<img src="screenShots/rating.png" width="30%" />
+<img src="screenShots/filter honor board.png" width="30%" />
 
 ### 📋 Activity & Requests
 <img src="screenShots/My Requests Activity Log.png" width="30%" />
