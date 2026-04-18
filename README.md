@@ -86,59 +86,62 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <div align="center">
 
 ### 🚀 Onboarding & Authentication
-<img src="screenShots/splash screen.jpg" width="30%" />
-<img src="screenShots/onBoardingScreen1.png" width="30%" />
-<img src="screenShots/onBoardingScreen2.jpg" width="30%" />
-<img src="screenShots/onBoardingScreen3.png" width="30%" />
-<img src="screenShots/login.png" width="30%" />
-<img src="screenShots/create an account 2.png" width="30%" />
-<img src="screenShots/create an account 3.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/splash screen.jpg" width="30%" />
+<img src="screenShots/Onboarding & Authentication/onBoardingScreen1.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/onBoardingScreen2.jpg" width="30%" />
+<img src="screenShots/Onboarding & Authentication/onBoardingScreen3.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/login.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/create an account 1.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/create an account 2.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/create an account 3.png" width="30%" />
 
 ### 🏠 Home & Services
-<img src="screenShots/home.png" width="30%" />
-<img src="screenShots/sevice details.png" width="30%" />
-<img src="screenShots/search.png" width="30%" />
-<img src="screenShots/filter.png" width="30%" />
-<img src="screenShots/drawer.png" width="30%" />
+<img src="screenShots/Home & Services/home.png" width="30%" />
+<img src="screenShots/Home & Services/service details.png" width="30%" />
+<img src="screenShots/Home & Services/search.png" width="30%" />
+<img src="screenShots/Home & Services/filter.png" width="30%" />
+<img src="screenShots/Home & Services/drawer.png" width="30%" />
 
 ### 🛠️ Add Services
-<img src="screenShots/Adding a volunteer service.png" width="30%" />
-<img src="screenShots/Add an exchange service.png" width="30%" />
-<img src="screenShots/Add a paid service.png" width="30%" />
-<img src="screenShots/my hours.png" width="30%" />
+<img src="screenShots/Add Services/Adding a volunteer service.png" width="30%" />
+<img src="screenShots/Add Services/Add an exchange service.png" width="30%" />
+<img src="screenShots/Add Services/Add a paid service.png" width="30%" />
+<img src="screenShots/Add Services/my hours.png" width="30%" />
+<img src="screenShots/Add Services/comments.png" width="30%" />
 
 ### 💬 Chat & Groups
-<img src="screenShots/chats.png" width="30%" />
-<img src="screenShots/chat1.png" width="30%" />
-<img src="screenShots/chat2.png" width="30%" />
-<img src="screenShots/chats in a group.png" width="30%" />
-<img src="screenShots/create a group.png" width="30%" />
-<img src="screenShots/group details.png" width="30%" />
-<img src="screenShots/Confirmation of receipt.png" width="30%" />
-<img src="screenShots/savedMessages.png" width="30%" />
-<img src="screenShots/notifications.png" width="30%" />
+<img src="screenShots/Chat & Groups/chats.png" width="30%" />
+<img src="screenShots/Chat & Groups/chat1.png" width="30%" />
+<img src="screenShots/Chat & Groups/chat2.png" width="30%" />
+<img src="screenShots/Chat & Groups/chats in a group.png" width="30%" />
+<img src="screenShots/Chat & Groups/create a group.png" width="30%" />
+<img src="screenShots/Chat & Groups/group details.png" width="30%" />
+<img src="screenShots/Chat & Groups/Volunteer conversations.png" width="30%" />
+<img src="screenShots/Chat & Groups/Confirmation of receipt.png" width="30%" />
+<img src="screenShots/Chat & Groups/savedMessages.png" width="30%" />
+<img src="screenShots/Chat & Groups/notifications.png" width="30%" />
 
 ### ⚙️ Settings & Additional Features
-<img src="screenShots/settings.png" width="30%" />
-<img src="screenShots/rating.png" width="30%" />
-<img src="screenShots/filter honor board.png" width="30%" />
+<img src="screenShots/ Settings & Additional Features/settings.png" width="30%" />
+<img src="screenShots/ Settings & Additional Features/rating.png" width="30%" />
+<img src="screenShots/ Settings & Additional Features/filter honor board.png" width="30%" />
 
 ### 📋 Activity & Requests
-<img src="screenShots/My Requests Activity Log.png" width="30%" />
-<img src="screenShots/My Services Activity Log.png" width="30%" />
+<img src="screenShots/ Activity & Requests/My Requests Activity Log.png" width="30%" />
+<img src="screenShots/ Activity & Requests/My Services Activity Log.png" width="30%" />
 
 ### 📝 Complaints System
-<img src="screenShots/Submit a complaint.png" width="30%" />
-<img src="screenShots/fill a complaint.png" width="30%" />
-<img src="screenShots/complain details.png" width="30%" />
-<img src="screenShots/complain state.png" width="30%" />
-<img src="screenShots/filter honor board.png" width="30%" />
+<img src="screenShots/Complaints System/Submit a complaint.png" width="30%" />
+<img src="screenShots/Complaints System/fill a complaint.png" width="30%" />
+<img src="screenShots/Complaints System/complain details.png" width="30%" />
+<img src="screenShots/Complaints System/complain state.png" width="30%" />
+
 
 ### 👤 Profile & Rewards
-<img src="screenShots/profile.png" width="30%" />
-<img src="screenShots/update profile.png" width="30%" />
-<img src="screenShots/Honor board.png" width="30%" />
-
+<img src="screenShots/Profile & Rewards/profile.png" width="30%" />
+<img src="screenShots/Profile & Rewards/update profile.png" width="30%" />
+<img src="screenShots/Profile & Rewards/Honor board.png" width="30%" />
+<img src="screenShots/Profile & Rewards/Viewing other people's profiles.png" width="30%" />
 </div>
 
 ## 📂 Project Structure
