@@ -91,18 +91,21 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <img src="screenShots/onBoardingScreen2.jpg" width="30%" />
 <img src="screenShots/onBoardingScreen3.png" width="30%" />
 <img src="screenShots/login.png" width="30%" />
-<img src="screenShots/create an account 1.png" width="30%" />
 <img src="screenShots/create an account 2.png" width="30%" />
 <img src="screenShots/create an account 3.png" width="30%" />
 
 ### 🏠 Home & Services
 <img src="screenShots/home.png" width="30%" />
 <img src="screenShots/sevice details.png" width="30%" />
+<img src="screenShots/search.png" width="30%" />
+<img src="screenShots/filter.png" width="30%" />
+<img src="screenShots/drawer.png" width="30%" />
+
+### 🛠️ Add Services
 <img src="screenShots/Adding a volunteer service.png" width="30%" />
 <img src="screenShots/Add an exchange service.png" width="30%" />
 <img src="screenShots/Add a paid service.png" width="30%" />
 <img src="screenShots/my hours.png" width="30%" />
-<img src="screenShots/drawer.png" width="30%" />
 
 ### 💬 Chat & Communication
 <img src="screenShots/chats.png" width="30%" />
@@ -118,10 +121,13 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 ### 📋 Activity & Requests
 <img src="screenShots/My Requests Activity Log.png" width="30%" />
 <img src="screenShots/My Services Activity Log.png" width="30%" />
+
+### 📝 Complaints System
+<img src="screenShots/Submit a complaint.png" width="30%" />
 <img src="screenShots/fill a complaint.png" width="30%" />
 <img src="screenShots/complain details.png" width="30%" />
-<img src="screenShots/Submit a complaint.png" width="30%" />
 <img src="screenShots/complain state.png" width="30%" />
+<img src="screenShots/filter honor board.png" width="30%" />
 
 ### 👤 Profile & Rewards
 <img src="screenShots/profile.png" width="30%" />
@@ -129,11 +135,6 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <img src="screenShots/Honor board.png" width="30%" />
 
 </div>
-
-
-
-
----
 
 ## 📂 Project Structure
 ```text
