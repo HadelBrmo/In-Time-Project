@@ -206,9 +206,8 @@ Developers: Hadel Brmo & Baraa Alahmed
 University: Damascus University
 Project Type: Graduation Project
 
-<div align="center">
 
 Built with ❤️ using Flutter & Clean Architecture
 ⭐ If you found this project helpful, please consider giving it a star! ⭐
-</div>
+
 ```
