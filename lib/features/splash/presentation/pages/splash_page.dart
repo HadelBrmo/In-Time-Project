@@ -25,7 +25,6 @@ class _SplashPageState extends State<SplashPage> {
     final isLandscape=orientation==Orientation.landscape;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.whiteColor,
         body:Center(
           child: isLandscape
               ? buildLandscapeLayout()
