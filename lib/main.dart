@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'core/constants/app_colors.dart';
-import 'features/splash/presentation/pages/splash_page.dart';
+import 'core/constants/app_routes.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,13 +18,14 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-            theme: ThemeData(
-              scaffoldBackgroundColor: AppColors.whiteColor),
           debugShowCheckedModeBanner: false,
-          home: child,
+          theme: AppTheme.lightMode,
+          darkTheme: AppTheme.darkMode,
+          themeMode: ThemeMode.system,
+          initialRoute: '/',
+          onGenerateRoute: AppRoutes.generateRoute,
         );
       },
-      child: const SplashPage(),
     );
   }
 }
