@@ -4,13 +4,17 @@ import '../constants/app_colors.dart';
 class AppTheme {
   static ThemeData lightMode = ThemeData(
     brightness: Brightness.light,
+    scaffoldBackgroundColor: AppColors.whiteColor,
     appBarTheme: AppBarTheme(color: AppColors.primaryColor),
-    colorScheme: ColorScheme.light(background: AppColors.whiteColor),
+    colorScheme: ColorScheme.light(
+      background: AppColors.whiteColor,
+      primary: AppColors.primaryColor,
+    ),
     primaryColor: AppColors.primaryColor,
     buttonTheme: ButtonThemeData(buttonColor: AppColors.primaryColor),
     textTheme: TextTheme(
       bodySmall: TextStyle(
-        fontFamily: 'ArchivoBlack',
+        fontFamily: 'ArchivoBlack',  // ✅ تغيير من Ubuntu إلى ArchivoBlack
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: AppColors.primaryColor,
@@ -40,12 +44,12 @@ class AppTheme {
       ),
       titleMedium: TextStyle(
         fontFamily: 'Arial',
-        color: Colors.grey,
+        color: AppColors.blackColor,
         fontSize: 15,
       ),
       titleSmall: TextStyle(
         fontFamily: 'Arial',
-        color: Colors.white,
+        color: AppColors.whiteColor,
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
@@ -54,8 +58,12 @@ class AppTheme {
 
   static ThemeData darkMode = ThemeData(
     brightness: Brightness.dark,
+    scaffoldBackgroundColor: AppColors.blackColor,
     appBarTheme: AppBarTheme(color: AppColors.primaryColor),
-    colorScheme: ColorScheme.dark(background: AppColors.blackColor),
+    colorScheme: ColorScheme.dark(
+      background: AppColors.blackColor,
+      primary: AppColors.primaryColor,
+    ),
     textTheme: TextTheme(
       bodySmall: TextStyle(
         fontFamily: 'ArchivoBlack',
@@ -88,12 +96,12 @@ class AppTheme {
       ),
       titleMedium: TextStyle(
         fontFamily: 'Arial',
-        color: AppColors.secondaryColor,
+        color: AppColors.greyColor,
         fontSize: 15,
       ),
       titleSmall: TextStyle(
         fontFamily: 'Arial',
-        color: Colors.white,
+        color: AppColors.whiteColor,
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
