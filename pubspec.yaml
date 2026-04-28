@@ -37,6 +37,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   socket_io: ^1.0.1
   flutter_screenutil: ^5.9.3
+  smooth_page_indicator: ^2.0.1
 
 
 flutter_launcher_icons:
