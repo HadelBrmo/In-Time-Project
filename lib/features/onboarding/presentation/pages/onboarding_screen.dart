@@ -6,6 +6,7 @@ import 'package:in_time/features/onboarding/presentation/pages/page3.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/mediaQuery.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -27,7 +28,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
-          // PageView - يأخذ المساحة المتبقية
           Expanded(
             child: PageView(
               controller: pageController,
@@ -54,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   text: onlastPage ? "ابدأ الآن" : "التالي",
                   onPressed: () {
                     if (onlastPage) {
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
                     } else {
                       pageController.nextPage(
                         duration: const Duration(milliseconds: 500),
