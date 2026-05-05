@@ -1,14 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../bloc/SignUpBloc/sign up_bloc.dart';
+import '../pages/sign up/sign up_page_01.dart';
 
-Widget buildFooterLinks(MediaQueryHelper media) {
+Widget buildFooterLinks(MediaQueryHelper media,BuildContext context) {
   return Column(
     children: [
       TextButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) => SignUpBloc(),
+                child:  SignUpPage1(),
+              ),
+            ),
+          );
         },
         child: Text.rich(
           TextSpan(

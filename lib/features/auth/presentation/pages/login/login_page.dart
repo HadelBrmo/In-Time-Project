@@ -1,11 +1,11 @@
 ﻿import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
-import '../widgets/LoginForm.dart';
-import '../widgets/buildFooterLinks.dart';
-import '../widgets/buildHeader.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/mediaQuery.dart';
+import '../../widgets/LoginForm.dart';
+import '../../widgets/buildFooterLinks.dart';
+import '../../widgets/buildHeader.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -40,7 +40,7 @@ class LoginScreen extends StatelessWidget {
 
                       const LoginForm(),
                       SizedBox(height: media.height * 0.02),
-                      buildFooterLinks(media),
+                      buildFooterLinks(media,context),
                     ],
                   ),
                 ),

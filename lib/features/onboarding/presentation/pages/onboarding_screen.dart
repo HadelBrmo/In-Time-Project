@@ -54,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   text: onlastPage ? "ابدأ الآن" : "التالي",
                   onPressed: () {
                     if (onlastPage) {
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
+                      Navigator.pushNamed(context, AppRoutes.login);
                     } else {
                       pageController.nextPage(
                         duration: const Duration(milliseconds: 500),
