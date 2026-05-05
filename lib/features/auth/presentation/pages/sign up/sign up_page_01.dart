@@ -1,17 +1,18 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
+import 'package:in_time/features/auth/presentation/pages/sign%20up/sign%20up_page_02.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
+import '../../../../../core/widgets/custom_button.dart';
 import '../../bloc/SignUpBloc/sign up_bloc.dart';
-import '../../bloc/SignUpEvent/sign up_event.dart';
-import '../../bloc/SignUpStates/sign up_state.dart';
-import '../../widgets/buildGenderDropdown.dart';
-import '../../widgets/buildHeaderForSignUp.dart';
-import '../../widgets/buildLabel.dart';
-import '../../widgets/buildSubmitButton.dart';
-import '../../widgets/customDatePickerField.dart';
+import '../../bloc/SignUpBloc/sign up_event.dart';
+import '../../bloc/SignUpBloc/sign up_state.dart';
+import '../../widgets/signup_widgets/buildGenderDropdown.dart';
+import '../../widgets/signup_widgets/buildHeaderForSignUp.dart';
+import '../../../../../core/widgets/buildLabel.dart';
+import '../../widgets/signup_widgets/customDatePickerField.dart';
 import '../locationPicker/location_picker_page.dart';
 
 class SignUpPage1 extends StatefulWidget {
@@ -152,7 +153,18 @@ class _SignUpPage1State extends State<SignUpPage1> {
                               ],
                             ),
                             SizedBox(height: media.height * 0.05),
-                            buildSubmitButton(context,media),
+                            Center(
+                              child: CustomButton(
+                                text: "التالي",
+                                width: media.width * 0.65,
+                                height: 55,
+                                fontSize: 18,
+                                onPressed: () {
+                                 // context.read<SignUpBloc>().add(SubmitSignUpEvent());
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage2()));
+                                },
+                              ),
+                            ),
 
                           ],
 

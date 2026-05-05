@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
-import '../../widgets/LoginForm.dart';
-import '../../widgets/buildFooterLinks.dart';
-import '../../widgets/buildHeader.dart';
+import '../../widgets/login_widgets/LoginForm.dart';
+import '../../widgets/login_widgets/buildFooterLinks.dart';
+import '../../widgets/login_widgets/buildHeader.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

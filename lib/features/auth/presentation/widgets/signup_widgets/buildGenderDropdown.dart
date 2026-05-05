@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../bloc/SignUpBloc/sign up_bloc.dart';
-import '../bloc/SignUpEvent/sign up_event.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../bloc/SignUpBloc/sign up_bloc.dart';
+import '../../bloc/SignUpBloc/sign up_event.dart';
 
 Widget buildGenderDropdown(BuildContext context, String selectedGender) {
   return Container(

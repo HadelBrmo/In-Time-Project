@@ -1,15 +1,14 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../SignUpEvent/sign up_event.dart';
-import '../SignUpStates/sign up_state.dart';
+import 'sign up_event.dart';
+import 'sign up_state.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final ImagePicker _picker = ImagePicker();
 
   SignUpBloc() : super( SignUpState()) {
+
     on<PickProfileImageEvent>((event, emit) async {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {

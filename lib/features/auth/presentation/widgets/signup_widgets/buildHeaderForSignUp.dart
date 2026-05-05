@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/mediaQuery.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
-
-Widget buildHeaderForSignUp(MediaQueryHelper media, BuildContext context) {
+Widget buildHeaderForSignUp(MediaQueryHelper media, BuildContext context, {String subTitle = "المعلومات الشخصية"}) {
   return Stack(
     alignment: Alignment.topCenter,
     clipBehavior: Clip.none,
@@ -19,16 +17,16 @@ Widget buildHeaderForSignUp(MediaQueryHelper media, BuildContext context) {
             bottomRight: Radius.circular(30),
           ),
         ),
-        child: const Column(
+        child: Column(
           children: [
-            SizedBox(height: 50),
-            Text(
+            const SizedBox(height: 50),
+            const Text(
               "إنشاء الحساب",
               style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Text(
-              "المعلومات الشخصية",
-              style: TextStyle(color: Colors.white70, fontSize: 17),
+              subTitle,
+              style: const TextStyle(color: Colors.white70, fontSize: 17),
             ),
           ],
         ),

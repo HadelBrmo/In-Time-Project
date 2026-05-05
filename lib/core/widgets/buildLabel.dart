@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../constants/app_colors.dart';
 
 Widget buildLabel(String text) {
   return Padding(
