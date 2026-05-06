@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
+import 'package:in_time/features/auth/presentation/pages/sign%20up/sign%20up_page_03.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/buildLabel.dart';
@@ -121,7 +122,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                           fontSize: 18,
                           onPressed: () {
                             // context.read<SignUpBloc>().add(SubmitSignUpEvent());
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage2()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage3()));
                           },
                         ),
                       ),

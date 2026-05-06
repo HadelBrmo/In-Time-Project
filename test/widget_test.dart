@@ -7,13 +7,29 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:in_time/features/chat/data/datasources/chatRemoteDataSource.dart';
+import 'package:in_time/features/chat/data/repository/chatRepositoryImpl.dart';
+import 'package:in_time/features/chat/domain/usecases/deleteChatUseCase.dart';
+import 'package:in_time/features/chat/domain/usecases/getChatsUseCase.dart';
+import 'package:in_time/features/chat/domain/usecases/searchChatsUseCase.dart';
 
 import 'package:in_time/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    final remoteDataSource = ChatRemoteDataSourceImpl();
+    final chatRepository = ChatRepositoryImpl(remoteDataSource: remoteDataSource);
+
+    final getChatsUseCase = GetChatsUseCase(chatRepository);
+    final deleteChatUseCase = DeleteChatUseCase(chatRepository);
+    final searchChatsUseCase = SearchChatsUseCase(chatRepository);
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(
+      getChatsUseCase: getChatsUseCase,
+      deleteChatUseCase: deleteChatUseCase,
+      searchChatsUseCase: searchChatsUseCase,
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
