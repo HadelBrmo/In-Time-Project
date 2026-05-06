@@ -136,7 +136,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         text: "إرسال للتحقق",
                         width: media.width * 0.7,
                         onPressed: () {
-
+                        Navigator.pushNamed(context, "/homeScreen");
                         },
                       ),
                     ],

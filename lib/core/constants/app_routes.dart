@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_time/features/auth/presentation/pages/sign%20up/sign%20up_page_03.dart';
+import 'package:in_time/features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
@@ -17,6 +18,7 @@ class AppRoutes {
   static const String signUpPage2 = '/signUpPage2';
   static const String signUpPage3 = '/signUpPage3';
   static const String chatListScreen = '/chatListScreen';
+  static const String homeScreen = '/homeScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -46,6 +48,10 @@ class AppRoutes {
 
       case chatListScreen:
         return MaterialPageRoute(builder: (_) =>  ChatListScreen(), settings: settings);
+
+      case homeScreen:
+        return MaterialPageRoute(builder: (_) =>  HomeScreen(), settings: settings);
+
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
