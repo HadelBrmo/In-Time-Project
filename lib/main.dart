@@ -62,6 +62,8 @@ class _MyAppState extends State<MyApp> {
               )..add(LoadChatsEvent()),
             ),
           ],
+
+          //اللغة
           child: MaterialApp(
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
