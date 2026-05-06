@@ -63,7 +63,6 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
 
-          //اللغة
           child: MaterialApp(
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
