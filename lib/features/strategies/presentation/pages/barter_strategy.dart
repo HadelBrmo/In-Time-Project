@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
+import 'package:in_time/features/strategies/presentation/pages/paid_strategy.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/buildLabel.dart';
 import '../../../../core/widgets/customDrawer.dart';
+import '../../../../core/widgets/custom_button.dart';
 import '../../../auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import '../../../auth/presentation/bloc/SignUpBloc/sign up_event.dart';
 import '../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
-import '../widgets/buildActionButton.dart';
 import '../widgets/buildDropdownColumn.dart';
 import '../widgets/build_field_column.dart';
 import '../widgets/build_image_picker_placeholder.dart';
@@ -61,10 +62,16 @@ class _BarterStrategyPageState extends State<BarterStrategyPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ServiceTypeSelector(
+                initialIndex: 0,
                 onTypeChanged: (index) {
-                  setState(() {
-                    selectedType = index;
-                  });
+                  if (index == 2) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PaidServicePage()),
+                    );
+                  } else {
+                    setState(() => selectedType = index);
+                  }
                 },
               ),
               SizedBox(height: media.height * 0.025),
@@ -191,9 +198,10 @@ class _BarterStrategyPageState extends State<BarterStrategyPage> {
               SizedBox(height: media.height * 0.04),
               Row(
                 children: [
-                  Expanded(child: buildActionButton("إرسال", AppColors.primaryColor, Colors.white, media)),
+                  Expanded(child:
+                  CustomButton(text: "ارسال", onPressed: (){}, color: AppColors.primaryColor,)),
                   SizedBox(width: media.width * 0.04),
-                  Expanded(child: buildActionButton("إلغاء", Colors.grey[200]!, Colors.grey[700]!, media)),
+                  Expanded(child: CustomButton(text: "الغاء" ,onPressed: (){}, color: AppColors.greyColor,)),
                 ],
               ),
             ],

@@ -57,7 +57,7 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                 }
-              },
+              }, color: AppColors.primaryColor,
             ),
           ),
         ],

@@ -9,6 +9,7 @@ class CustomButton extends StatelessWidget {
   final double? width;
   final double? height;
   final double? fontSize;
+  final Color color;
 
   const CustomButton({
     super.key,
@@ -18,6 +19,7 @@ class CustomButton extends StatelessWidget {
     this.width,
     this.height,
     this.fontSize,
+    required this.color,
   });
 
   @override
@@ -48,7 +50,7 @@ class CustomButton extends StatelessWidget {
           : ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

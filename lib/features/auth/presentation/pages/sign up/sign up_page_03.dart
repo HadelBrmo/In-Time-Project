@@ -137,7 +137,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         width: media.width * 0.7,
                         onPressed: () {
                         Navigator.pushNamed(context, "/homeScreen");
-                        },
+                        }, color: AppColors.primaryColor,
                       ),
                     ],
                   ),

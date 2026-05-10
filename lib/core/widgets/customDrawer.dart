@@ -20,7 +20,6 @@ class CustomDrawer extends StatelessWidget {
               color:  AppColors.primaryColor,
               borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(50.r),
-                topRight:  Radius.circular(50.r),
               ),
             ),
             child: Column(

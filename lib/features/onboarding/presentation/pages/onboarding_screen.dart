@@ -61,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         curve: Curves.easeInOut,
                       );
                     }
-                  },
+                  }, color: AppColors.primaryColor,
                 ),
                 SizedBox(height: media.height * 0.08),
 

@@ -4,16 +4,27 @@ import '../../../../core/constants/mediaQuery.dart';
 
 class ServiceTypeSelector extends StatefulWidget {
   final Function(int) onTypeChanged;
+  final int initialIndex;
 
-  const ServiceTypeSelector({super.key, required this.onTypeChanged});
+  const ServiceTypeSelector({
+    super.key,
+    required this.onTypeChanged,
+    this.initialIndex = 0,
+  });
 
   @override
   State<ServiceTypeSelector> createState() => _ServiceTypeSelectorState();
 }
 
 class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
-  int selectedType = 0;
+  late int selectedType;
   final List<String> types = ["تبادلية", "تطوعية", "مدفوعة"];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedType = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +44,8 @@ class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
             duration: const Duration(milliseconds: 200),
             margin: EdgeInsets.symmetric(horizontal: media.width * 0.012),
             padding: EdgeInsets.symmetric(
-              horizontal: media.width * 0.05, 
-              vertical: media.height * 0.01
+                horizontal: media.width * 0.05,
+                vertical: media.height * 0.01
             ),
             decoration: BoxDecoration(
               color: isSelected ? AppColors.primaryColor : Colors.grey[100],

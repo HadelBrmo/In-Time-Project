@@ -123,7 +123,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                           onPressed: () {
                             // context.read<SignUpBloc>().add(SubmitSignUpEvent());
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage3()));
-                          },
+                          }, color: AppColors.primaryColor,
                         ),
                       ),
                     ],
