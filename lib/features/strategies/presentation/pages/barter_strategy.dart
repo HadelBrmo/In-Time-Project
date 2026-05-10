@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import 'package:in_time/features/strategies/presentation/pages/paid_strategy.dart';
+import 'package:in_time/features/strategies/presentation/pages/volunteer_strategy.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
@@ -64,13 +65,10 @@ class _BarterStrategyPageState extends State<BarterStrategyPage> {
               ServiceTypeSelector(
                 initialIndex: 0,
                 onTypeChanged: (index) {
-                  if (index == 2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PaidServicePage()),
-                    );
-                  } else {
-                    setState(() => selectedType = index);
+                  if (index == 1) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const VoluntaryServicePage()));
+                  } else if (index == 2) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PaidServicePage()));
                   }
                 },
               ),

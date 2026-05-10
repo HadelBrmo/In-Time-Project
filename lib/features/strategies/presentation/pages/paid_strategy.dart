@@ -9,6 +9,7 @@ import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customAppBar.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/buildLabel.dart';
+import '../../../../core/widgets/customDrawer.dart';
 import '../../../auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import '../../../auth/presentation/bloc/SignUpBloc/sign up_event.dart';
 import '../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
@@ -25,7 +26,6 @@ class PaidServicePage extends StatefulWidget {
 }
 
 class _PaidServicePageState extends State<PaidServicePage> {
-  // المتحكمات (Controllers)
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
@@ -64,6 +64,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
       appBar: CustomAppBar(
           title: Text("انضم لنظام الخدمات المدفوعة", style: TextStyle(fontSize: media.width * 0.045, color: Colors.white))
       ),
+      drawer: const CustomDrawer(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(media.width * 0.04),
         child: Directionality(
