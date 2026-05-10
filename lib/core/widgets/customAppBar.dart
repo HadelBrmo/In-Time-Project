@@ -28,11 +28,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       child: AppBar(
-        title: title,
+        title: DefaultTextStyle(
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          child: title,
+          ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white, size: 24.sp),
+        iconTheme: IconThemeData(color: Colors.white, size: 22.sp),
         leading: leading,
         actions: actions,
       ),

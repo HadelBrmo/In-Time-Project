@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
+import '../../features/strategies/presentation/pages/barter_strategy.dart';
 import '../constants/app_colors.dart';
 
 class AppRoutes {
@@ -19,12 +20,14 @@ class AppRoutes {
   static const String signUpPage3 = '/signUpPage3';
   static const String chatListScreen = '/chatListScreen';
   static const String homeScreen = '/homeScreen';
+  static const String barterStrategyPage = '/BarterStrategyPage';
+
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
         return MaterialPageRoute(
-          builder: (_) =>  SplashPage(),
+          builder: (_) =>  BarterStrategyPage(),
           settings: settings,
         );
 
@@ -51,6 +54,9 @@ class AppRoutes {
 
       case homeScreen:
         return MaterialPageRoute(builder: (_) =>  HomeScreen(), settings: settings);
+
+      case barterStrategyPage:
+        return MaterialPageRoute(builder: (_) =>  BarterStrategyPage(), settings: settings);
 
       default:
         return MaterialPageRoute(

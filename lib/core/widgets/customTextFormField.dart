@@ -10,10 +10,13 @@ class CustomTextFormField extends StatefulWidget {
   final VoidCallback? onTap;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  int? maxLines;
+  final TextInputType keyboardType;
 
-  const CustomTextFormField({
+   CustomTextFormField({
     super.key,
     required this.hintText,
+     this.keyboardType = TextInputType.text,
     this.prefixIcon,
     this.suffixIcon,
     this.isPassword = false,
@@ -21,6 +24,7 @@ class CustomTextFormField extends StatefulWidget {
     this.onTap,
     this.controller,
     this.validator,
+    this.maxLines=1,
   });
 
   @override
@@ -35,7 +39,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: TextFormField(
+        maxLines: widget.maxLines,
         controller: widget.controller,
+        keyboardType: widget.keyboardType,
         obscureText: widget.isPassword ? _obscureText : false,
         validator: widget.validator,
         readOnly: widget.readOnly,
