@@ -27,7 +27,7 @@ class AppRoutes {
     switch (settings.name) {
       case splash:
         return MaterialPageRoute(
-          builder: (_) =>  BarterStrategyPage(),
+          builder: (_) =>  SplashPage(),
           settings: settings,
         );
 

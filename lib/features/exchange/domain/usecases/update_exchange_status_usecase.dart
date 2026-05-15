@@ -1,4 +1,0 @@
-﻿class UpdateExchangeStatusUseCase {}
-
-class UpdateStatusParams {}
-
