@@ -4,41 +4,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
-import 'features/chat/data/datasources/chatRemoteDataSource.dart';
-import 'features/chat/data/repository/chatRepositoryImpl.dart';
-import 'features/chat/domain/usecases/deleteChatUseCase.dart';
-import 'features/chat/domain/usecases/getChatsUseCase.dart';
-import 'features/chat/domain/usecases/searchChatsUseCase.dart';
 import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
+import 'package:in_time/features/strategies/presentation/bloc/services_bloc.dart';
+import 'package:in_time/features/strategies/presentation/bloc/services_event.dart';
+import 'injection_container.dart' as di;
+import 'injection_container.dart';
 
-void main() {
-  final remoteDataSource = ChatRemoteDataSourceImpl();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  final chatRepository = ChatRepositoryImpl(remoteDataSource: remoteDataSource);
+  await di.init();
 
-  final getChatsUseCase = GetChatsUseCase(chatRepository);
-  final deleteChatUseCase = DeleteChatUseCase(chatRepository);
-  final searchChatsUseCase = SearchChatsUseCase(chatRepository);
-
-  runApp(MyApp(
-    getChatsUseCase: getChatsUseCase,
-    deleteChatUseCase: deleteChatUseCase,
-    searchChatsUseCase: searchChatsUseCase,
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final GetChatsUseCase getChatsUseCase;
-  final DeleteChatUseCase deleteChatUseCase;
-  final SearchChatsUseCase searchChatsUseCase;
-
-  const MyApp({
-    super.key,
-    required this.getChatsUseCase,
-    required this.deleteChatUseCase,
-    required this.searchChatsUseCase,
-  });
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -55,11 +37,10 @@ class _MyAppState extends State<MyApp> {
         return MultiBlocProvider(
           providers: [
             BlocProvider<ChatBloc>(
-              create: (context) => ChatBloc(
-                getChatsUseCase: widget.getChatsUseCase,
-                deleteChatUseCase: widget.deleteChatUseCase,
-                searchChatsUseCase: widget.searchChatsUseCase,
-              )..add(LoadChatsEvent()),
+              create: (context) => sl<ChatBloc>()..add(LoadChatsEvent()),
+            ),
+            BlocProvider<ServicesBloc>(
+              create: (context) => sl<ServicesBloc>(),
             ),
           ],
           child: MaterialApp(

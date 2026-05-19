@@ -48,6 +48,9 @@ dependencies:
   flutter_localization: ^0.4.0
   flutter_intl_phone_field: ^0.0.7
   dotted_border: ^3.1.0
+  get_it: ^9.2.1
+  dartz: ^0.10.1
+  dio: ^5.9.2
 
 
 

@@ -12,23 +12,15 @@ import 'package:in_time/features/chat/data/repository/chatRepositoryImpl.dart';
 import 'package:in_time/features/chat/domain/usecases/deleteChatUseCase.dart';
 import 'package:in_time/features/chat/domain/usecases/getChatsUseCase.dart';
 import 'package:in_time/features/chat/domain/usecases/searchChatsUseCase.dart';
-
+import 'package:in_time/injection_container.dart' as di;
 import 'package:in_time/main.dart';
 
-void main() {
+void main() async{
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    final remoteDataSource = ChatRemoteDataSourceImpl();
-    final chatRepository = ChatRepositoryImpl(remoteDataSource: remoteDataSource);
 
-    final getChatsUseCase = GetChatsUseCase(chatRepository);
-    final deleteChatUseCase = DeleteChatUseCase(chatRepository);
-    final searchChatsUseCase = SearchChatsUseCase(chatRepository);
-
-    // Build our app and trigger a frame.
+    await di.init();
     await tester.pumpWidget(MyApp(
-      getChatsUseCase: getChatsUseCase,
-      deleteChatUseCase: deleteChatUseCase,
-      searchChatsUseCase: searchChatsUseCase,
+
     ));
 
     // Verify that our counter starts at 0.
