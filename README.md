@@ -94,6 +94,7 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <img src="screenShots/Onboarding & Authentication/create an account 1.png" width="30%" />
 <img src="screenShots/Onboarding & Authentication/create an account 2.png" width="30%" />
 <img src="screenShots/Onboarding & Authentication/create an account 3.png" width="30%" />
+<img src="screenShots/Onboarding & Authentication/otp.png" width="30%" />
 
 ### 🏠 Home & Services
 <img src="screenShots/Home & Services/home.png" width="30%" />
