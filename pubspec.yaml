@@ -89,6 +89,7 @@ flutter:
     - assets/images/illustrations/
     - assets/images/rewards/
     - assets/images/prizes/
+    - assets/images/complaints/
     - assets/icons/logo.png
     - assets/icons/Logo_01.png
 

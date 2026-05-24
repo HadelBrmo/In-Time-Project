@@ -1,0 +1,82 @@
+import '../../domain/entity/service_entity.dart'; 
+
+abstract class ServiceStrategy {
+  ServiceEntity prepareService({
+    required String title,
+    required String description,
+    required String categoryId,
+    required String hours,
+    required String price,
+    required String? paymentUnit,
+    required String locationAddress,
+    required double? lat,
+    required double? lng,
+    required String meetingType,
+  });
+}
+
+class PaidServiceStrategy implements ServiceStrategy {
+  @override
+  ServiceEntity prepareService({
+    required String title, required String description, required String categoryId,
+    required String hours, required String price, required String? paymentUnit,
+    required String locationAddress, required double? lat, required double? lng, required String meetingType,
+  }) {
+    return ServiceEntity(
+      title: title, 
+      description: description, 
+      categoryId: categoryId,
+      costAmount: hours,
+      unitId: paymentUnit,
+      price: price,
+      locationAddress: locationAddress, 
+      locationLat: lat ?? 33.5138, 
+      locationLng: lng ?? 36.2765,
+      meetingType: meetingType,
+    );
+  }
+}
+
+class BarterServiceStrategy implements ServiceStrategy {
+  @override
+  ServiceEntity prepareService({
+    required String title, required String description, required String categoryId,
+    required String hours, required String price, required String? paymentUnit,
+    required String locationAddress, required double? lat, required double? lng, required String meetingType,
+  }) {
+    return ServiceEntity(
+      title: title, 
+      description: description, 
+      categoryId: categoryId,
+      costAmount: hours,
+      unitId: "barter_unit",
+      price: "0",
+      locationAddress: locationAddress, 
+      locationLat: lat ?? 33.5138, 
+      locationLng: lng ?? 36.2765,
+      meetingType: meetingType,
+    );
+  }
+}
+
+class VolunteerServiceStrategy implements ServiceStrategy {
+  @override
+  ServiceEntity prepareService({
+    required String title, required String description, required String categoryId,
+    required String hours, required String price, required String? paymentUnit,
+    required String locationAddress, required double? lat, required double? lng, required String meetingType,
+  }) {
+    return ServiceEntity(
+      title: title, 
+      description: description, 
+      categoryId: categoryId,
+      costAmount: hours,
+      unitId: "1",
+      price: "0",
+      locationAddress: locationAddress, 
+      locationLat: lat ?? 33.5138, 
+      locationLng: lng ?? 36.2765,
+      meetingType: meetingType,
+    );
+  }
+}

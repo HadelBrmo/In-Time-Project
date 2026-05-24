@@ -3,7 +3,6 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:in_time/core/constants/app_strings.dart';
-import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/service_model.dart';
 
@@ -41,7 +40,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
         );
       }
       final response = await dio.post(
-        'https://your-backend-api.com/api/servings/add-paid',
+        ApiStringConstants.addServiceUrl,
         data: formData,
       );
 

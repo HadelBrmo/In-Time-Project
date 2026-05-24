@@ -65,7 +65,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-        Navigator.pushNamed(context, "/barterStrategyPage");
+        Navigator.pushNamed(context, "/paidStrategyPage");
         },
         backgroundColor: AppColors.primaryColor,
         elevation: 4,

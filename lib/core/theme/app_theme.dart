@@ -14,7 +14,7 @@ class AppTheme {
     buttonTheme: ButtonThemeData(buttonColor: AppColors.primaryColor),
     textTheme: TextTheme(
       bodySmall: TextStyle(
-        fontFamily: 'ArchivoBlack',  // ✅ تغيير من Ubuntu إلى ArchivoBlack
+        fontFamily: 'ArchivoBlack',
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: AppColors.primaryColor,

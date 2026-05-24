@@ -23,5 +23,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<UpdateGenderEvent>((event, emit) {
       emit(state.copyWith(gender: event.gender));
     });
+
+    on<UpdateBirthDateEvent>((event, emit) {
+      emit(state.copyWith(birthDate: event.birthDate));
+    });
   }
 }

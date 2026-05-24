@@ -32,7 +32,7 @@ class CustomErrorView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/submit_complaint.png',
+              'assets/images/complaints/submit_complaint.png',
               height: media.height * 0.28,
             ),
             SizedBox(height: media.height * 0.03),

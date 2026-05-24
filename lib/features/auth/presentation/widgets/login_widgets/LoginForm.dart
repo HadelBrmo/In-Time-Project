@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../bloc/loginBloc/login_bloc.dart';
+import '../../bloc/loginBloc/login_event.dart';
+import '../../bloc/loginBloc/login_state.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -13,55 +17,102 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   bool isRememberMe = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
 
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("البريد الإلكتروني",
-              style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
-          SizedBox(height: media.height * 0.01),
-          CustomTextFormField(
-            hintText: "ادخل بريدك الإلكتروني",
-            validator: (value) => value!.isEmpty ? "يرجى إدخال البريد" : null,
-          ),
-
-          SizedBox(height: media.height * 0.02),
-
-          Text("كلمة المرور",
-              style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
-          SizedBox(height: media.height * 0.01),
-          CustomTextFormField(
-            hintText: "ادخل كلمة المرور",
-            isPassword: true,
-            validator: (value) => value!.length < 6 ? "كلمة المرور ضعيفة" : null,
-          ),
-
-          SizedBox(height: media.height * 0.02),
-
-          _buildRememberMeRow(),
-
-          SizedBox(height: media.height * 0.04),
-
-          Center(
-            child: CustomButton(
-              width: media.width * 0.7,
-              height: media.height * 0.07,
-              text: "تسجيل الدخول",
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                }
-              }, color: AppColors.primaryColor,
+    return BlocConsumer<LoginBloc, LoginState>(
+      listener: (context, state) {
+        if (state is LoginSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("تم تسجيل الدخول بنجاح!"),
+              backgroundColor: Colors.green,
             ),
+          );
+          Navigator.pushReplacementNamed(context, '/homePage');
+        }
+
+        if (state is LoginError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("البريد الإلكتروني",
+                  style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
+              SizedBox(height: media.height * 0.01),
+              CustomTextFormField(
+                controller: _emailController,
+                hintText: "ادخل بريدك الإلكتروني",
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) => value == null || value.trim().isEmpty ? "يرجى إدخال البريد" : null,
+              ),
+
+              SizedBox(height: media.height * 0.02),
+
+              Text("كلمة المرور",
+                  style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
+              SizedBox(height: media.height * 0.01),
+              CustomTextFormField(
+                controller: _passwordController,
+                hintText: "ادخل كلمة المرور",
+                isPassword: true,
+                validator: (value) => value == null || value.length < 6 ? "كلمة المرور ضعيفة" : null,
+              ),
+
+              SizedBox(height: media.height * 0.02),
+
+              _buildRememberMeRow(),
+
+              SizedBox(height: media.height * 0.04),
+
+              Center(
+                child: state is LoginLoading
+                    ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor))
+                    : CustomButton(
+                  width: media.width * 0.7,
+                  height: media.height * 0.07,
+                  text: "تسجيل الدخول",
+                  color: AppColors.primaryColor,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.read<LoginBloc>().add(
+                        LoginSubmittedEvent(
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -71,7 +122,7 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         TextButton(
           onPressed: () {},
-          child: Text("نسيت كلمة المرور؟", style: TextStyle(color: AppColors.primaryColor)),
+          child: const Text("نسيت كلمة المرور؟", style: TextStyle(color: AppColors.primaryColor)),
         ),
         Row(
           children: [
@@ -83,10 +134,9 @@ class _LoginFormState extends State<LoginForm> {
               side: BorderSide(color: AppColors.greyColor.withOpacity(0.5), width: 1.5),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
             ),
-            Text("تذكرني", style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+            const Text("تذكرني", style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
           ],
         ),
-
       ],
     );
   }

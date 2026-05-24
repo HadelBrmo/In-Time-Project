@@ -12,7 +12,7 @@ Widget buildGenderDropdown(BuildContext context, String selectedGender) {
     decoration: BoxDecoration(
       color: AppColors.whiteColor,
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: Colors.grey.withOpacity(0.3)),
+      border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
     ),
     child: DropdownButtonHideUnderline(
       child: DropdownButton<String>(

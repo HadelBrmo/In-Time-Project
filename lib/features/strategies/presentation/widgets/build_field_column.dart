@@ -20,6 +20,7 @@ Widget buildFieldColumn(String label, String hint, {
   TextEditingController? controller,
   TextEditingController? startTimeController,
   TextEditingController? endTimeController,
+  String? Function(String?)? validator,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,19 +43,20 @@ Widget buildFieldColumn(String label, String hint, {
           endTimeController: endTimeController,
         )
       else if (isDate)
-        CustomDatePickerField(
-          controller: controller ?? TextEditingController(),
-          label: label,
-          hintText: hint,
-          onDateSelected: onDateSelected ?? (val) {},
-        )
-      else
-        CustomTextFormField(
-          keyboardType: keyboardType ?? TextInputType.text,
-          controller: controller,
-          hintText: hint,
-          suffixIcon: icon != null ? Icon(icon, color: AppColors.primaryColor) : null,
-        ),
+          CustomDatePickerField(
+            controller: controller ?? TextEditingController(),
+            label: label,
+            hintText: hint,
+            onDateSelected: onDateSelected ?? (val) {},
+          )
+        else
+          CustomTextFormField(
+            keyboardType: keyboardType ?? TextInputType.text,
+            controller: controller,
+            hintText: hint,
+            validator: validator,
+            suffixIcon: icon != null ? Icon(icon, color: AppColors.primaryColor) : null,
+          ),
     ],
   );
 }
