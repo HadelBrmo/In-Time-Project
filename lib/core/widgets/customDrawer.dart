@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/app_routes.dart';
 
 import '../../features/home/presentation/widgets/drawItem.dart';
 
@@ -59,7 +60,13 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 drawerItem(icon: Icons.settings_outlined, text: "الإعدادات"),
                 drawerItem(icon: Icons.brightness_6_outlined, text: "المظهر"),
-                drawerItem(icon: Icons.chat_bubble_outline, text: "شكوى"),
+                drawerItem(
+                                  icon: Icons.chat_bubble_outline,
+                                  text: "شكوى",
+                                  onTap: () {
+                                  Navigator.pop(context); 
+                                  Navigator.pushNamed(context,AppRoutes.submitComplaintPage,);},
+),
                 drawerItem(icon: Icons.bookmark_border, text: "المحفوظة"),
                 drawerItem(icon: Icons.person_add_alt, text: "دعوة الأصدقاء"),
                 drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
