@@ -7,6 +7,7 @@ class CustomDatePickerField extends StatelessWidget {
   final String label;
   final String hintText;
   final Function(String) onDateSelected;
+  final String? Function(String?)? validator;
 
   const CustomDatePickerField({
     super.key,
@@ -14,6 +15,7 @@ class CustomDatePickerField extends StatelessWidget {
     required this.label,
     required this.hintText,
     required this.onDateSelected,
+    this.validator,
   });
 
   Future<void> selectDate(BuildContext context) async {
@@ -66,6 +68,7 @@ class CustomDatePickerField extends StatelessWidget {
           readOnly: true,
           textAlign: TextAlign.right,
           style: const TextStyle(color: Colors.black, fontSize: 16),
+          validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: const TextStyle(color: Colors.grey),
@@ -73,11 +76,11 @@ class CustomDatePickerField extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+              borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
             ),
           ),
           onTap: () => selectDate(context),

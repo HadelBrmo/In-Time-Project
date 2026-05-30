@@ -1,3 +1,4 @@
+import '../../../../core/utils/snackbar_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,17 +80,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatLoaded && state.deletedChatId != null) {
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('تم حذف المحادثة'),
-                action: SnackBarAction(
-                  label: 'تراجع',
-                  onPressed: () {
-                    context.read<ChatBloc>().add(UndoDeleteEvent());
-                  },
-                ),
-                duration: const Duration(seconds: 4),
+            SnackBarUtils.showSuccess(
+              context,
+              'تم حذف المحادثة',
+              action: SnackBarAction(
+                label: 'تراجع',
+                onPressed: () {
+                  context.read<ChatBloc>().add(UndoDeleteEvent());
+                },
               ),
             );
           }

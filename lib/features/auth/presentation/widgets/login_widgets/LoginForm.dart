@@ -1,3 +1,4 @@
+import '../../../../../core/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
@@ -37,22 +38,12 @@ class _LoginFormState extends State<LoginForm> {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("تم تسجيل الدخول بنجاح!"),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarUtils.showSuccess(context, "تم تسجيل الدخول بنجاح!");
           Navigator.pushReplacementNamed(context, '/homePage');
         }
 
         if (state is LoginError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
+          SnackBarUtils.showError(context, state.errorMessage);
         }
       },
       builder: (context, state) {

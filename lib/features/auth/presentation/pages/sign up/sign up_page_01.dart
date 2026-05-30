@@ -6,6 +6,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../core/utils/validators.dart';
 import '../../bloc/SignUpBloc/sign up_bloc.dart';
 import '../../bloc/SignUpBloc/sign up_event.dart';
 import '../../bloc/SignUpBloc/sign up_state.dart';
@@ -23,6 +24,7 @@ class SignUpPage1 extends StatefulWidget {
 }
 
 class _SignUpPage1State extends State<SignUpPage1> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _jobController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -75,104 +77,87 @@ class _SignUpPage1State extends State<SignUpPage1> {
                       ),
                       child: Directionality(
                           textDirection: TextDirection.rtl,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            buildLabel("الاسم الثلاثي"),
-                            CustomTextFormField(
-                              controller: _nameController,
-                              hintText: "ادخل اسمك الثلاثي",
-                            ),
-                            SizedBox(height: media.height * 0.02),
-                            buildLabel("الوظيفة الحالية"),
-                            CustomTextFormField(
-                              controller: _jobController,
-                              hintText: "ادخل وظيفتك الحالية",
-                            ),
-                            SizedBox(height: media.height * 0.02),
-                            buildLabel("العنوان"),
-                            CustomTextFormField(
-                              controller: _addressController,
-                              hintText: "حدد عنوانك من الخريطة",
-                              readOnly: true,
-                              suffixIcon: Icon(Icons.location_on, color: AppColors.primaryColor),
-                              onTap: () async {
-                                final result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const LocationPickerPage()),
-                                );
-
-                                if (result != null && result is Map && mounted) {
-
-                                  context.read<SignUpBloc>().add(
-
-                                    UpdateLocationEvent(
-
-                                      result['position'],
-
-                                      result['address'],
-
-                                    ),
-
-                                  );
-
-                                }
-
-                              },
-
-                            ),
-                            SizedBox(height: media.height * 0.02),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      buildLabel("الجنس"),
-                                      BlocBuilder<SignUpBloc, SignUpState>(
-                                        builder: (context, state) =>
-                                            buildGenderDropdown(context, state.gender),
-                                      ),
-
-                                    ],
-
-                                  ),
-
-                                ),
-                                SizedBox(width: media.width * 0.04),
-                                Expanded(
-                                  child: CustomDatePickerField(
-                                    controller: _birthDateController,
-                                    label: "تاريخ الميلاد",
-                                    hintText: "يوم/شهر/سنة",
-                                    onDateSelected: (date) {
-                                      context.read<SignUpBloc>().add(UpdateBirthDateEvent(date));
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: media.height * 0.05),
-                            Center(
-                              child: CustomButton(
-                                text: "التالي",
-                                width: media.width * 0.65,
-                                height: 55,
-                                fontSize: 18,
-                                onPressed: () {
-                                 // context.read<SignUpBloc>().add(SubmitSignUpEvent());
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPage2()));
-                                }, color: AppColors.primaryColor,
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              buildLabel("الاسم الثلاثي"),
+                              CustomTextFormField(
+                                controller: _nameController,
+                                hintText: "ادخل اسمك الثلاثي",
+                                validator: Validators.validateFullName,
                               ),
-                            ),
-
-                          ],
-
+                              SizedBox(height: media.height * 0.02),
+                              buildLabel("الوظيفة الحالية"),
+                              CustomTextFormField(
+                                controller: _jobController,
+                                hintText: "ادخل وظيفتك الحالية",
+                                validator: (value) => Validators.validateRequired(value, "الوظيفة الحالية"),
+                              ),
+                              SizedBox(height: media.height * 0.02),
+                              buildLabel("العنوان"),
+                              CustomTextFormField(
+                                controller: _addressController,
+                                hintText: "حدد عنوانك الحالي ",
+                                validator: (value) => Validators.validateRequired(value, "العنوان"),
+                              ),
+                              SizedBox(height: media.height * 0.02),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        buildLabel("الجنس"),
+                                        BlocBuilder<SignUpBloc, SignUpState>(
+                                          builder: (context, state) =>
+                                              buildGenderDropdown(context, state.gender),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: media.width * 0.04),
+                                  Expanded(
+                                    child: CustomDatePickerField(
+                                      controller: _birthDateController,
+                                      label: "تاريخ الميلاد",
+                                      hintText: "يوم/شهر/سنة",
+                                      validator: (value) => Validators.validateRequired(value, "تاريخ الميلاد"),
+                                      onDateSelected: (date) {
+                                        context.read<SignUpBloc>().add(UpdateBirthDateEvent(date));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: media.height * 0.05),
+                              Center(
+                                child: CustomButton(
+                                  text: "التالي",
+                                  width: media.width * 0.65,
+                                  height: 55,
+                                  fontSize: 18,
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      context.read<SignUpBloc>().add(
+                                        UpdateSignUpFieldsEvent(
+                                          fullName: _nameController.text,
+                                          currentJob: _jobController.text,
+                                          address: _addressController.text,
+                                        ),
+                                      );
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpPage2()));
+                                    }
+                                  }, color: AppColors.primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-
                     ),
-
                   ),
                   Positioned(
                     top: media.height * 0.15,

@@ -1,4 +1,5 @@
 ﻿// features/auth/data/repositories/auth_repository_impl.dart
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
@@ -40,6 +41,43 @@ class AuthRepositoryImpl implements AuthRepository {
       }
     } catch (e) {
       throw Exception("حدث خطأ في الاتصال: $e");
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> register({
+    required String fullName,
+    required String email,
+    required String password,
+    required String phone,
+    required String otp,
+    required String gender,
+    required String currentJob,
+    required String address,
+    required String birthDate,
+    File? profilePicture,
+  }) async {
+    try {
+      await remoteDataSource.register(
+        fullName: fullName,
+        email: email,
+        password: password,
+        phone: phone,
+        otp: otp,
+        gender: gender,
+        currentJob: currentJob,
+        address: address,
+        birthDate: birthDate,
+        profilePicture: profilePicture,
+      );
+      return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(
+        statusCode: e.statusCode,
+        message: e.message,
+      ));
+    } catch (e) {
+      return Left(ServerFailure() as Failure);
     }
   }
 }

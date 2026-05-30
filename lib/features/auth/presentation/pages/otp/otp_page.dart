@@ -1,3 +1,4 @@
+import '../../../../../core/utils/snackbar_utils.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,8 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../injection_container.dart';
+import '../../bloc/SignUpBloc/sign up_bloc.dart';
+import '../../bloc/SignUpBloc/sign up_event.dart';
 import '../../bloc/otpBloc/otpEvent.dart';
 import '../../bloc/otpBloc/otpState.dart';
 import '../../bloc/otpBloc/otp_bloc.dart';
@@ -93,20 +96,10 @@ class _OtpPageState extends State<OtpPage> {
           listener: (context, state) {
             if (state.status == OtpStatus.success) {
               _startTimer();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("تم إعادة إرسال رمز التحقق بنجاح!"),
-                  backgroundColor: Colors.green,
-                ),
-              );
+              SnackBarUtils.showSuccess(context, "تم إعادة إرسال رمز التحقق بنجاح!");
             }
             if (state.status == OtpStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("عذراً حدث خطأ، يرجى المحاولة لاحقاً"),
-                  backgroundColor: Colors.redAccent,
-                ),
-              );
+              SnackBarUtils.showError(context, "عذراً حدث خطأ، يرجى المحاولة لاحقاً");
             }
           },
           builder: (context, state) {
@@ -255,15 +248,14 @@ class _OtpPageState extends State<OtpPage> {
                         onPressed: () {
                           String otpCode = _getCompleteOtp();
                           if (otpCode.length < 6) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("يرجى إدخال الرمز المكون من 6 أرقام كاملاً"),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
+                            SnackBarUtils.showWarning(context, "يرجى إدخال الرمز المكون من 6 أرقام كاملاً");
                             return;
                           }
                           print("OTP Verified successfully: $otpCode");
+
+                          context.read<SignUpBloc>().add(
+                                UpdateSignUpFieldsEvent(otp: otpCode, email: widget.email),
+                              );
 
                           Navigator.push(
                             context,

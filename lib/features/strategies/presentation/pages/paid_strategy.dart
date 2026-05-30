@@ -1,3 +1,4 @@
+import 'package:in_time/core/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -135,28 +136,21 @@ class _PaidServicePageState extends State<PaidServicePage> {
       body: BlocConsumer<ServicesBloc, ServicesState>(
         listener: (context, state) {
           if (state is AddServiceSuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("تمت إضافة الخدمة بنجاح!"),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarUtils.showSuccess(context, "تمت إضافة الخدمة بنجاح!");
             Navigator.pop(context);
           }
 
           if (state is AddServiceErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage),
-                backgroundColor: Colors.redAccent,
-                duration: const Duration(seconds: 2),
-                action: SnackBarAction(
-                  label: "إعادة المحاولة",
-                  textColor: Colors.white,
-                  onPressed: () {
-                    _submitServiceForm();
-                  },
-                ),
+            SnackBarUtils.showError(
+              context,
+              state.errorMessage,
+              duration: const Duration(seconds: 2),
+              action: SnackBarAction(
+                label: "إعادة المحاولة",
+                textColor: Colors.white,
+                onPressed: () {
+                  _submitServiceForm();
+                },
               ),
             );
           }

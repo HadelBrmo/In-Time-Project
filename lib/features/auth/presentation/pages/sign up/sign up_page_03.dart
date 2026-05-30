@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../../../core/constants/app_colors.dart';
@@ -136,8 +137,9 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         text: "إرسال للتحقق",
                         width: media.width * 0.7,
                         onPressed: () {
-                        Navigator.pushNamed(context, "/homeScreen");
-                        }, color: AppColors.primaryColor,
+                          Navigator.pushNamed(context, "/homeScreen");
+                        },
+                        color: AppColors.primaryColor,
                       ),
                     ],
                   ),

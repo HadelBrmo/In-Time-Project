@@ -6,6 +6,8 @@ import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
+import 'package:in_time/features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
+import 'package:in_time/features/auth/presentation/bloc/loginBloc/login_bloc.dart';
 import 'package:in_time/features/strategies/presentation/bloc/services_bloc.dart';
 import 'package:in_time/features/strategies/presentation/bloc/services_event.dart';
 import 'injection_container.dart' as di;
@@ -41,6 +43,12 @@ class _MyAppState extends State<MyApp> {
             ),
             BlocProvider<ServicesBloc>(
               create: (context) => sl<ServicesBloc>(),
+            ),
+            BlocProvider<LoginBloc>(
+              create: (context) => sl<LoginBloc>(),
+            ),
+            BlocProvider<SignUpBloc>(
+              create: (context) => sl<SignUpBloc>(),
             ),
           ],
           child: MaterialApp(

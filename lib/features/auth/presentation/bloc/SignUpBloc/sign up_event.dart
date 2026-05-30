@@ -34,32 +34,31 @@ class UpdateGenderEvent extends SignUpEvent {
   List<Object?> get props => [gender];
 }
 
-class SignUpSubmittedEvent extends SignUpEvent {
-  final String fullName;
-  final String email;
-  final String password;
-  final String phone;
-  final String otp;
-  final String gender;
-  final String currentJob;
-  final String address;
-  final String birthDate;
+class UpdateSignUpFieldsEvent extends SignUpEvent {
+  final String? fullName;
+  final String? currentJob;
+  final String? address;
+  final String? email;
+  final String? phone;
+  final String? password;
+  final String? confirmPassword;
+  final String? otp;
 
-  SignUpSubmittedEvent({
-    required this.fullName,
-    required this.email,
-    required this.password,
-    required this.phone,
-    required this.otp,
-    required this.gender,
-    required this.currentJob,
-    required this.address,
-    required this.birthDate,
+  const UpdateSignUpFieldsEvent({
+    this.fullName,
+    this.currentJob,
+    this.address,
+    this.email,
+    this.phone,
+    this.password,
+    this.confirmPassword,
+    this.otp,
   });
+
+  @override
+  List<Object?> get props => [fullName, currentJob, address, email, phone, password, confirmPassword, otp];
 }
 
-class SendOtpRequestedEvent extends SignUpEvent {
-  final String email;
-  const SendOtpRequestedEvent({required this.email});
+class SignUpSubmittedEvent extends SignUpEvent {
+  const SignUpSubmittedEvent();
 }
-
