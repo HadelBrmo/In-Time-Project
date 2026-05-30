@@ -11,6 +11,7 @@ import '../../features/strategies/presentation/pages/barter_strategy.dart';
 import '../../features/strategies/presentation/pages/paid_strategy.dart';
 import '../constants/app_colors.dart';
 import '../widgets/customBottomNavBar.dart';
+import '../../features/complaints/presentation/pages/submit_complaint_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String chatListScreen = '/chatListScreen';
   static const String homeScreen = '/homeScreen';
   static const String paidStrategyPage = '/paidStrategyPage';
+  static const String submitComplaintPage = '/submitComplaintPage';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -59,6 +61,12 @@ class AppRoutes {
 
       case paidStrategyPage:
         return MaterialPageRoute(builder: (_) =>  PaidServicePage(), settings: settings);
+
+        case submitComplaintPage:
+  return MaterialPageRoute(
+    builder: (_) => const SubmitComplaintPage(),
+    settings: settings,
+  );
 
       default:
         return MaterialPageRoute(
