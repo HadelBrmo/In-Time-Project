@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
-
 import '../../features/home/presentation/pages/home_screen.dart';
+import 'package:in_time/features/profile/presentation/pages/profile_page.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -15,7 +15,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   int _currentIndex = 3;
 
   final List<Widget> _screens = [
-    const Center(child: Text("صفحة الملف الشخصي")),
+    const ProfilePage(),
     const Center(child: Text("صفحة لوحة الشرف")),
     const Center(child: Text("صفحة ساعاتي")),
     const HomeScreen(),
