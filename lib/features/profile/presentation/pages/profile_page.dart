@@ -6,6 +6,7 @@ import 'package:in_time/core/widgets/customDrawer.dart';
 import 'package:in_time/features/profile/presentation/widgets/profile_header.dart';
 import '../widgets/profile_info_row.dart';
 import '../widgets/portfolio_action_button.dart';
+import 'package:in_time/features/profile/presentation/pages/edit_profile_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -27,7 +28,14 @@ class ProfilePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+            Navigator.push(
+              context,
+               MaterialPageRoute(
+                 builder: (_) => const EditProfilePage(),
+    ),
+  );
+},
             icon: const Icon(
               Icons.edit_outlined,
             ),
