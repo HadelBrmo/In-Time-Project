@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/mediaQuery.dart'; // استيراد الـ MediaQuery المساعد
 import 'package:in_time/core/widgets/buildLabel.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import 'package:in_time/core/widgets/custom_button.dart';
@@ -10,172 +11,147 @@ class EditProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:AppColors.whiteColor,
+    final media = MediaQueryHelper(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
+    final backgroundColor = isDarkMode ? Theme.of(context).scaffoldBackgroundColor : AppColors.whiteColor;
+    final avatarBgColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+    final shadowColor = isDarkMode ? Colors.black.withOpacity(0.3) : AppColors.blackColor.withOpacity(.04);
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: CustomAppBar(
         title: const Text(
           'تعديل الملف الشخصي',
-          style: TextStyle(
-            color: AppColors.whiteColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-          ),
+
         ),
       ),
-
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 20,
+        padding: EdgeInsets.symmetric(
+          horizontal: media.width * 0.06,
+          vertical: media.height * 0.02,
         ),
         child: Column(
           children: [
-
-            const SizedBox(height: 10),
-
+            SizedBox(height: media.height * 0.01),
             Center(
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-
                   Container(
-                    width: 230,
-                    height: 230,
+                    width: media.width * 0.45,
+                    height: media.width * 0.45,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.whiteColor,
+                      color: avatarBgColor,
                       border: Border.all(
                         color: AppColors.greyColor.withOpacity(.25),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.blackColor.withOpacity(.04),
+                          color: shadowColor,
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.person,
-                      size: 120,
+                      size: media.width * 0.2,
                       color: AppColors.primaryColor,
                     ),
                   ),
-  
-                    Positioned(
-                 bottom: 25,
-                 right: 25,
-                 child: InkWell(
-                 onTap: () {
-      
-                     },
-    borderRadius: BorderRadius.circular(25),
-    child: Container(
-      width: 45,
-      height: 45,
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.blackColor.withOpacity(0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.camera_alt,
-        color: AppColors.whiteColor,
-        size: 22,
-      ),
-    ),
-  ),
-),
-                  
+                  Positioned(
+                    bottom: media.height * 0.01,
+                    right: media.width * 0.04,
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(25),
+                      child: Container(
+                        width: media.width * 0.11,
+                        height: media.width * 0.11,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: AppColors.whiteColor,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 40),
-
+            SizedBox(height: media.height * 0.04),
             Align(
               alignment: Alignment.centerRight,
               child: buildLabel('الاسم الثلاثي'),
             ),
-
             CustomTextFormField(
               hintText: 'براءة علي الأحمد',
               prefixIcon: Icons.person_add_alt_1,
             ),
-
-            const SizedBox(height: 25),
-
+            SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
               child: buildLabel('الوظيفة الحالية'),
             ),
-
             CustomTextFormField(
               hintText: 'هندسة معلوماتية',
               prefixIcon: Icons.work,
             ),
-
-            const SizedBox(height: 25),
-
+            SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
               child: buildLabel('العنوان'),
             ),
-
             CustomTextFormField(
               hintText: 'ريف دمشق - جديدة عرطوز',
               prefixIcon: Icons.location_on,
             ),
-
-            const SizedBox(height: 25),
-
+            SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
               child: buildLabel('الجنس'),
             ),
-
             CustomTextFormField(
               hintText: 'أنثى',
               prefixIcon: Icons.wc,
             ),
-
-            const SizedBox(height: 25),
-
+            SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
               child: buildLabel('تاريخ الميلاد'),
             ),
-
             CustomTextFormField(
               hintText: '2003 / 02 / 07',
               prefixIcon: Icons.calendar_month,
             ),
-
-            const SizedBox(height: 50),
-
+            SizedBox(height: media.height * 0.05),
             Center(
               child: CustomButton(
                 text: 'حفظ',
                 color: AppColors.primaryColor,
-                width: 220,
-                height: 60,
+                width: media.width * 0.55,
+                height: media.height * 0.07,
                 fontSize: 18,
                 onPressed: () {},
               ),
             ),
-
-            const SizedBox(height: 30),
+            SizedBox(height: media.height * 0.03),
           ],
         ),
       ),
     );
   }
 }
-

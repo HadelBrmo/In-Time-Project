@@ -7,6 +7,7 @@ import 'package:in_time/injection_container.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -58,7 +59,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      const Center(child: Text("صفحة الملف الشخصي")),
+      ProfilePage(),
       const Center(child: Text("صفحة لوحة الشرف")),
       const Center(child: Text("صفحة ساعاتي")),
       const HomeScreen(),

@@ -1,6 +1,6 @@
-﻿import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/mediaQuery.dart'; // استيراد الـ MediaQuery المساعد
 import 'package:in_time/core/widgets/customAppBar.dart';
 import 'package:in_time/core/widgets/customDrawer.dart';
 import 'package:in_time/features/profile/presentation/widgets/profile_header.dart';
@@ -13,189 +13,172 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      drawer: const CustomDrawer(),
+    final media = MediaQueryHelper(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
+    final backgroundColor = isDarkMode ? Theme.of(context).scaffoldBackgroundColor : AppColors.whiteColor;
+    final containerColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+    final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
+    final shadowColor = isDarkMode ? Colors.black.withOpacity(0.3) : AppColors.blackColor.withOpacity(0.08);
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      drawer: const CustomDrawer(),
       appBar: CustomAppBar(
         title: const Text(
           'الملف الشخصي',
-          style: TextStyle(
-            color: AppColors.whiteColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-          ),
         ),
         actions: [
           IconButton(
             onPressed: () {
-            Navigator.push(
-              context,
-               MaterialPageRoute(
-                 builder: (_) => const EditProfilePage(),
-    ),
-  );
-},
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const EditProfilePage(),
+                ),
+              );
+            },
             icon: const Icon(
               Icons.edit_outlined,
+              color: AppColors.whiteColor,
             ),
           ),
         ],
       ),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
-
-            const SizedBox(height: 20),
-
+            SizedBox(height: media.height * 0.02),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
+              padding: EdgeInsets.symmetric(
+                horizontal: media.width * 0.05,
               ),
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.topCenter,
                 children: [
-
                   Container(
                     width: double.infinity,
-                    margin: const EdgeInsets.only(top: 75),
-                    padding: const EdgeInsets.fromLTRB(
-                      24,
-                      95,
-                      24,
-                      24,
+                    margin: EdgeInsets.only(top: media.height * 0.09),
+                    padding: EdgeInsets.fromLTRB(
+                      media.width * 0.06,
+                      media.height * 0.11,
+                      media.width * 0.06,
+                      media.height * 0.03,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.blackColor.withOpacity(0.08),
+                          color: shadowColor,
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-
-                    child: const Column(
+                    child: Column(
                       children: [
-
                         Text(
                           'براءة علي الأحمد',
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.blackColor,
+                            color: textColor,
                           ),
                         ),
-
-                        SizedBox(height: 30),
-
-                        ProfileInfoRow(
+                        SizedBox(height: media.height * 0.03),
+                        const ProfileInfoRow(
                           icon: Icons.work_outline,
                           text: 'مصمم واجهات UI/UX',
                         ),
-
-                        ProfileInfoRow(
+                        const ProfileInfoRow(
                           icon: Icons.location_on_outlined,
                           text: 'سوريا - دمشق',
                         ),
-
-                        ProfileInfoRow(
+                        const ProfileInfoRow(
                           icon: Icons.person_outline,
                           text: 'أنثى',
                         ),
-
-                        ProfileInfoRow(
+                        const ProfileInfoRow(
                           icon: Icons.calendar_month_outlined,
                           text: '12 / 05 / 2000',
                         ),
-
-                        SizedBox(height: 10),
-
+                        SizedBox(height: media.height * 0.015),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-
                             const Icon(
                               Icons.star,
                               color: Colors.amber,
-                              size: 26,
+                              size: 24,
                             ),
-
-                            SizedBox(width: 6),
-
+                            const SizedBox(width: 6),
                             Text(
                               '4.8',
                               style: TextStyle(
                                 fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                   color: AppColors.greyColor,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.greyColor,
                               ),
                             ),
-                            SizedBox(width:12),
-
+                            const SizedBox(width: 12),
                             const Icon(
                               Icons.star_border,
                               color: AppColors.primaryColor,
-                              size: 26,
+                              size: 24,
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
-
                   const ProfileHeader(),
                 ],
               ),
             ),
-
-            const SizedBox(height: 20),
-            Padding(padding: const EdgeInsets.only(left: 20 , right:28), 
-            child:SizedBox(
-              width: double.infinity,
-            child:Text(
-                    'أضف معرض أعمالك',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.blackColor,
-                    ),
-                  ), ),),
-                  const SizedBox(height: 10),
-            
-
-            Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 20,
+            SizedBox(height: media.height * 0.025),
+            Padding(
+              padding: EdgeInsets.only(
+                left: media.width * 0.05,
+                right: media.width * 0.07,
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 25,
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'أضف معرض أعمالك',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: media.height * 0.012),
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: media.width * 0.05,
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: media.width * 0.05,
+                vertical: media.height * 0.03,
               ),
               decoration: BoxDecoration(
-                color: AppColors.whiteColor,
+                color: containerColor,
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.blackColor.withOpacity(0.08),
+                    color: shadowColor,
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
-
               child: Column(
                 children: [
-
-                  
-
-                  const SizedBox(height: 10),
-
+                  SizedBox(height: media.height * 0.01),
                   const Text(
                     'معرض أعمالك يزيد من فرص طلب خدماتك',
                     textAlign: TextAlign.center,
@@ -205,12 +188,9 @@ class ProfilePage extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-
-                  const SizedBox(height: 25),
-
+                  SizedBox(height: media.height * 0.03),
                   Row(
                     children: [
-
                       Expanded(
                         child: PortfolioActionButton(
                           title: 'رابط',
@@ -218,9 +198,7 @@ class ProfilePage extends StatelessWidget {
                           onTap: () {},
                         ),
                       ),
-
-                      const SizedBox(width: 10),
-
+                      SizedBox(width: media.width * 0.025),
                       Expanded(
                         child: PortfolioActionButton(
                           title: 'ملف',
@@ -228,9 +206,7 @@ class ProfilePage extends StatelessWidget {
                           onTap: () {},
                         ),
                       ),
-
-                      const SizedBox(width: 10),
-
+                      SizedBox(width: media.width * 0.025),
                       Expanded(
                         child: PortfolioActionButton(
                           title: 'صورة',
@@ -240,27 +216,24 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 25),
-
+                  SizedBox(height: media.height * 0.03),
                   Container(
-                    width: 55,
-                    height: 55,
+                    width: media.width * 0.14,
+                    height: media.width * 0.14,
                     decoration: BoxDecoration(
-                      color: AppColors.greyColor,
+                      color: isDarkMode ? const Color(0xFF3A3A3A) : AppColors.greyColor,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.add,
-                      size: 32,
+                      size: 30,
                       color: AppColors.whiteColor,
                     ),
                   ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 40),
+            SizedBox(height: media.height * 0.05),
           ],
         ),
       ),
