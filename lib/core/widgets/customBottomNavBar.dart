@@ -94,6 +94,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               ),
               SizedBox(width: 40.w),
               Row(
+
                 children: [
                   _buildNavItem(icon: Icons.access_time, label: "ساعاتي", index: 2),
                   SizedBox(width: 35.w),
