@@ -14,6 +14,10 @@ class ServiceModel extends ServiceEntity {
     required super.locationLng,
     super.meetingType,
     super.imageUrl,
+    super.userFullName,
+    super.categoryName,
+    super.unitName,
+    super.servingTypeName,
   });
 
   Map<String, String> toJson() {
@@ -51,6 +55,10 @@ class ServiceModel extends ServiceEntity {
 
       meetingType: json['meeting_type']?.toString(),
       imageUrl: json['image_url']?.toString(),
+      userFullName: json['user_full_name']?.toString(),
+      categoryName: json['category_name']?.toString(),
+      unitName: json['unit_name']?.toString(),
+      servingTypeName: json['serving_type_name']?.toString(),
     );
   }
 }

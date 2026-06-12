@@ -13,6 +13,10 @@ class ServiceEntity extends Equatable {
   final double locationLng;
   final String? meetingType;
   final String? imageUrl;
+  final String? userFullName;
+  final String? categoryName;
+  final String? unitName;
+  final String? servingTypeName;
 
   const ServiceEntity({
     required this.title,
@@ -25,6 +29,10 @@ class ServiceEntity extends Equatable {
     required this.locationLng,
     this.meetingType,
     this.imageUrl,
+    this.userFullName,
+    this.categoryName,
+    this.unitName,
+    this.servingTypeName,
   });
 
   @override
@@ -39,5 +47,9 @@ class ServiceEntity extends Equatable {
     locationLng,
     meetingType,
     imageUrl,
+    userFullName,
+    categoryName,
+    unitName,
+    servingTypeName,
   ];
 }

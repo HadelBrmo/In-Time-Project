@@ -36,6 +36,10 @@ class HomeRepositoryImpl implements HomeRepository {
                 locationLng: model.locationLng,
                 meetingType: model.meetingType,
                 imageUrl: model.imageUrl,
+                userFullName: model.userFullName,
+                categoryName: model.categoryName,
+                unitName: model.unitName,
+                servingTypeName: model.servingTypeName,
               ))
           .toList();
 
