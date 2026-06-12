@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 
+import '../../features/home/presentation/bloc/home_bloc.dart';
+import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
+import '../../injection_container.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -14,12 +18,6 @@ class CustomBottomNavBar extends StatefulWidget {
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   int _currentIndex = 3;
 
-  final List<Widget> _screens = [
-    const Center(child: Text("صفحة الملف الشخصي")),
-    const Center(child: Text("صفحة لوحة الشرف")),
-    const Center(child: Text("صفحة ساعاتي")),
-    const HomeScreen(),
-  ];
 
   Widget _buildNavItem({
     required IconData icon,
@@ -33,8 +31,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           _currentIndex = index;
         });
       },
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -60,12 +57,27 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      const Center(child: Text("صفحة الملف الشخصي")),
+      const Center(child: Text("صفحة لوحة الشرف")),
+      const Center(child: Text("صفحة ساعاتي")),
+      BlocProvider(
+        create: (context) => sl<HomeBloc>()..add(const FetchHomeServingsEvent()),
+        child: const HomeScreen(),
+      ),
+    ];
+
     return Scaffold(
-      body: _screens[_currentIndex],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: screens,
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-        Navigator.pushNamed(context, "/paidStrategyPage");
+          Navigator.pushNamed(context, "/paidStrategyPage");
         },
         backgroundColor: AppColors.primaryColor,
         elevation: 4,

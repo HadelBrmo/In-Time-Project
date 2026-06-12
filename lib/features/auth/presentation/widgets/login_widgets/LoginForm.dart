@@ -39,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
       listener: (context, state) {
         if (state is LoginSuccess) {
           SnackBarUtils.showSuccess(context, "تم تسجيل الدخول بنجاح!");
-          Navigator.pushReplacementNamed(context, '/homePage');
+          Navigator.pushReplacementNamed(context, '/homeScreen');
         }
 
         if (state is LoginError) {
@@ -56,6 +56,7 @@ class _LoginFormState extends State<LoginForm> {
                   style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
               SizedBox(height: media.height * 0.01),
               CustomTextFormField(
+                fillColor: AppColors.whiteColor,
                 controller: _emailController,
                 hintText: "ادخل بريدك الإلكتروني",
                 keyboardType: TextInputType.emailAddress,
@@ -68,6 +69,7 @@ class _LoginFormState extends State<LoginForm> {
                   style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
               SizedBox(height: media.height * 0.01),
               CustomTextFormField(
+                fillColor: AppColors.whiteColor,
                 controller: _passwordController,
                 hintText: "ادخل كلمة المرور",
                 isPassword: true,

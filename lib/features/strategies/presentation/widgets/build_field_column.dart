@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/buildLabel.dart';
 import '../../../../core/widgets/customTextFormField.dart';
@@ -51,6 +50,7 @@ Widget buildFieldColumn(String label, String hint, {
           )
         else
           CustomTextFormField(
+
             keyboardType: keyboardType ?? TextInputType.text,
             controller: controller,
             hintText: hint,

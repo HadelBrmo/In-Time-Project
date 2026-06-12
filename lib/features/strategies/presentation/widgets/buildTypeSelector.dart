@@ -29,6 +29,8 @@ class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(types.length, (index) {
@@ -48,14 +50,21 @@ class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
                 vertical: media.height * 0.01
             ),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primaryColor : Colors.grey[100],
+              color: isSelected
+                  ? (isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor)
+                  : (isDarkMode ? const Color(0xFF252525) : Colors.grey[100]),
               borderRadius: BorderRadius.circular(media.width * 0.025),
+              border: isDarkMode && !isSelected
+                  ? Border.all(color: const Color(0xFF3A3A3A))
+                  : null,
             ),
             child: Text(
               types[index],
               style: TextStyle(
                 fontSize: media.width * 0.035,
-                color: isSelected ? Colors.white : AppColors.greyColor,
+                color: isSelected
+                    ? Colors.white
+                    : (isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

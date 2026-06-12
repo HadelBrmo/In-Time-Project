@@ -1,6 +1,6 @@
 // features/services/data/models/service_model.dart
 
-import '../../domain/entity/service_entity.dart';
+import '../../../strategies/domain/entity/service_entity.dart';
 
 class ServiceModel extends ServiceEntity {
   const ServiceModel({
@@ -32,25 +32,16 @@ class ServiceModel extends ServiceEntity {
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
-      title: json['title']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
-      categoryId: json['category_id']?.toString() ?? json['category_name']?.toString() ?? '',
-
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      categoryId: json['category_id']?.toString() ?? '',
       costAmount: json['cost_amount']?.toString() ?? '0',
-
-      unitId: json['unit_name']?.toString() ?? json['unit_id']?.toString(),
-      locationAddress: json['location_address']?.toString() ?? '',
-
-      locationLat: json['location_lat'] != null
-          ? (double.tryParse(json['location_lat'].toString()) ?? 0.0)
-          : 0.0,
-
-      locationLng: json['location_lng'] != null
-          ? (double.tryParse(json['location_lng'].toString()) ?? 0.0)
-          : 0.0,
-
-      meetingType: json['meeting_type']?.toString(),
-      imageUrl: json['image_url']?.toString(),
+      unitId: json['unit_name']?.toString(),
+      locationAddress: json['location_address'] ?? '',
+      locationLat: json['location_lat'] != null ? double.parse(json['location_lat'].toString()) : 0.0,
+      locationLng: json['location_lng'] != null ? double.parse(json['location_lng'].toString()) : 0.0,
+      meetingType: json['meeting_type'],
+      imageUrl: json['image_url'],
     );
   }
 }

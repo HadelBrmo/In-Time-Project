@@ -13,6 +13,7 @@ import '../../../../../core/widgets/buildLabel.dart';
 import '../../../../core/widgets/customDrawer.dart';
 import '../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
 import '../../domain/entity/service_entity.dart';
+import '../../domain/entity/payment_unit_entity.dart';
 import '../bloc/services_bloc.dart';
 import '../bloc/services_event.dart';
 import '../bloc/services_state.dart';
@@ -43,19 +44,12 @@ class _PaidServicePageState extends State<PaidServicePage> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
-
   late ServiceStrategy _serviceStrategy;
-
   XFile? _selectedImage;
   String? selectedMeetingType;
   String? selectedCategory;
   String? selectedPaymentUnit;
-
-  final List<Map<String, dynamic>> paymentUnitsMock = [
-    {"id": "1", "name": "ليرة سورية (SYP)"},
-    {"id": "2", "name": "دولار أمريكي (USD)"}
-  ];
-
+  List<PaymentUnitEntity> paymentUnitsFromServer = [];
   final List<String> meetingOptions = ["online", "direct"];
   final List<Map<String, dynamic>> categoryOptions = [
     {"id": "1", "name": "تعليمية"},
@@ -63,14 +57,12 @@ class _PaidServicePageState extends State<PaidServicePage> {
     {"id": "3", "name": "فنية"},
     {"id": "4", "name": "هندسية"}
   ];
-
   double? locationLat;
   double? locationLng;
 
   @override
   void initState() {
     super.initState();
-
     if (widget.isBarter) {
       _serviceStrategy = BarterServiceStrategy();
       _priceController.text = "0";
@@ -79,6 +71,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
       _priceController.text = "0";
     } else {
       _serviceStrategy = PaidServiceStrategy();
+      context.read<ServicesBloc>().add(GetPaymentUnitsEvent());
     }
   }
 
@@ -99,7 +92,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
         description: _descController.text.trim(),
         categoryId: selectedCategory ?? '',
         hours: _hoursController.text.trim(),
-        price: _priceController.text.trim(),
+        priceOrCost: _priceController.text.trim(),
         paymentUnit: selectedPaymentUnit,
         locationAddress: _locationController.text.trim(),
         lat: locationLat,
@@ -107,10 +100,18 @@ class _PaidServicePageState extends State<PaidServicePage> {
         meetingType: selectedMeetingType ?? 'direct',
       );
 
+      String currentEndpoint = '/servings/add-paid';
+      if (widget.isBarter) {
+        currentEndpoint = '/servings/add-paid';
+      } else if (widget.isVoluntary) {
+        currentEndpoint = '/servings/add-paid';
+      }
+
       context.read<ServicesBloc>().add(
         AddServiceSubmittedEvent(
           service: service,
           image: _selectedImage,
+          endpoint: currentEndpoint,
         ),
       );
     }
@@ -119,9 +120,10 @@ class _PaidServicePageState extends State<PaidServicePage> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
           title: Text(
               widget.isVoluntary
@@ -153,6 +155,16 @@ class _PaidServicePageState extends State<PaidServicePage> {
                 },
               ),
             );
+          }
+
+          if (state is GetPaymentUnitsSuccessState) {
+            setState(() {
+              paymentUnitsFromServer = state.units;
+            });
+          }
+
+          if (state is GetPaymentUnitsErrorState) {
+            SnackBarUtils.showError(context, state.message);
           }
         },
         builder: (context, state) {
@@ -197,6 +209,8 @@ class _PaidServicePageState extends State<PaidServicePage> {
                           media: media,
                           selectedImage: _selectedImage,
                           onImagePicked: (image) => setState(() => _selectedImage = image),
+                          context: context,
+
                         ),
                         SizedBox(height: media.height * 0.025),
                         Row(
@@ -290,14 +304,21 @@ class _PaidServicePageState extends State<PaidServicePage> {
                                 child: buildDropdownColumn(
                                   context: context,
                                   label: "وحدة الدفع (العملة)",
-                                  hint: "اختر العملة",
-                                  selectedValue: selectedPaymentUnit != null
-                                      ? paymentUnitsMock.firstWhere((e) => e['id'] == selectedPaymentUnit)['name']
+                                  hint: state is GetPaymentUnitsLoadingState
+                                      ? "جاري التحميل..."
+                                      : "اختر العملة",
+
+                                  selectedValue: selectedPaymentUnit != null && paymentUnitsFromServer.isNotEmpty
+                                      ? paymentUnitsFromServer
+                                      .any((e) => e.id.toString() == selectedPaymentUnit)
+                                      ? paymentUnitsFromServer.firstWhere((e) => e.id.toString() == selectedPaymentUnit).name
+                                      : null
                                       : null,
-                                  items: paymentUnitsMock.map((e) => e['name'].toString()).toList(),
+
+                                  items: paymentUnitsFromServer.map((e) => e.name).toList(),
                                   onChanged: (val) {
-                                    final selected = paymentUnitsMock.firstWhere((e) => e['name'] == val);
-                                    setState(() => selectedPaymentUnit = selected['id']);
+                                    final selected = paymentUnitsFromServer.firstWhere((e) => e.name == val);
+                                    setState(() => selectedPaymentUnit = selected.id.toString());
                                   },
                                 ),
                               ),
@@ -367,7 +388,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                               child: CustomButton(
                                 text: "إلغاء",
                                 onPressed: () => Navigator.pop(context),
-                                color: AppColors.greyColor,
+                                color: isDarkMode ? const Color(0xFF3A3A3A) : AppColors.greyColor,
                               ),
                             ),
                           ],
@@ -380,7 +401,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
 
               if (state is AddServiceLoadingState)
                 Container(
-                  color: Colors.black.withValues(alpha: 0.15),
+                  color: Colors.black.withOpacity(0.15),
                   child: const Center(
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/features/auth/presentation/pages/sign%20up/sign%20up_page_03.dart';
 import 'package:in_time/features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
+import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/strategies/presentation/pages/barter_strategy.dart';
 import '../../features/strategies/presentation/pages/paid_strategy.dart';
+import '../../injection_container.dart';
 import '../constants/app_colors.dart';
 import '../widgets/customBottomNavBar.dart';
 import '../../features/complaints/presentation/pages/submit_complaint_page.dart';
@@ -26,12 +29,11 @@ class AppRoutes {
   static const String paidStrategyPage = '/paidStrategyPage';
   static const String submitComplaintPage = '/submitComplaintPage';
 
-
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
         return MaterialPageRoute(
-          builder: (_) =>  SplashPage(),
+          builder: (_) => SplashPage(),
           settings: settings,
         );
 
@@ -54,19 +56,22 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SignUpPage3(), settings: settings);
 
       case chatListScreen:
-        return MaterialPageRoute(builder: (_) =>  ChatListScreen(), settings: settings);
+        return MaterialPageRoute(builder: (_) => ChatListScreen(), settings: settings);
 
       case homeScreen:
-        return MaterialPageRoute(builder: (_) =>   CustomBottomNavBar(), settings: settings);
+        return MaterialPageRoute(
+          builder: (_) => const CustomBottomNavBar(),
+          settings: settings,
+        );
 
       case paidStrategyPage:
-        return MaterialPageRoute(builder: (_) =>  PaidServicePage(), settings: settings);
+        return MaterialPageRoute(builder: (_) => PaidServicePage(), settings: settings);
 
-        case submitComplaintPage:
-  return MaterialPageRoute(
-    builder: (_) => const SubmitComplaintPage(),
-    settings: settings,
-  );
+      case submitComplaintPage:
+        return MaterialPageRoute(
+          builder: (_) => const SubmitComplaintPage(),
+          settings: settings,
+        );
 
       default:
         return MaterialPageRoute(

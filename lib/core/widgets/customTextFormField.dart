@@ -12,11 +12,12 @@ class CustomTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   int? maxLines;
   final TextInputType keyboardType;
+  final Color? fillColor; // إضافة معامل اللون الاختياري
 
-   CustomTextFormField({
+  CustomTextFormField({
     super.key,
     required this.hintText,
-     this.keyboardType = TextInputType.text,
+    this.keyboardType = TextInputType.text,
     this.prefixIcon,
     this.suffixIcon,
     this.isPassword = false,
@@ -24,7 +25,8 @@ class CustomTextFormField extends StatefulWidget {
     this.onTap,
     this.controller,
     this.validator,
-    this.maxLines=1,
+    this.maxLines = 1,
+    this.fillColor,
   });
 
   @override
@@ -36,6 +38,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    final defaultFillColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+    final defaultBorderColor = isDarkMode ? AppColors.greyColor : AppColors.greyColor.withOpacity(0.3);
+    final defaultTextColor =  AppColors.blackColor;
+    final defaultHintColor = isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor;
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: TextFormField(
@@ -46,10 +55,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         validator: widget.validator,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
-        style: const TextStyle(fontSize: 16,color: AppColors.blackColor),
+        style: TextStyle(fontSize: 16, color: defaultTextColor),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: AppColors.greyColor, fontSize: 14),
+          hintStyle: TextStyle(color: defaultHintColor, fontSize: 14),
           prefixIcon: widget.prefixIcon != null
               ? Icon(widget.prefixIcon, color: AppColors.primaryColor)
               : null,
@@ -63,19 +72,19 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           )
               : widget.suffixIcon,
           filled: true,
-          fillColor: AppColors.whiteColor,
+          fillColor: widget.fillColor ?? defaultFillColor,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: AppColors.greyColor.withOpacity(0.3)),
+            borderSide: BorderSide(color: defaultBorderColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: AppColors.greyColor.withOpacity(0.3)),
+            borderSide: BorderSide(color: defaultBorderColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5),
+            borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
           ),
         ),
       ),

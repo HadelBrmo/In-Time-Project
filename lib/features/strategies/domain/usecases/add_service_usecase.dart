@@ -14,7 +14,8 @@ class AddServiceUseCase {
   Future<Either<Failure, Unit>> call({
     required ServiceEntity service,
     required XFile? image,
+    required String endpoint,
   }) async {
-    return await repository.addService(service: service, image: image);
+    return await repository.addService(service: service, image: image, endpoint: endpoint);
   }
 }

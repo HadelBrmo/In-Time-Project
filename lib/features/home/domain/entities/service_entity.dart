@@ -2,7 +2,7 @@
 
 import 'package:equatable/equatable.dart';
 
-class ServiceEntity extends Equatable {
+class ServicingEntity extends Equatable {
   final String title;
   final String description;
   final String categoryId;
@@ -14,7 +14,7 @@ class ServiceEntity extends Equatable {
   final String? meetingType;
   final String? imageUrl;
 
-  const ServiceEntity({
+  const ServicingEntity({
     required this.title,
     required this.description,
     required this.categoryId,

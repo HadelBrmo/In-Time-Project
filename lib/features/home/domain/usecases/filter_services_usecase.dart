@@ -1,4 +1,0 @@
-﻿class FilterServicesUseCase {}
-
-class FilterParams {}
-

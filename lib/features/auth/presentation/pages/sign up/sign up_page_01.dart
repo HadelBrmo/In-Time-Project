@@ -84,6 +84,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                             children: [
                               buildLabel("الاسم الثلاثي"),
                               CustomTextFormField(
+                                fillColor: AppColors.whiteColor,
                                 controller: _nameController,
                                 hintText: "ادخل اسمك الثلاثي",
                                 validator: Validators.validateFullName,
@@ -91,6 +92,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                               SizedBox(height: media.height * 0.02),
                               buildLabel("الوظيفة الحالية"),
                               CustomTextFormField(
+                                fillColor: AppColors.whiteColor,
                                 controller: _jobController,
                                 hintText: "ادخل وظيفتك الحالية",
                                 validator: (value) => Validators.validateRequired(value, "الوظيفة الحالية"),
@@ -98,6 +100,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                               SizedBox(height: media.height * 0.02),
                               buildLabel("العنوان"),
                               CustomTextFormField(
+                                fillColor: AppColors.whiteColor,
                                 controller: _addressController,
                                 hintText: "حدد عنوانك الحالي ",
                                 validator: (value) => Validators.validateRequired(value, "العنوان"),

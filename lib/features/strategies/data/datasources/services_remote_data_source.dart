@@ -1,18 +1,18 @@
-// features/services/data/datasources/services_remote_data_source.dart
-
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:in_time/core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
+import '../models/payment_unit_model.dart';
 import '../models/service_model.dart';
-
-
 
 abstract class ServicesRemoteDataSource {
   Future<void> addService({
     required ServiceModel serviceModel,
     required XFile? image,
+    required String endpoint,
   });
+
+  Future<List<PaymentUnitModel>> getPaymentUnits();
 }
 
 class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
@@ -24,9 +24,11 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   Future<void> addService({
     required ServiceModel serviceModel,
     required XFile? image,
+    required String endpoint,
   }) async {
     try {
-      final FormData formData = FormData.fromMap(serviceModel.toJson());
+      final Map<String, dynamic> data = serviceModel.toJson();
+      final FormData formData = FormData.fromMap(data);
 
       if (image != null) {
         formData.files.add(
@@ -40,7 +42,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
         );
       }
       final response = await dio.post(
-        ApiStringConstants.addServiceUrl,
+        endpoint,
         data: formData,
       );
 
@@ -52,7 +54,6 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
           message: response.data['message'] ?? 'فشل الاتصال بالسيرفر',
         );
       }
-
     } on DioException catch (e) {
       throw ServerExceptionWithDetails(
         statusCode: e.response?.statusCode,
@@ -62,6 +63,23 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       throw ServerExceptionWithDetails(
         message: 'حدث خطأ غير متوقع، يرجى المحاولة لاحقاً',
       );
+    }
+  }
+
+  @override
+  Future<List<PaymentUnitModel>> getPaymentUnits() async {
+    try {
+      final response = await dio.get(ApiStringConstants.getPaymentUnitsUrl);
+      if (response.statusCode == 200) {
+        final List data = response.data['data'];
+        return data.map((e) => PaymentUnitModel.fromJson(e)).toList();
+      } else {
+        throw ServerExceptionWithDetails(
+          message: response.data['message'] ?? 'فشل جلب وحدات الدفع',
+        );
+      }
+    } catch (e) {
+      throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب وحدات الدفع');
     }
   }
 }

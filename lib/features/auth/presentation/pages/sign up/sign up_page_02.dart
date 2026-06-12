@@ -76,6 +76,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                       children: [
                         buildLabel("البريد الإلكتروني"),
                         CustomTextFormField(
+                          fillColor: AppColors.whiteColor,
                           controller: _emailController,
                           hintText: "ادخل بريدك الإلكتروني",
                           validator: Validators.validateEmail,
@@ -119,6 +120,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                         // SizedBox(height: media.height * 0.02),
                         buildLabel("كلمة المرور"),
                         CustomTextFormField(
+                          fillColor: AppColors.whiteColor,
                           controller: _passwordController,
                           hintText: "ادخل كلمة المرور",
                           isPassword: true,
@@ -127,6 +129,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                         SizedBox(height: media.height * 0.02),
                         buildLabel("تأكيد كلمة المرور"),
                         CustomTextFormField(
+                          fillColor: AppColors.whiteColor,
                           controller: _confirmPasswordController,
                           hintText: "اعد كتابة كلمة المرور",
                           isPassword: true,
