@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/customDrawer.dart';
 import '../../../../core/widgets/customErrorView.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../bloc/home_bloc.dart';
@@ -39,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     context.read<HomeBloc>().add(
       FetchHomeServingsEvent(
         name: query.isEmpty ? null : query,
-        paymentUnitId: _selectedPaymentUnitId,
+        paymentUnitId: _selectedPaymentUnitId, isRefresh: true,
       ),
     );
   }
@@ -158,6 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      drawer:  CustomDrawer(),
       body: Column(
         children: [
           if (_selectedUnitName != null)

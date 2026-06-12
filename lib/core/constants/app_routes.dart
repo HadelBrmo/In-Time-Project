@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
+import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/strategies/presentation/pages/barter_strategy.dart';
@@ -60,7 +61,10 @@ class AppRoutes {
 
       case homeScreen:
         return MaterialPageRoute(
-          builder: (_) => const CustomBottomNavBar(),
+          builder: (_) => BlocProvider(
+            create: (context) => sl<HomeBloc>()..add(const FetchHomeServingsEvent(isRefresh: true)),
+            child: const CustomBottomNavBar(),
+          ),
           settings: settings,
         );
 

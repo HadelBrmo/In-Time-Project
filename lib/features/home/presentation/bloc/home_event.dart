@@ -16,7 +16,7 @@ class FetchHomeServingsEvent extends HomeEvent {
     this.servingTypeId,
     this.paymentUnitId,
     this.servingCategoryId,
-    this.name,
+    this.name, required bool isRefresh,
   });
 
   @override
