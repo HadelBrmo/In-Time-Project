@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../entity/payment_unit_entity.dart';
-import '../repository/servicesRepository.dart';
+import '../../../../../core/error/failures.dart';
+import '../../entity/payment_unit_entity.dart';
+import '../../repository/servicesRepository.dart';
 
 class GetPaymentUnitsUseCase {
   final ServicesRepository repository;

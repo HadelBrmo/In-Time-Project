@@ -9,8 +9,8 @@ import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/loginBloc/login_bloc.dart';
-import 'package:in_time/features/strategies/presentation/bloc/services_bloc.dart';
-import 'package:in_time/features/strategies/presentation/bloc/services_event.dart';
+import 'package:in_time/features/strategies/presentation/bloc/service/services_bloc.dart';
+import 'package:in_time/features/strategies/presentation/bloc/service/services_event.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 

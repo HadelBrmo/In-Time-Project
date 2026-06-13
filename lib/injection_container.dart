@@ -22,12 +22,21 @@ import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/strategies/data/datasources/comment_remote_data_source.dart';
 import 'features/strategies/data/datasources/services_remote_data_source.dart';
+import 'features/strategies/data/repository/comment_repository_impl.dart';
 import 'features/strategies/data/repository/services_repository_impl.dart';
+import 'features/strategies/domain/repository/comment_repository.dart';
 import 'features/strategies/domain/repository/servicesRepository.dart';
-import 'features/strategies/domain/usecases/add_service_usecase.dart';
-import 'features/strategies/domain/usecases/get_payment_units_usecase.dart';
-import 'features/strategies/presentation/bloc/services_bloc.dart';
+import 'features/strategies/domain/usecases/comment/add_comment_usecase.dart';
+import 'features/strategies/domain/usecases/comment/get_comments_usecase.dart';
+import 'features/strategies/domain/usecases/comment/react_dislike_usecase.dart';
+import 'features/strategies/domain/usecases/comment/react_like_usecase.dart';
+import 'features/strategies/domain/usecases/comment/reply_to_comment_usecase.dart';
+import 'features/strategies/domain/usecases/service/add_service_usecase.dart';
+import 'features/strategies/domain/usecases/service/get_payment_units_usecase.dart';
+import 'features/strategies/presentation/bloc/comment/comment_bloc.dart';
+import 'features/strategies/presentation/bloc/service/services_bloc.dart';
 import 'core/network/decorators/logging_interceptor.dart';
 
 // Auth Features 🚀
@@ -113,8 +122,29 @@ Future<void> init() async {
 
     sl.registerLazySingleton(() => dio);
   }
-
   if (!sl.isRegistered<ImagePicker>()) {
     sl.registerLazySingleton(() => ImagePicker());
   }
-}
+
+
+  // ==================== 1. Blocs (Factory) ====================
+  sl.registerFactory(() => CommentBloc(
+    getCommentsUseCase: sl(),
+    addCommentUseCase: sl(),
+    replyToCommentUseCase: sl(),
+    reactLikeUseCase: sl(),
+    reactDislikeUseCase: sl(),
+  ));
+
+  // ==================== 2. Use Cases (LazySingleton) ====================
+  sl.registerLazySingleton(() => GetCommentsForServingUseCase(sl()));
+  sl.registerLazySingleton(() => AddCommentOnServingUseCase(sl()));
+  sl.registerLazySingleton(() => ReplyToCommentUseCase(sl()));
+  sl.registerLazySingleton(() => ReactLikeUseCase(sl()));
+  sl.registerLazySingleton(() => ReactDislikeUseCase(sl()));
+
+  // ==================== 3. Repositories (LazySingleton) ====================
+  sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
+
+  // ==================== 4. Data Sources (LazySingleton) ====================
+  sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/mediaQuery.dart';
 
 class MultiSelectDaysDropdown extends StatefulWidget {
   final List<String> selectedDays;

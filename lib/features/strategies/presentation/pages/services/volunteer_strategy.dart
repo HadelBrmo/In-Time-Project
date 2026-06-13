@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:in_time/features/strategies/presentation/pages/paid_strategy.dart';
+import 'package:in_time/features/strategies/presentation/pages/services/paid_strategy.dart';
 
 class VoluntaryServicePage extends StatelessWidget {
   const VoluntaryServicePage({super.key});

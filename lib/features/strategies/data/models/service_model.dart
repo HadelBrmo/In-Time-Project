@@ -4,6 +4,7 @@ import '../../domain/entity/service_entity.dart';
 
 class ServiceModel extends ServiceEntity {
   const ServiceModel({
+    super.id,
     required super.title,
     required super.description,
     required super.categoryId,
@@ -36,6 +37,7 @@ class ServiceModel extends ServiceEntity {
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? ''),
       title: json['title']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       categoryId: json['category_id']?.toString() ?? json['category_name']?.toString() ?? '',

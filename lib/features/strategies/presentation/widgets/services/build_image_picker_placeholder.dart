@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/mediaQuery.dart';
 
 Widget buildImagePickerPlaceholder({
   required MediaQueryHelper media,

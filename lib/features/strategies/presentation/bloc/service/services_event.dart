@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../domain/entity/service_entity.dart';
+import '../../../domain/entity/service_entity.dart';
 
 abstract class ServicesEvent extends Equatable {
   const ServicesEvent();

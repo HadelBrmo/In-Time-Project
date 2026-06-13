@@ -26,6 +26,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       final List<ServicingEntity> servingsList = remoteServings
           .map((model) => ServicingEntity(
+                id: model.id,
                 title: model.title,
                 description: model.description,
                 categoryId: model.categoryId,

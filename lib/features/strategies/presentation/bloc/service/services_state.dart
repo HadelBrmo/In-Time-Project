@@ -1,7 +1,7 @@
 
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entity/payment_unit_entity.dart';
+import '../../../domain/entity/payment_unit_entity.dart';
 
 abstract class ServicesState extends Equatable {
   const ServicesState();

@@ -3,6 +3,7 @@
 import 'package:equatable/equatable.dart';
 
 class ServiceEntity extends Equatable {
+  final int? id;
   final String title;
   final String description;
   final String categoryId;
@@ -19,6 +20,7 @@ class ServiceEntity extends Equatable {
   final String? servingTypeName;
 
   const ServiceEntity({
+    this.id,
     required this.title,
     required this.description,
     required this.categoryId,
@@ -37,6 +39,7 @@ class ServiceEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    id,
     title,
     description,
     categoryId,

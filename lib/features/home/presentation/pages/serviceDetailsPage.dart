@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../injection_container.dart';
+import '../../../strategies/presentation/bloc/comment/comment_bloc.dart';
+import '../../../strategies/presentation/pages/comment/service_comments_page.dart';
 import '../../domain/entities/service_entity.dart';
 import '../widgets/buildGridInfoRow.dart';
 
@@ -219,6 +223,15 @@ class ServiceDetailsPage extends StatelessWidget {
                   height: media.height * 0.065,
                   child: ElevatedButton(
                     onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (context) => sl<CommentBloc>(),
+                            child: ServiceCommentsPage(servingId: service.id ?? 0),
+                          ),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,

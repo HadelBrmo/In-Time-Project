@@ -1,4 +1,4 @@
-import '../../domain/entity/service_entity.dart';
+import '../../../domain/entity/service_entity.dart';
 
 abstract class ServiceStrategy {
   ServiceEntity prepareService({

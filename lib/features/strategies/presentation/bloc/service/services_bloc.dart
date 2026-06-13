@@ -1,8 +1,8 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/usecases/add_service_usecase.dart';
-import '../../domain/usecases/get_payment_units_usecase.dart'; // مستوردة صح
+import '../../../../../core/error/failures.dart';
+import '../../../domain/usecases/service/add_service_usecase.dart';
+import '../../../domain/usecases/service/get_payment_units_usecase.dart'; // مستوردة صح
 import 'services_event.dart';
 import 'services_state.dart';
 
