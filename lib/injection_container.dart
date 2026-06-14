@@ -22,6 +22,11 @@ import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/requests/data/datasource/request_remote_datasource.dart';
+import 'features/requests/data/repository/request_repository_impl.dart';
+import 'features/requests/domain/repository/request_repository.dart';
+import 'features/requests/domain/usecases/get_my_requests_usecase.dart';
+import 'features/requests/presentation/bloc/request_bloc.dart';
 import 'features/strategies/data/datasources/comment_remote_data_source.dart';
 import 'features/strategies/data/datasources/services_remote_data_source.dart';
 import 'features/strategies/data/repository/comment_repository_impl.dart';
@@ -147,4 +152,23 @@ Future<void> init() async {
   sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
-  sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));}
+  sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));
+
+// 1. Bloc
+  sl.registerFactory(() => RequestsBloc(getMyRequestsUseCase: sl()));
+
+// 2. Use Cases
+  sl.registerLazySingleton(() => GetMyRequestsUseCase(repository: sl()));
+
+// 3. Repository
+  sl.registerLazySingleton<RequestRepository>(
+        () => RequestRepositoryImpl(remoteDataSource: sl()),
+  );
+
+// 4. Data Sources
+  sl.registerLazySingleton<RequestRemoteDataSource>(
+        () => RequestRemoteDataSourceImpl(dio: sl()),
+  );
+
+
+}

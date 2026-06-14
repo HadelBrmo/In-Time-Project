@@ -6,8 +6,10 @@ import '../pages/serviceDetailsPage.dart';
 Widget buildServiceCard(BuildContext context, ServicingEntity serving, double width, double height) {
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-  final displayAddress = serving.locationAddress.isNotEmpty
-      ? serving.locationAddress.split(',').take(2).join(' - ')
+  final address = serving.locationAddress;
+
+  final displayAddress = (address != null && address.isNotEmpty)
+      ? address.split(',').take(2).join(' - ')
       : "موقع غير محدد";
 
   return InkWell(

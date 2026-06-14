@@ -11,8 +11,13 @@ import '../widgets/buildGridInfoRow.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
   final ServicingEntity service;
+  final bool isFromRequests;
 
-  const ServiceDetailsPage({super.key, required this.service});
+  const ServiceDetailsPage({
+    super.key,
+    required this.service,
+    this.isFromRequests = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +30,8 @@ class ServiceDetailsPage extends StatelessWidget {
     final subTextColor = isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor;
     final infoItemBg = isDarkMode ? const Color(0xFF323232) : const Color(0xFFE8F8F5);
 
-    final shortAddress = service.locationAddress.isNotEmpty
-        ? service.locationAddress.split(',').take(2).join(' - ')
+    final shortAddress = (service.locationAddress != null && service.locationAddress!.isNotEmpty)
+        ? service.locationAddress!.split(',').take(2).join(' - ')
         : "دمشق _ المزة";
 
     return Directionality(
@@ -51,20 +56,40 @@ class ServiceDetailsPage extends StatelessWidget {
                       ),
                       SizedBox(width: media.width * 0.03),
                       Text(
-                            service.userFullName ?? "مستخدم النظام",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-                          ),
+                        service.userFullName ?? "مستخدم النظام",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+                      ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: media.height * 0.008),
+                  isFromRequests
+                      ? Container(
+                    padding: EdgeInsets.symmetric(horizontal: media.width * 0.04, vertical: media.height * 0.008),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
+                      color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      "طلب",
-                      style: const TextStyle(color: AppColors.whiteColor, fontWeight: FontWeight.bold),
+                      "تم الطلب",
+                      style: TextStyle(
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                      : GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: media.height * 0.008),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        "طلب",
+                        style: TextStyle(color: AppColors.whiteColor, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ],
@@ -89,12 +114,12 @@ class ServiceDetailsPage extends StatelessWidget {
                       ? Image.network(service.imageUrl!, fit: BoxFit.cover)
                       : Container(
                     decoration: BoxDecoration(
-                     color: AppColors.secondaryColor.withOpacity(0.6),
+                      color: AppColors.secondaryColor.withOpacity(0.6),
                     ),
                     child: Icon(
-                        Icons.image_not_supported_outlined,
-                        color: AppColors.primaryColor.withOpacity(0.6),
-                        size: media.width * 0.12
+                      Icons.image_not_supported_outlined,
+                      color: AppColors.primaryColor.withOpacity(0.6),
+                      size: media.width * 0.12,
                     ),
                   ),
                 ),
@@ -136,7 +161,7 @@ class ServiceDetailsPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            "${service.servingTypeName}",
+                            "${service.servingTypeName ?? ''}",
                             style: const TextStyle(color: AppColors.primaryColor, fontSize: 13, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -147,7 +172,7 @@ class ServiceDetailsPage extends StatelessWidget {
                     SizedBox(height: media.height * 0.02),
                     Row(
                       children: [
-                        Icon(Icons.grid_view_rounded,color: AppColors.primaryColor,),
+                        Icon(Icons.grid_view_rounded, color: AppColors.primaryColor),
                         SizedBox(width: media.width * 0.05),
                         Text("${service.categoryName ?? "خدمة منزلية"}"),
                       ],
@@ -155,18 +180,22 @@ class ServiceDetailsPage extends StatelessWidget {
                     SizedBox(height: media.height * 0.02),
                     Row(
                       children: [
-                        Icon(Icons.location_on,color: AppColors.primaryColor),
+                        Icon(Icons.location_on, color: AppColors.primaryColor),
                         SizedBox(width: media.width * 0.05),
                         Expanded(child: Text(shortAddress)),
                       ],
                     ),
                     SizedBox(height: media.height * 0.02),
                     buildGridInfoRow(
-                        context,
-                        icon1: Icons.money_outlined, text1:"${service.costAmount} ${service.unitName ?? ''}",
-                        icon2: Icons.assignment, text2: service.meetingType == 'online' ? "خدمة أونلاين" : "خدمة حضورية",                        infoItemBg: infoItemBg, textColor: textColor, media: media
+                      context,
+                      icon1: Icons.money_outlined,
+                      text1: "${service.costAmount ?? '0'} ${service.unitName ?? ''}",
+                      icon2: Icons.assignment,
+                      text2: service.meetingType == 'online' ? "خدمة أونلاين" : "خدمة حضورية",
+                      infoItemBg: infoItemBg,
+                      textColor: textColor,
+                      media: media,
                     ),
-
                   ],
                 ),
               ),
@@ -216,7 +245,6 @@ class ServiceDetailsPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: media.height * 0.04),
-
               Center(
                 child: SizedBox(
                   width: media.width * 0.85,
@@ -253,6 +281,4 @@ class ServiceDetailsPage extends StatelessWidget {
       ),
     );
   }
-
-
 }

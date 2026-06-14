@@ -6,8 +6,13 @@ import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
+import '../../features/home/domain/entities/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
+import '../../features/home/presentation/pages/serviceDetailsPage.dart';
+import '../../features/requests/domain/entity/request_entity.dart';
+import '../../features/requests/presentation/bloc/request_bloc.dart';
+import '../../features/requests/presentation/pages/my_requests_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/strategies/presentation/pages/services/barter_strategy.dart';
@@ -29,6 +34,8 @@ class AppRoutes {
   static const String homeScreen = '/homeScreen';
   static const String paidStrategyPage = '/paidStrategyPage';
   static const String submitComplaintPage = '/submitComplaintPage';
+  static const String myRequestsPage = '/myRequestsPage';
+  static const String serviceDetailsPage = '/serviceDetailsPage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -74,6 +81,50 @@ class AppRoutes {
       case submitComplaintPage:
         return MaterialPageRoute(
           builder: (_) => const SubmitComplaintPage(),
+          settings: settings,
+        );
+
+      case myRequestsPage:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => sl<RequestsBloc>(),
+            child: const MyRequestsPage(),
+          ),
+          settings: settings,
+        );
+
+      case serviceDetailsPage:
+        final args = settings.arguments;
+        final ServicingEntity service;
+        bool isFromRequests = false;
+
+        if (args is ServicingEntity) {
+          service = args;
+          isFromRequests = false;
+        } else if (args is RequestServingEntity) {
+          service = ServicingEntity(
+            id: args.id,
+            title: args.title,
+            description: args.description,
+            imageUrl: args.imageUrl,
+            userFullName: args.userFullName,
+            servingTypeName: args.servingTypeName,
+            costAmount: args.costAmount,
+            unitName: args.unitName,
+            categoryName: args.categoryName,
+            meetingType: args.meetingType,
+            locationAddress: args.locationAddress,
+          );
+          isFromRequests = true;
+        } else {
+          service = args as ServicingEntity;
+        }
+
+        return MaterialPageRoute(
+          builder: (_) => ServiceDetailsPage(
+            service: service,
+            isFromRequests: isFromRequests,
+          ),
           settings: settings,
         );
 

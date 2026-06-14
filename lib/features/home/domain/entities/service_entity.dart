@@ -5,12 +5,12 @@ class ServicingEntity extends Equatable {
   final int? id;
   final String title;
   final String description;
-  final String categoryId;
-  final String costAmount;
+  final String? categoryId;
+  final String? costAmount;
   final String? unitId;
-  final String locationAddress;
-  final double locationLat;
-  final double locationLng;
+  final String? locationAddress;
+  final double? locationLat;
+  final double? locationLng;
   final String? meetingType;
   final String? imageUrl;
 
@@ -24,12 +24,12 @@ class ServicingEntity extends Equatable {
     this.id,
     required this.title,
     required this.description,
-    required this.categoryId,
-    required this.costAmount,
+    this.categoryId,
+    this.costAmount,
     this.unitId,
-    required this.locationAddress,
-    required this.locationLat,
-    required this.locationLng,
+    this.locationAddress,
+    this.locationLat,
+    this.locationLng,
     this.meetingType,
     this.imageUrl,
     this.userFullName,

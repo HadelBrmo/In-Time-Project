@@ -7,5 +7,6 @@
   static const String sendOtpUrl = '/auth/send-otp';
   static const String registerCustomerUrl = '/auth/register-customer';
   static const String searchServingsUrl = '/servings/search';
+  static const String getMyRequestsUrl = '/servings/requests/my';
 }
 

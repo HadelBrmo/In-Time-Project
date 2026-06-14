@@ -68,6 +68,11 @@ class CustomDrawer extends StatelessWidget {
                                   Navigator.pushNamed(context,AppRoutes.submitComplaintPage,);},
 ),
                 drawerItem(icon: Icons.bookmark_border, text: "المحفوظة"),
+                drawerItem(icon: Icons.history, text: "سجل الانشطة",
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context,AppRoutes.myRequestsPage,);},
+                ),
                 drawerItem(icon: Icons.person_add_alt, text: "دعوة الأصدقاء"),
                 drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
                 drawerItem(icon: Icons.info_outline, text: "حول التطبيق"),
