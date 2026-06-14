@@ -25,6 +25,7 @@ import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/requests/data/datasource/request_remote_datasource.dart';
 import 'features/requests/data/repository/request_repository_impl.dart';
 import 'features/requests/domain/repository/request_repository.dart';
+import 'features/requests/domain/usecases/create_serving_request_usecase.dart';
 import 'features/requests/domain/usecases/get_my_requests_usecase.dart';
 import 'features/requests/presentation/bloc/request_bloc.dart';
 import 'features/strategies/data/datasources/comment_remote_data_source.dart';
@@ -154,9 +155,15 @@ Future<void> init() async {
   // ==================== 4. Data Sources (LazySingleton) ====================
   sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));
 
-// 1. Bloc
-  sl.registerFactory(() => RequestsBloc(getMyRequestsUseCase: sl()));
+// تسجيل الـ UseCase
+  sl.registerLazySingleton(() => CreateServingRequestUseCase(repository: sl()));
 
+  sl.registerFactory(
+        () => RequestsBloc(
+      getMyRequestsUseCase: sl(),
+      createServingRequestUseCase: sl(),
+    ),
+  );
 // 2. Use Cases
   sl.registerLazySingleton(() => GetMyRequestsUseCase(repository: sl()));
 

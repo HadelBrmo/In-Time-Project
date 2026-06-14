@@ -1,10 +1,16 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/error/exceptions.dart';
 import '../models/request_model.dart';
 
 abstract class RequestRemoteDataSource {
   Future<List<RequestModel>> getMyRequests();
+  Future<String> createServingRequest({
+    required int servingId,
+    String? message,
+  });
 }
+
 
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
   final Dio dio;
@@ -27,6 +33,25 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<String> createServingRequest({
+    required int servingId,
+    String? message,
+  }) async {
+    final response = await dio.post(
+      ApiStringConstants.createRequestUrl,
+      data: {
+        'serving_id': servingId,
+        if (message != null) 'message': message,
+      },
+    );
+
+    if (response.statusCode == 201) {
+      return response.data['message'] ?? "Request created successfully";
+    } else {
+      throw ServerException();
     }
   }
 }

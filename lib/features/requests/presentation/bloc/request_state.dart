@@ -29,3 +29,21 @@ class RequestsErrorState extends RequestsState {
   @override
   List<Object?> get props => [message, statusCode];
 }
+
+class CreateRequestLoadingState extends RequestsState {}
+
+class CreateRequestSuccessState extends RequestsState {
+  final String message;
+  const CreateRequestSuccessState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class CreateRequestErrorState extends RequestsState {
+  final String errorMessage;
+  const CreateRequestErrorState(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}

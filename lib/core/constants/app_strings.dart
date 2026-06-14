@@ -8,5 +8,6 @@
   static const String registerCustomerUrl = '/auth/register-customer';
   static const String searchServingsUrl = '/servings/search';
   static const String getMyRequestsUrl = '/servings/requests/my';
+  static const String createRequestUrl = '/servings/requests';
 }
 

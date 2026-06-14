@@ -5,4 +5,8 @@ import '../entity/request_entity.dart';
 
 abstract class RequestRepository {
   Future<Either<Failure, List<RequestEntity>>> getMyRequests();
+  Future<Either<Failure, String>> createServingRequest({
+    required int servingId,
+    String? message,
+  });
 }

@@ -8,3 +8,13 @@ abstract class RequestsEvent extends Equatable {
 }
 
 class FetchMyRequestsEvent extends RequestsEvent {}
+
+class CreateServingRequestEvent extends RequestsEvent {
+  final int servingId;
+  final String? message;
+
+  const CreateServingRequestEvent({required this.servingId, this.message});
+
+  @override
+  List<Object?> get props => [servingId, message];
+}
