@@ -91,7 +91,8 @@ class _ServiceCommentsPageState extends State<ServiceCommentsPage> {
 
                               print("الرد على التعليق رقم: ${state.comments[index].id}");
                             },
-                          );                      },
+                          );
+                        },
                     );
                   } else if (state is CommentsErrorState) {
                     return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));

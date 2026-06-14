@@ -90,6 +90,7 @@ flutter:
     - assets/images/illustrations/
     - assets/images/rewards/
     - assets/images/prizes/
+    - assets/images/service/
     - assets/images/complaints/submit_complaint.png
     - assets/icons/logo.png
     - assets/icons/Logo_01.png

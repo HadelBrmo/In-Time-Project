@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/assets_image.dart';
 import '../../domain/entities/service_entity.dart';
 import '../pages/serviceDetailsPage.dart';
 
@@ -47,12 +48,12 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
               borderRadius: BorderRadius.circular(12),
               color: AppColors.secondaryColor.withOpacity(0.6),
             ),
-            child: serving.imageUrl != null && serving.imageUrl!.isNotEmpty
-                ? ClipRRect(
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(serving.imageUrl!, fit: BoxFit.cover),
-            )
-                : const SizedBox.shrink(),
+              child: serving.imageUrl != null && serving.imageUrl!.isNotEmpty
+                  ? Image.network(serving.imageUrl!, fit: BoxFit.cover)
+                  : Image.asset(AssetsImage.constantImageForService, fit: BoxFit.cover),
+            ),
           ),
           SizedBox(width: width * 0.03),
 

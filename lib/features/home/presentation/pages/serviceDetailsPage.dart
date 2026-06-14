@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/assets_image.dart';
 import '../../../../core/constants/mediaQuery.dart';
 import '../../../../injection_container.dart';
 import '../../../requests/presentation/widgets/buildDisabledButton.dart';
@@ -145,18 +146,11 @@ class ServiceDetailsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: service.imageUrl != null && service.imageUrl!.isNotEmpty
                           ? Image.network(service.imageUrl!, fit: BoxFit.cover)
-                          : Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.secondaryColor.withOpacity(0.6),
-                        ),
-                        child: Icon(
-                          Icons.image_not_supported_outlined,
-                          color: AppColors.primaryColor.withOpacity(0.6),
-                          size: media.width * 0.12,
-                        ),
-                      ),
+                          : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(AssetsImage.constantImageForService, fit: BoxFit.cover),
                     ),
-                  ),
+                  ),),
                   SizedBox(height: media.height * 0.025),
                   Container(
                     width: double.infinity,

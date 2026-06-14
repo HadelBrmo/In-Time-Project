@@ -34,6 +34,37 @@ Widget buildCommentCard(
     }
   }
 
+  List<TextSpan> _buildCommentContentSpans(String content, bool isDarkMode) {
+    final List<TextSpan> spans = [];
+    final List<String> words = content.split(' ');
+    final defaultColor = isDarkMode ? AppColors.greyColor : Colors.black87;
+
+    for (int i = 0; i < words.length; i++) {
+      final word = words[i];
+      final space = i == words.length - 1 ? "" : " ";
+
+      if (word.startsWith('@')) {
+        spans.add(
+          TextSpan(
+            text: '$word$space',
+            style: const TextStyle(
+              color: Colors.blueAccent,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+      } else {
+        spans.add(
+          TextSpan(
+            text: '$word$space',
+            style: TextStyle(color: defaultColor),
+          ),
+        );
+      }
+    }
+    return spans;
+  }
+
   final double leftPadding = comment.depth > 0 ? media.width * 0.08 : 0.0;
   final double rightPadding = comment.depth > 0 ? 0.0 : 0.0;
 
@@ -98,10 +129,14 @@ Widget buildCommentCard(
           ],
         ),
         SizedBox(height: media.height * 0.01),
-        Text(
-          comment.content,
-          style: TextStyle(fontSize: 14, color: isDarkMode ? AppColors.greyColor : Colors.black87, height: 1.4),
+
+        RichText(
+          text: TextSpan(
+            style: const TextStyle(fontSize: 14, height: 1.4),
+            children: _buildCommentContentSpans(comment.content, isDarkMode),
+          ),
         ),
+
         SizedBox(height: media.height * 0.015),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,16 +157,15 @@ Widget buildCommentCard(
             Row(
               children: [
                 buildReactionIcon(
-                  icon:comment.likesCount>0? Icons.thumb_up:Icons.thumb_up_alt_outlined,
+                  icon: comment.likesCount > 0 ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
                   count: comment.likesCount.toString(),
                   onTap: () {
                     context.read<CommentBloc>().add(LikeCommentEvent(comment.id));
                   },
                 ),
                 const SizedBox(width: 15),
-
                 buildReactionIcon(
-                  icon: comment.dislikesCount>0?Icons.thumb_down:Icons.thumb_down_alt_outlined,
+                  icon: comment.dislikesCount > 0 ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
                   count: comment.dislikesCount.toString(),
                   onTap: () {
                     context.read<CommentBloc>().add(DislikeCommentEvent(comment.id));
