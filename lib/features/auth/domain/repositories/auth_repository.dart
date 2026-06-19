@@ -6,6 +6,7 @@ import '../entities/login_auth_entity.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, LoginAuthEntity>> login({required String email, required String password,});
+  Future<Either<Failure, LoginAuthEntity>> refreshToken({required String refreshToken});
   Future<void> sendOtp({required String email});
   Future<Either<Failure, Unit>> register({
     required String fullName,
@@ -20,4 +21,3 @@ abstract class AuthRepository {
     File? profilePicture,
   });
 }
-

@@ -87,7 +87,12 @@ Future<void> init() async {
   // ==================== 3. Repositories (LazySingleton) ====================
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(remoteDataSource: sl()));
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl()));
+
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(
+    remoteDataSource: sl(),
+    sharedPreferences: sl(),
+  ));
+
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl()));
 
   // ==================== 4. Data Sources (LazySingleton) ====================

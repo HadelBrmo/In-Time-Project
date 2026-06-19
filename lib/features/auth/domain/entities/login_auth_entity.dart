@@ -3,10 +3,15 @@ import 'package:equatable/equatable.dart';
 
 class LoginAuthEntity extends Equatable {
   final String token;
+  final String? refreshToken;
+  final int? expiresIn;
 
-  const LoginAuthEntity({required this.token});
+  const LoginAuthEntity({
+    required this.token,
+    this.refreshToken,
+    this.expiresIn,
+  });
 
   @override
-  List<Object?> get props => [token];
+  List<Object?> get props => [token, refreshToken, expiresIn];
 }
-
