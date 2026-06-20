@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../constants/app_colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -14,18 +13,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.leading,
     this.actions,
-     this.centerTitle=true,
+    this.centerTitle = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color:  AppColors.primaryColor,
+        color: AppColors.primaryColor.withOpacity(isDarkMode ? 0.78 : 0.94),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30.r),
           bottomRight: Radius.circular(30.r),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          )
+        ],
       ),
       child: AppBar(
         title: DefaultTextStyle(
@@ -33,13 +41,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            shadows: [
+              Shadow(
+                color: Colors.black.withOpacity(0.15),
+                offset: const Offset(0, 1),
+                blurRadius: 2,
+              ),
+            ],
           ),
           child: title,
-          ),
-        centerTitle: true,
+        ),
+        centerTitle: centerTitle,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white, size: 22.sp),
+        iconTheme: const IconThemeData(color: Colors.white),
         leading: leading,
         actions: actions,
       ),

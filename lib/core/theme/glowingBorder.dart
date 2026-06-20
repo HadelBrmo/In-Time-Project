@@ -90,7 +90,7 @@ class _GlowPainter extends CustomPainter {
       ).createShader(rect);
 
     final shadowPaint = Paint()
-      ..strokeWidth = strokeWidth * 2
+      ..strokeWidth = strokeWidth * 3
       ..style = PaintingStyle.stroke
       ..shader = SweepGradient(
         colors: colors,

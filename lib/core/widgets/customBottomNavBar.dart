@@ -23,8 +23,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     required IconData icon,
     required String label,
     required int index,
+    required bool isDarkMode,
   }) {
     final bool isSelected = _currentIndex == index;
+
+    final Color itemColor = isSelected
+        ? Colors.white
+        : (isDarkMode ? Colors.white.withOpacity(0.55) : Colors.white.withOpacity(0.75));
+
     return InkWell(
       onTap: () {
         setState(() {
@@ -39,14 +45,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         children: [
           Icon(
             icon,
-            color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+            color: itemColor,
             size: 26.sp,
           ),
           SizedBox(height: 4.h),
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+              color: itemColor,
               fontSize: 12.sp,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
@@ -58,6 +64,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     final List<Widget> screens = [
       ProfilePage(),
       const Center(child: Text("صفحة لوحة الشرف")),
@@ -66,7 +74,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     ];
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: IndexedStack(
         index: _currentIndex,
@@ -85,7 +93,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       bottomNavigationBar: BottomAppBar(
-        color: AppColors.primaryColor,
+        color: AppColors.primaryColor.withOpacity(isDarkMode ? 0.82 : 0.95),
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.h,
         clipBehavior: Clip.antiAlias,
@@ -97,17 +105,17 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             children: [
               Row(
                 children: [
-                  _buildNavItem(icon: Icons.person_outline, label: "الشخصية", index: 0),
+                  _buildNavItem(icon: Icons.person_outline, label: "الشخصية", index: 0, isDarkMode: isDarkMode),
                   SizedBox(width: 35.w),
-                  _buildNavItem(icon: Icons.emoji_events_outlined, label: "لوحة الشرف", index: 1),
+                  _buildNavItem(icon: Icons.emoji_events_outlined, label: "لوحة الشرف", index: 1, isDarkMode: isDarkMode),
                 ],
               ),
               SizedBox(width: 40.w),
               Row(
                 children: [
-                  _buildNavItem(icon: Icons.access_time, label: "ساعاتي", index: 2),
+                  _buildNavItem(icon: Icons.access_time, label: "ساعاتي", index: 2, isDarkMode: isDarkMode),
                   SizedBox(width: 35.w),
-                  _buildNavItem(icon: Icons.home_outlined, label: "الرئيسية", index: 3),
+                  _buildNavItem(icon: Icons.home_outlined, label: "الرئيسية", index: 3, isDarkMode: isDarkMode),
                 ],
               ),
             ],
