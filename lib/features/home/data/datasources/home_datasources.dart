@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
-import '../../../strategies/data/models/service_model.dart';
+import '../models/service_item_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<ServiceModel>> searchServings({
@@ -11,6 +8,8 @@ abstract class HomeRemoteDataSource {
     int? paymentUnitId,
     int? servingCategoryId,
     String? name,
+    int? skip,
+    int? take,
   });
 }
 
@@ -25,23 +24,22 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     int? paymentUnitId,
     int? servingCategoryId,
     String? name,
+    int? skip,
+    int? take,
   }) async {
 
-    dynamic finalBody;
-    if (servingTypeId == null && paymentUnitId == null && servingCategoryId == null && (name == null || name.isEmpty)) {
-      finalBody = [];
-    } else {
-      finalBody = {
-        if (servingTypeId != null) 'serving_type_id': servingTypeId,
-        if (paymentUnitId != null) 'payment_unit_id': paymentUnitId,
-        if (servingCategoryId != null) 'serving_category_id': servingCategoryId,
-        if (name != null && name.trim().isNotEmpty) 'name': name,
-      };
-    }
+    final Map<String, dynamic> requestBody = {
+      'serving_type_id': servingTypeId,
+      'payment_unit_id': paymentUnitId,
+      'serving_category_id': servingCategoryId,
+      'name': (name != null && name.trim().isNotEmpty) ? name : null,
+      'skip': skip,
+      'take': take,
+    };
 
     final response = await dio.post(
       '/servings/search',
-      data: finalBody,
+      data: requestBody,
     );
 
     if (response.statusCode == 200) {

@@ -8,5 +8,7 @@ abstract class HomeRepository {
     int? paymentUnitId,
     int? servingCategoryId,
     String? name,
+    int? skip,
+    int? take,
   });
 }

@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 // Chat Features
 import 'core/constants/app_strings.dart';
 import 'features/auth/domain/usecases/sendOtpUseCase.dart';
@@ -18,7 +18,7 @@ import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 
 // Services/Strategies Features
 import 'features/home/data/datasources/home_datasources.dart';
-import 'features/home/data/repositories/home_repository_impl.dart';
+import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemoteDataSourceImpl;
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
@@ -102,6 +102,8 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
 
   // ==================== 5. External Libraries ====================
+  final sharedPrefs = await SharedPreferences.getInstance();
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPrefs);
   if (!sl.isRegistered<Dio>()) {
     final dio = Dio(
       BaseOptions(
@@ -115,12 +117,15 @@ Future<void> init() async {
       ),
     );
 
+
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          String? token = "18|kOSPXN3msdOPAkLQMrZh4Phr3ys5ZvrdcDolGynj8932f4fd";
+          final prefs = sl<SharedPreferences>();
+          String? token = prefs.getString('token');
 
-          if (token != null) {
+
+          if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
 

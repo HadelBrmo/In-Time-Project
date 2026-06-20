@@ -12,12 +12,16 @@ class SearchServingsUseCase {
     int? paymentUnitId,
     int? servingCategoryId,
     String? name,
+    int? skip,
+    int? take,
   }) async {
     final result = await repository.searchServings(
       servingTypeId: servingTypeId,
       paymentUnitId: paymentUnitId,
       servingCategoryId: servingCategoryId,
       name: name,
+      skip: skip,
+      take: take,
     );
 
     return result.fold(

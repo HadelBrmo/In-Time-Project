@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/service_entity.dart';
 import '../../domain/repositories/home_repository.dart';
@@ -15,6 +16,8 @@ class HomeRepositoryImpl implements HomeRepository {
     int? paymentUnitId,
     int? servingCategoryId,
     String? name,
+    int? skip,
+    int? take,
   }) async {
     try {
       final remoteServings = await remoteDataSource.searchServings(
@@ -22,33 +25,13 @@ class HomeRepositoryImpl implements HomeRepository {
         paymentUnitId: paymentUnitId,
         servingCategoryId: servingCategoryId,
         name: name,
+        skip: skip,
+        take: take,
       );
 
-      final List<ServicingEntity> servingsList = remoteServings
-          .map((model) => ServicingEntity(
-                id: model.id,
-                title: model.title,
-                description: model.description,
-                categoryId: model.categoryId,
-                costAmount: model.costAmount,
-                unitId: model.unitId,
-                locationAddress: model.locationAddress,
-                locationLat: model.locationLat,
-                locationLng: model.locationLng,
-                meetingType: model.meetingType,
-                imageUrl: model.imageUrl,
-                userFullName: model.userFullName,
-                categoryName: model.categoryName,
-                unitName: model.unitName,
-                servingTypeName: model.servingTypeName,
-              ))
-          .toList();
-
-      return Right(servingsList);
-    }  catch (e, stackTrace) {
-  print("🚨 Error in HomeRepositoryImpl: $e");
-  print("❌ StackTrace: $stackTrace");
-  return Left(ServerFailure());
-}
+      return Right(remoteServings);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
   }
 }

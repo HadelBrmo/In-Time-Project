@@ -19,6 +19,7 @@ class ServicingEntity extends Equatable {
   final String? categoryName;
   final String? unitName;
   final String? servingTypeName;
+  final bool isRequested;
 
   const ServicingEntity({
     this.id,
@@ -37,25 +38,14 @@ class ServicingEntity extends Equatable {
     this.categoryName,
     this.unitName,
     this.servingTypeName,
+    this.isRequested = false,
   });
 
   @override
   List<Object?> get props => [
-    id,
-    title,
-    description,
-    categoryId,
-    costAmount,
-    unitId,
-    locationAddress,
-    locationLat,
-    locationLng,
-    meetingType,
-    imageUrl,
-    userFullName,
-    userEmail,
-    categoryName,
-    unitName,
-    servingTypeName,
+    id, title, description, categoryId, costAmount, unitId,
+    locationAddress, locationLat, locationLng, meetingType, imageUrl,
+    userFullName, userEmail, categoryName, unitName, servingTypeName,
+    isRequested,
   ];
 }

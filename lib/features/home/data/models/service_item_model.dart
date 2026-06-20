@@ -19,6 +19,7 @@ class ServiceModel extends ServicingEntity {
     super.categoryName,
     super.unitName,
     super.servingTypeName,
+    super.isRequested,
   });
 
   Map<String, dynamic> toJson() {
@@ -39,6 +40,7 @@ class ServiceModel extends ServicingEntity {
       'category_name': categoryName,
       'unit_name': unitName,
       'serving_type_name': servingTypeName,
+      'requested': isRequested,
     };
   }
 
@@ -55,12 +57,13 @@ class ServiceModel extends ServicingEntity {
       locationLng: json['location_lng'] != null ? double.parse(json['location_lng'].toString()) : 0.0,
       meetingType: json['meeting_type'],
       imageUrl: json['image_url'],
-
       userFullName: json['user_full_name'] ?? json['userFullName'],
       userEmail: json['user_email'] ?? json['userEmail'],
       unitName: json['unit_name'] ?? json['unitName'],
       servingTypeName: json['serving_type_name'] ?? json['servingTypeName'],
       categoryName: json['category_name'] ?? json['categoryName'],
+
+      isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1),
     );
   }
 }
