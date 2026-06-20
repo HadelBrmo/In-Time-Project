@@ -8,6 +8,7 @@ import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/wallet/presentation/pages/hours_balance_page.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -69,7 +70,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     final List<Widget> screens = [
       ProfilePage(),
       const Center(child: Text("صفحة لوحة الشرف")),
-      const Center(child: Text("صفحة ساعاتي")),
+      HoursBalancePage(),
       const HomeScreen(),
     ];
 

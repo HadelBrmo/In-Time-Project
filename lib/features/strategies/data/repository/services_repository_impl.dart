@@ -31,7 +31,6 @@ class ServicesRepositoryImpl implements ServicesRepository {
       locationLat: service.locationLat,
       locationLng: service.locationLng,
       meetingType: service.meetingType,
-
     );
 
     try {
@@ -47,7 +46,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
         message: e.message,
       ));
     } catch (e) {
-      return Left(ServerFailure() as Failure);
+      return Left(ServerFailure());
     }
   }
 
@@ -59,7 +58,19 @@ class ServicesRepositoryImpl implements ServicesRepository {
     } on ServerExceptionWithDetails catch (e) {
       return Left(ServerFailureWithDetails(message: e.message));
     } catch (e) {
-      return Left(ServerFailure() as Failure);
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ServiceEntity>> getServiceDetails(int serviceId) async {
+    try {
+      final result = await remoteDataSource.getServiceDetails(serviceId);
+      return Right(result);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure());
     }
   }
 }

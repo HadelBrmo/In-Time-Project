@@ -9,5 +9,7 @@
   static const String searchServingsUrl = '/servings/search';
   static const String getMyRequestsUrl = '/servings/requests/my';
   static const String createRequestUrl = '/servings/requests';
+  static const String getServingDetailsUrl = '/servings/';
+  static const String walletsUrl = '/wallets';
 }
 

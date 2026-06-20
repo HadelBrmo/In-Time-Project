@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -27,3 +26,12 @@ class AddServiceSubmittedEvent extends ServicesEvent {
 }
 
 class GetPaymentUnitsEvent extends ServicesEvent {}
+
+class GetServiceDetailsEvent extends ServicesEvent {
+  final int serviceId;
+
+  const GetServiceDetailsEvent(this.serviceId);
+
+  @override
+  List<Object?> get props => [serviceId];
+}

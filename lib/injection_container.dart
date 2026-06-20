@@ -41,6 +41,7 @@ import 'features/strategies/domain/usecases/comment/react_like_usecase.dart';
 import 'features/strategies/domain/usecases/comment/reply_to_comment_usecase.dart';
 import 'features/strategies/domain/usecases/service/add_service_usecase.dart';
 import 'features/strategies/domain/usecases/service/get_payment_units_usecase.dart';
+import 'features/strategies/domain/usecases/service/get_service_details_usecase.dart';
 import 'features/strategies/presentation/bloc/comment/comment_bloc.dart';
 import 'features/strategies/presentation/bloc/service/services_bloc.dart';
 import 'core/network/decorators/logging_interceptor.dart';
@@ -51,6 +52,11 @@ import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
+import 'features/wallet/data/datasources/wallet_remote_data_source.dart';
+import 'features/wallet/data/repository/wallet_repository_impl.dart';
+import 'features/wallet/domain/repository/wallet_repository.dart';
+import 'features/wallet/domain/usecases/get_my_wallets_usecase.dart';
+import 'features/wallet/presentation/bloc/wallet_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -67,6 +73,7 @@ Future<void> init() async {
         () => ServicesBloc(
       addServiceUseCase: sl(),
       getPaymentUnitsUseCase: sl(),
+      getServiceDetailsUseCase: sl(),
     ),
   );
   sl.registerFactory(() => LoginBloc(loginUseCase: sl()));
@@ -82,6 +89,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
+  sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
   sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
 
   // ==================== 3. Repositories (LazySingleton) ====================
@@ -187,5 +195,15 @@ Future<void> init() async {
         () => RequestRemoteDataSourceImpl(dio: sl()),
   );
 
+// Bloc
+  sl.registerFactory(() => WalletBloc(getMyWalletsUseCase: sl()));
+
+// Use cases
+  sl.registerLazySingleton(() => GetMyWalletsUseCase(sl()));
+
+// Repository
+  sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(remoteDataSource: sl()));
+
+  sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
 
 }

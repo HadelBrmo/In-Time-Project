@@ -12,4 +12,6 @@ abstract class ServicesRepository {
   });
 
   Future<Either<Failure, List<PaymentUnitEntity>>> getPaymentUnits();
+
+  Future<Either<Failure, ServiceEntity>> getServiceDetails(int serviceId);
 }

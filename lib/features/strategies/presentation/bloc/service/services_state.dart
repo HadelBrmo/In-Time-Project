@@ -1,7 +1,7 @@
-
 import 'package:equatable/equatable.dart';
 
 import '../../../domain/entity/payment_unit_entity.dart';
+import '../../../domain/entity/service_entity.dart';
 
 abstract class ServicesState extends Equatable {
   const ServicesState();
@@ -33,7 +33,29 @@ class GetPaymentUnitsSuccessState extends ServicesState {
   @override
   List<Object?> get props => [units];
 }
+
 class GetPaymentUnitsErrorState extends ServicesState {
   final String message;
   const GetPaymentUnitsErrorState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class ServiceDetailsLoading extends ServicesState {}
+
+class ServiceDetailsLoaded extends ServicesState {
+  final ServiceEntity service;
+  const ServiceDetailsLoaded(this.service);
+
+  @override
+  List<Object?> get props => [service];
+}
+
+class ServiceDetailsError extends ServicesState {
+  final String message;
+  const ServiceDetailsError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

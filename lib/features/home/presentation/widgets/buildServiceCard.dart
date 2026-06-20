@@ -76,7 +76,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ServiceDetailsPage(service: serving),
+              builder: (_) => ServiceDetailsPage(serviceId: serving.id!),
             ),
           );
         },

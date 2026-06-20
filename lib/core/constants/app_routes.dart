@@ -95,34 +95,24 @@ class AppRoutes {
 
       case serviceDetailsPage:
         final args = settings.arguments;
-        final ServicingEntity service;
+        int serviceId = 0;
         bool isFromRequests = false;
 
-        if (args is ServicingEntity) {
-          service = args;
-          isFromRequests = false;
+        if (args is int) {
+          serviceId = args;
+        } else if (args is ServicingEntity) {
+          serviceId = args.id ?? 0;
         } else if (args is RequestServingEntity) {
-          service = ServicingEntity(
-            id: args.id,
-            title: args.title,
-            description: args.description,
-            imageUrl: args.imageUrl,
-            userFullName: args.userFullName,
-            servingTypeName: args.servingTypeName,
-            costAmount: args.costAmount,
-            unitName: args.unitName,
-            categoryName: args.categoryName,
-            meetingType: args.meetingType,
-            locationAddress: args.locationAddress,
-          );
+          serviceId = args.id ?? 0;
           isFromRequests = true;
-        } else {
-          service = args as ServicingEntity;
+        } else if (args is Map<String, dynamic>) {
+          serviceId = args['serviceId'] ?? 0;
+          isFromRequests = args['isFromRequests'] ?? false;
         }
 
         return MaterialPageRoute(
           builder: (_) => ServiceDetailsPage(
-            service: service,
+            serviceId: serviceId,
             isFromRequests: isFromRequests,
           ),
           settings: settings,

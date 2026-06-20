@@ -13,6 +13,8 @@ abstract class ServicesRemoteDataSource {
   });
 
   Future<List<PaymentUnitModel>> getPaymentUnits();
+
+  Future<ServiceModel> getServiceDetails(int serviceId);
 }
 
 class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
@@ -80,6 +82,27 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       }
     } catch (e) {
       throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب وحدات الدفع');
+    }
+  }
+
+  @override
+  Future<ServiceModel> getServiceDetails(int serviceId) async {
+    try {
+      final response = await dio.get('/servings/$serviceId');
+      if (response.statusCode == 200) {
+        return ServiceModel.fromJson(response.data['data']);
+      } else {
+        throw ServerExceptionWithDetails(
+          message: response.data['message'] ?? 'فشل جلب تفاصيل الخدمة',
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data['message'] ?? 'فشل الاتصال بالسيرفر',
+      );
+    } catch (e) {
+      throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب تفاصيل الخدمة');
     }
   }
 }

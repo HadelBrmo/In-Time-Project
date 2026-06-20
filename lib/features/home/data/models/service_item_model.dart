@@ -50,11 +50,14 @@ class ServiceModel extends ServicingEntity {
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       categoryId: json['category_id']?.toString() ?? '',
+
       costAmount: json['cost_amount']?.toString() ?? '0',
       unitId: json['unit_id']?.toString(),
       locationAddress: json['location_address'] ?? '',
-      locationLat: json['location_lat'] != null ? double.parse(json['location_lat'].toString()) : 0.0,
-      locationLng: json['location_lng'] != null ? double.parse(json['location_lng'].toString()) : 0.0,
+
+      locationLat: json['location_lat'] != null ? double.tryParse(json['location_lat'].toString()) : 0.0,
+      locationLng: json['location_lng'] != null ? double.tryParse(json['location_lng'].toString()) : 0.0,
+
       meetingType: json['meeting_type'],
       imageUrl: json['image_url'],
       userFullName: json['user_full_name'] ?? json['userFullName'],
@@ -63,7 +66,7 @@ class ServiceModel extends ServicingEntity {
       servingTypeName: json['serving_type_name'] ?? json['servingTypeName'],
       categoryName: json['category_name'] ?? json['categoryName'],
 
-      isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1),
+      isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1 || json['requested'] == true),
     );
   }
 }
