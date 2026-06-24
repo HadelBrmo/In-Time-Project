@@ -10,6 +10,7 @@ import '../../features/home/domain/entities/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/home/presentation/pages/serviceDetailsPage.dart';
+import '../../features/receivedRequests/presentation/bloc/received_requests_bloc.dart';
 import '../../features/requests/domain/entity/request_entity.dart';
 import '../../features/requests/presentation/bloc/request_bloc.dart';
 import '../../features/requests/presentation/pages/my_requests_page.dart';
@@ -86,8 +87,15 @@ class AppRoutes {
 
       case myRequestsPage:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => sl<RequestsBloc>(),
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => sl<RequestsBloc>(),
+              ),
+              BlocProvider(
+                create: (context) => sl<ReceivedRequestsBloc>(),
+              ),
+            ],
             child: const MyRequestsPage(),
           ),
           settings: settings,

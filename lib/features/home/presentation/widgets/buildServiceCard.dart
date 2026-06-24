@@ -61,7 +61,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
   }
 
   return Padding(
-    padding: EdgeInsets.only(bottom: height * 0.02),
+    padding: EdgeInsets.only(bottom: height * 0.03),
     child: GlowingBorder(
       glowColors: [
         AppColors.primaryColor,
@@ -82,7 +82,8 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
         },
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          padding: EdgeInsets.all(width * 0.03),
+          height: 120,
+          padding: EdgeInsets.all(width * 0.03,),
           decoration: BoxDecoration(
             color: isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor,
             border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A), width: 1) : null,
@@ -101,8 +102,8 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
               Stack(
                 children: [
                   Container(
-                    width: width * 0.23,
-                    height: width * 0.23,
+                    width: width * 0.25,
+                    height: width * 0.25,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: AppColors.secondaryColor.withOpacity(0.6),
@@ -115,8 +116,8 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
                     ),
                   ),
                   Positioned(
-                    top: 4,
-                    left: 4,
+                    top: 2,
+                    left: 2,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
@@ -133,7 +134,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
                         typeText,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -155,7 +156,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
                             serving.userFullName ?? "مستخدم النظام",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: width * 0.042,
+                              fontSize: width * 0.044,
                               color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
                             ),
                             maxLines: 1,
@@ -192,7 +193,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
                           child: Text(
                             serving.title,
                             style: TextStyle(
-                              fontSize: width * 0.036,
+                              fontSize: width * 0.038,
                               color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
                               fontWeight: FontWeight.w500,
                             ),
@@ -217,7 +218,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor,
-                                fontSize: width * 0.036,
+                                fontSize: width * 0.038,
                               ),
                             ),
                           ],
@@ -231,7 +232,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
                                 child: Text(
                                   displayAddress,
                                   style: TextStyle(
-                                    fontSize: width * 0.033,
+                                    fontSize: width * 0.035,
                                     color: AppColors.greyColor,
                                   ),
                                   maxLines: 1,

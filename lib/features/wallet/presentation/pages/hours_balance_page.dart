@@ -27,7 +27,7 @@ class HoursBalancePage extends StatelessWidget {
       child: BlocProvider(
         create: (context) => sl<WalletBloc>()..add(GetMyWalletsEvent()),
         child: Scaffold(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Colors.transparent,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: CustomAppBar(

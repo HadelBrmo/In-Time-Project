@@ -5,13 +5,13 @@ import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../core/constants/enums.dart';
 import '../../domain/entity/request_entity.dart';
 
-
 Widget buildRequestCard({
   required BuildContext context,
   required RequestEntity request,
   required MediaQueryHelper media,
   required bool isDarkMode,
   required VoidCallback onTap,
+  required VoidCallback onLongPress,
 }) {
   final cardColor = isDarkMode ? const Color(0xFF252525) : Colors.white;
   final titleColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
@@ -50,6 +50,7 @@ Widget buildRequestCard({
       borderRadius: BorderRadius.circular(media.width * 0.035),
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         child: IntrinsicHeight(
           child: Row(
             children: [

@@ -74,7 +74,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildLabel("البريد الإلكتروني"),
+                        buildLabel(context,"البريد الإلكتروني"),
                         CustomTextFormField(
                           fillColor: AppColors.whiteColor,
                           controller: _emailController,
@@ -82,7 +82,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                           validator: Validators.validateEmail,
                         ),
                         SizedBox(height: media.height * 0.02),
-                        buildLabel("رقم الموبايل"),
+                        buildLabel(context,"رقم الموبايل"),
                         Directionality(
                           textDirection: TextDirection.ltr,
                           child: IntlPhoneField(
@@ -118,7 +118,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                         //   hintText: "ادخل الرقم الوطني",
                         // ),
                         // SizedBox(height: media.height * 0.02),
-                        buildLabel("كلمة المرور"),
+                        buildLabel(context,"كلمة المرور"),
                         CustomTextFormField(
                           fillColor: AppColors.whiteColor,
                           controller: _passwordController,
@@ -127,7 +127,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                           validator: Validators.validatePassword,
                         ),
                         SizedBox(height: media.height * 0.02),
-                        buildLabel("تأكيد كلمة المرور"),
+                        buildLabel(context,"تأكيد كلمة المرور"),
                         CustomTextFormField(
                           fillColor: AppColors.whiteColor,
                           controller: _confirmPasswordController,

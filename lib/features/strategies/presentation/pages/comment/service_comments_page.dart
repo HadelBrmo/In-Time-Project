@@ -45,7 +45,7 @@ class _ServiceCommentsPageState extends State<ServiceCommentsPage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: scaffoldBg,
+        backgroundColor: Colors.transparent,
         appBar: CustomAppBar(title: const Text('التعليقات')),
         body: Column(
           children: [

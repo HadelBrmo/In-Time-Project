@@ -69,7 +69,7 @@ class _SignUpPage3State extends State<SignUpPage3> {
                       ),
 
                       const SizedBox(height: 30),
-                      buildLabel("نوع الوثيقة"),
+                      buildLabel(context,"نوع الوثيقة"),
 
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 15),

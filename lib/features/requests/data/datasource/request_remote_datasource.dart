@@ -9,6 +9,7 @@ abstract class RequestRemoteDataSource {
     required int servingId,
     String? message,
   });
+  Future<String> deleteRequest(int requestId);
 }
 
 
@@ -52,6 +53,24 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
       return response.data['message'] ?? "Request created successfully";
     } else {
       throw ServerException();
+    }
+  }
+
+  @override
+  Future<String> deleteRequest(int requestId) async {
+    try {
+      final response = await dio.delete('${ApiStringConstants.baseUrl}${ApiStringConstants.deleteRequestUrl}$requestId');
+      if (response.statusCode == 200) {
+        return response.data['message'] ?? "تم حذف الطلب بنجاح";
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          type: DioExceptionType.badResponse,
+        );
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

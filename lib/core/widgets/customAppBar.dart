@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/app_colors.dart';
 
+
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
   final Widget? leading;
@@ -35,32 +37,48 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           )
         ],
       ),
-      child: AppBar(
-        title: DefaultTextStyle(
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                color: Colors.black.withOpacity(0.15),
-                offset: const Offset(0, 1),
-                blurRadius: 2,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30.r),
+                bottomRight: Radius.circular(30.r),
               ),
-            ],
+              child: const SizedBox(),
+            ),
           ),
-          child: title,
-        ),
-        centerTitle: centerTitle,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        leading: leading,
-        actions: actions,
+
+          SafeArea(
+            child: AppBar(
+              title: DefaultTextStyle(
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withOpacity(0.15),
+                      offset: const Offset(0, 1),
+                      blurRadius: 2,
+                    ),
+                  ],
+                ),
+                child: title,
+              ),
+              centerTitle: centerTitle,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Colors.white),
+              leading: leading,
+              actions: actions,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(55.h);
+  Size get preferredSize => Size.fromHeight(65.h);
 }

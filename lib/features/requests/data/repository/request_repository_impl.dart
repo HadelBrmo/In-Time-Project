@@ -45,4 +45,15 @@ class RequestRepositoryImpl implements RequestRepository {
       return Left(ServerFailure());
     }
   }
+  @override
+  Future<Either<Failure, String>> deleteRequest(int requestId) async {
+    try {
+      final resultMessage = await remoteDataSource.deleteRequest(requestId);
+      return Right(resultMessage);
+    } on DioException catch (e) {
+      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

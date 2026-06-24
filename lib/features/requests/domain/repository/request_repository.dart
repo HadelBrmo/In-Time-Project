@@ -9,4 +9,5 @@ abstract class RequestRepository {
     required int servingId,
     String? message,
   });
+  Future<Either<Failure, String>> deleteRequest(int requestId);
 }

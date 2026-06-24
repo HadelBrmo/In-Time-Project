@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:in_time/core/constants/app_colors.dart';
-import 'package:in_time/core/constants/mediaQuery.dart'; // استيراد الـ MediaQuery المساعد
+import 'package:in_time/core/constants/mediaQuery.dart';
 import 'package:in_time/core/widgets/buildLabel.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import 'package:in_time/core/widgets/custom_button.dart';
@@ -14,12 +14,11 @@ class EditProfilePage extends StatelessWidget {
     final media = MediaQueryHelper(context);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final backgroundColor = isDarkMode ? Theme.of(context).scaffoldBackgroundColor : AppColors.whiteColor;
     final avatarBgColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
     final shadowColor = isDarkMode ? Colors.black.withOpacity(0.3) : AppColors.blackColor.withOpacity(.04);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: Colors.transparent,
       appBar: CustomAppBar(
         title: const Text(
           'تعديل الملف الشخصي',
@@ -95,7 +94,7 @@ class EditProfilePage extends StatelessWidget {
             SizedBox(height: media.height * 0.04),
             Align(
               alignment: Alignment.centerRight,
-              child: buildLabel('الاسم الثلاثي'),
+              child: buildLabel(context,'الاسم الثلاثي'),
             ),
             CustomTextFormField(
               hintText: 'براءة علي الأحمد',
@@ -104,7 +103,7 @@ class EditProfilePage extends StatelessWidget {
             SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
-              child: buildLabel('الوظيفة الحالية'),
+              child: buildLabel(context,'الوظيفة الحالية'),
             ),
             CustomTextFormField(
               hintText: 'هندسة معلوماتية',
@@ -113,7 +112,7 @@ class EditProfilePage extends StatelessWidget {
             SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
-              child: buildLabel('العنوان'),
+              child: buildLabel(context,'العنوان'),
             ),
             CustomTextFormField(
               hintText: 'ريف دمشق - جديدة عرطوز',
@@ -122,7 +121,7 @@ class EditProfilePage extends StatelessWidget {
             SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
-              child: buildLabel('الجنس'),
+              child: buildLabel(context,'الجنس'),
             ),
             CustomTextFormField(
               hintText: 'أنثى',
@@ -131,7 +130,7 @@ class EditProfilePage extends StatelessWidget {
             SizedBox(height: media.height * 0.025),
             Align(
               alignment: Alignment.centerRight,
-              child: buildLabel('تاريخ الميلاد'),
+              child: buildLabel(context,'تاريخ الميلاد'),
             ),
             CustomTextFormField(
               hintText: '2003 / 02 / 07',

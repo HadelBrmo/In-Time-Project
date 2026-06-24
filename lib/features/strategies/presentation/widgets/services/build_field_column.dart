@@ -24,7 +24,7 @@ Widget buildFieldColumn(String label, String hint, {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      if (!isDate) buildLabel(label),
+      if (!isDate) buildLabel(context,label),
 
       if (isMultiDay)
         MultiSelectDaysDropdown(

@@ -18,3 +18,12 @@ class CreateServingRequestEvent extends RequestsEvent {
   @override
   List<Object?> get props => [servingId, message];
 }
+
+class DeleteRequestEvent extends RequestsEvent {
+  final int requestId;
+
+  const DeleteRequestEvent({required this.requestId});
+
+  @override
+  List<Object?> get props => [requestId];
+}

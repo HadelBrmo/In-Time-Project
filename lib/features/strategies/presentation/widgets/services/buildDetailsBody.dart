@@ -150,9 +150,9 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDarkMode ? 0.4 : 0.4),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
+                          color: Colors.black.withOpacity(0.17) ,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
@@ -184,9 +184,9 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                       border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A)) : null,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryColor.withOpacity(0.6),
-                          blurRadius: 3,
-                          offset: const Offset(0, 2),
+                          color: Colors.black.withOpacity(0.17) ,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
@@ -267,9 +267,9 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                       border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A)) : null,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryColor.withOpacity(0.6),
-                          blurRadius: 3,
-                          offset: const Offset(0, 2),
+                          color: Colors.black.withOpacity(0.17) ,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),

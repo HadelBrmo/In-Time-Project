@@ -139,7 +139,7 @@ class _SubmitComplaintPageState
             const SizedBox(height: 14),
 
             buildLabel(
-              'نوع الشكوى',
+              context,'نوع الشكوى',
             ),
 
             const SizedBox(height: 12),
@@ -162,7 +162,7 @@ class _SubmitComplaintPageState
             const SizedBox(height: 18),
 
             buildLabel(
-              'وصف الشكوى',
+              context, 'وصف الشكوى',
             ),
 
             const SizedBox(height: 12),
@@ -198,7 +198,7 @@ class _SubmitComplaintPageState
             const SizedBox(height: 18),
 
             buildLabel(
-              'ارفع صورة أو ملف',
+              context, 'ارفع صورة أو ملف',
             ),
 
             const SizedBox(height: 12),

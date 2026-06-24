@@ -47,3 +47,12 @@ class CreateRequestErrorState extends RequestsState {
   @override
   List<Object?> get props => [errorMessage];
 }
+class RequestDeletedSuccessState extends RequestsState {}
+
+class RequestDeleteErrorState extends RequestsState {
+  final String message;
+  const RequestDeleteErrorState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

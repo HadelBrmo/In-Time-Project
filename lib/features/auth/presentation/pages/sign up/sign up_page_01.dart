@@ -82,7 +82,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              buildLabel("الاسم الثلاثي"),
+                              buildLabel(context,"الاسم الثلاثي"),
                               CustomTextFormField(
                                 fillColor: AppColors.whiteColor,
                                 controller: _nameController,
@@ -90,7 +90,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                 validator: Validators.validateFullName,
                               ),
                               SizedBox(height: media.height * 0.02),
-                              buildLabel("الوظيفة الحالية"),
+                              buildLabel(context,"الوظيفة الحالية"),
                               CustomTextFormField(
                                 fillColor: AppColors.whiteColor,
                                 controller: _jobController,
@@ -98,7 +98,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                 validator: (value) => Validators.validateRequired(value, "الوظيفة الحالية"),
                               ),
                               SizedBox(height: media.height * 0.02),
-                              buildLabel("العنوان"),
+                              buildLabel(context,"العنوان"),
                               CustomTextFormField(
                                 fillColor: AppColors.whiteColor,
                                 controller: _addressController,
@@ -113,7 +113,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        buildLabel("الجنس"),
+                                        buildLabel(context,"الجنس"),
                                         BlocBuilder<SignUpBloc, SignUpState>(
                                           builder: (context, state) =>
                                               buildGenderDropdown(context, state.gender),

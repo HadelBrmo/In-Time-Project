@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             margin: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.04,
-              vertical: screenHeight * 0.015,
+              vertical: screenHeight * 0.019,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),

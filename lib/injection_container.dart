@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,10 +23,17 @@ import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemo
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/receivedRequests/data/datasources/received_requests_remote_datasource.dart';
+import 'features/receivedRequests/data/repository/received_requests_repository_impl.dart';
+import 'features/receivedRequests/domain/repository/received_requests_repository.dart';
+import 'features/receivedRequests/domain/usecases/get_received_requests_usecase.dart';
+import 'features/receivedRequests/presentation/bloc/received_requests_bloc.dart';
+import 'features/receivedRequests/presentation/bloc/received_requests_event.dart';
 import 'features/requests/data/datasource/request_remote_datasource.dart';
 import 'features/requests/data/repository/request_repository_impl.dart';
 import 'features/requests/domain/repository/request_repository.dart';
 import 'features/requests/domain/usecases/create_serving_request_usecase.dart';
+import 'features/requests/domain/usecases/delete_request_usecase.dart';
 import 'features/requests/domain/usecases/get_my_requests_usecase.dart';
 import 'features/requests/presentation/bloc/request_bloc.dart';
 import 'features/strategies/data/datasources/comment_remote_data_source.dart';
@@ -175,11 +183,13 @@ Future<void> init() async {
 
 // تسجيل الـ UseCase
   sl.registerLazySingleton(() => CreateServingRequestUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteRequestUseCase(sl()));
 
   sl.registerFactory(
         () => RequestsBloc(
       getMyRequestsUseCase: sl(),
       createServingRequestUseCase: sl(),
+      deleteRequestUseCase: sl(),
     ),
   );
 // 2. Use Cases
@@ -205,5 +215,22 @@ Future<void> init() async {
   sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(remoteDataSource: sl()));
 
   sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
+
+  // ==================== Feature: Received Requests 🚀 ====================
+  // 1. Bloc
+  sl.registerFactory(() => ReceivedRequestsBloc(getReceivedRequestsUseCase: sl()));
+
+  // 2. Use Cases
+  sl.registerLazySingleton(() => GetReceivedRequestsUseCase(sl()));
+
+  // 3. Repositories
+  sl.registerLazySingleton<ReceivedRequestsRepository>(
+        () => ReceivedRequestsRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // 4. Data Sources
+  sl.registerLazySingleton<ReceivedRequestsRemoteDataSource>(
+        () => ReceivedRequestsRemoteDataSourceImpl(dio: sl()),
+  );
 
 }
