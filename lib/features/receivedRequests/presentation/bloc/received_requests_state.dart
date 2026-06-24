@@ -26,3 +26,17 @@ class ReceivedRequestsErrorState extends ReceivedRequestsState {
   @override
   List<Object?> get props => [message];
 }
+
+class AcceptRequestLoadingState extends ReceivedRequestsState {}
+class AcceptRequestSuccessState extends ReceivedRequestsState {}
+class AcceptRequestErrorState extends ReceivedRequestsState {
+  final String message;
+  const AcceptRequestErrorState(this.message);
+}
+
+class RejectRequestLoadingState extends ReceivedRequestsState {}
+class RejectRequestSuccessState extends ReceivedRequestsState {}
+class RejectRequestErrorState extends ReceivedRequestsState {
+  final String message;
+  const RejectRequestErrorState(this.message);
+}

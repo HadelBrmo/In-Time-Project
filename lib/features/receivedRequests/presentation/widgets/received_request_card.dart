@@ -7,8 +7,8 @@ import '../../domain/entity/received_request_entity.dart';
 class ReceivedRequestCard extends StatelessWidget {
   final ReceivedRequestItemEntity request;
   final String servingTitle;
-  final VoidCallback onAccept;
-  final VoidCallback onReject;
+  final VoidCallback? onAccept;
+  final VoidCallback? onReject;
 
   const ReceivedRequestCard({
     super.key,
@@ -106,51 +106,96 @@ class ReceivedRequestCard extends StatelessWidget {
 
           SizedBox(height: media.height * 0.02),
 
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: media.height * 0.045,
-                  child: ElevatedButton(
-                    onPressed: onAccept,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Text(
-                      "قبول الطلب",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: media.width * 0.03),
-              // زر الرفض
-              Expanded(
-                child: SizedBox(
-                  height: media.height * 0.045,
-                  child: OutlinedButton(
-                    onPressed: onReject,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.redAccent),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      "رفض",
-                      style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _buildActionButtons(media),
         ],
       ),
+    );
+  }
+
+  Widget _buildActionButtons(MediaQueryHelper media) {
+    // 1. حالة تم قبول الطلب
+    if (request.status == 'accepted') {
+      return SizedBox(
+        width: double.infinity,
+        height: media.height * 0.045,
+        child: ElevatedButton(
+          onPressed: null, // معطل لأنه منتهي
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green.withOpacity(0.12),
+            disabledBackgroundColor: Colors.green.withOpacity(0.12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 0,
+          ),
+          child: const Text(
+            "تم قبول الطلب",
+            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    // 2. حالة تم رفض الطلب
+    if (request.status == 'rejected') {
+      return SizedBox(
+        width: double.infinity,
+        height: media.height * 0.045,
+        child: ElevatedButton(
+          onPressed: null, // معطل
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.redAccent.withOpacity(0.12),
+            disabledBackgroundColor: Colors.redAccent.withOpacity(0.12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 0,
+          ),
+          child: const Text(
+            "تم رفض الطلب",
+            style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: media.height * 0.045,
+            child: ElevatedButton(
+              onPressed: onAccept,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                "قبول الطلب",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: media.width * 0.03),
+        Expanded(
+          child: SizedBox(
+            height: media.height * 0.045,
+            child: OutlinedButton(
+              onPressed: onReject,
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.redAccent),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                "رفض",
+                style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

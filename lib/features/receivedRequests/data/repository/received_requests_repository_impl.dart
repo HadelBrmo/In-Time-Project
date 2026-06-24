@@ -21,4 +21,24 @@ class ReceivedRequestsRepositoryImpl implements ReceivedRequestsRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> acceptRequest(int id) async {
+    try {
+      await remoteDataSource.acceptRequest(id);
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> rejectRequest(int id) async {
+    try {
+      await remoteDataSource.rejectRequest(id);
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

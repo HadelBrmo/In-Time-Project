@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/error/exceptions.dart';
 import '../models/received_request_model.dart';
 
 abstract class ReceivedRequestsRemoteDataSource {
   Future<List<ReceivedRequestGroupModel>> getReceivedRequests();
+  Future<void> acceptRequest(int id);
+  Future<void> rejectRequest(int id);
 }
 
 class ReceivedRequestsRemoteDataSourceImpl implements ReceivedRequestsRemoteDataSource {
@@ -27,6 +30,22 @@ class ReceivedRequestsRemoteDataSourceImpl implements ReceivedRequestsRemoteData
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> acceptRequest(int id) async {
+    final response = await dio.put(ApiStringConstants.acceptRequestUrl(id));
+    if (response.statusCode != 200) {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<void> rejectRequest(int id) async {
+    final response = await dio.put(ApiStringConstants.rejectRequestUrl(id));
+    if (response.statusCode != 200) {
+      throw ServerException();
     }
   }
 }

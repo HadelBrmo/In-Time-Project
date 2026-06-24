@@ -12,5 +12,8 @@
   static const String getServingDetailsUrl = '/servings/';
   static const String walletsUrl = '/wallets';
   static const String deleteRequestUrl = '/servings/requests/';
+  static const String getReceivedRequestsUrl = '/servings/requests/received';
+  static String acceptRequestUrl(int id) => '/servings/requests/$id/accept';
+  static String rejectRequestUrl(int id) => '/servings/requests/$id/reject';
 }
 

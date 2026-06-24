@@ -26,7 +26,9 @@ import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/receivedRequests/data/datasources/received_requests_remote_datasource.dart';
 import 'features/receivedRequests/data/repository/received_requests_repository_impl.dart';
 import 'features/receivedRequests/domain/repository/received_requests_repository.dart';
+import 'features/receivedRequests/domain/usecases/accept_request_usecase.dart';
 import 'features/receivedRequests/domain/usecases/get_received_requests_usecase.dart';
+import 'features/receivedRequests/domain/usecases/reject_request_usecase.dart';
 import 'features/receivedRequests/presentation/bloc/received_requests_bloc.dart';
 import 'features/receivedRequests/presentation/bloc/received_requests_event.dart';
 import 'features/requests/data/datasource/request_remote_datasource.dart';
@@ -216,12 +218,18 @@ Future<void> init() async {
 
   sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
 
-  // ==================== Feature: Received Requests 🚀 ====================
+// ==================== Feature: Received Requests 🚀 ====================
   // 1. Bloc
-  sl.registerFactory(() => ReceivedRequestsBloc(getReceivedRequestsUseCase: sl()));
+  sl.registerFactory(() => ReceivedRequestsBloc(
+    getReceivedRequestsUseCase: sl(),
+    acceptRequestUseCase: sl(),
+    rejectRequestUseCase: sl(),
+  ));
 
   // 2. Use Cases
   sl.registerLazySingleton(() => GetReceivedRequestsUseCase(sl()));
+  sl.registerLazySingleton(() => AcceptRequestUseCase(sl()));
+  sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
 
   // 3. Repositories
   sl.registerLazySingleton<ReceivedRequestsRepository>(
