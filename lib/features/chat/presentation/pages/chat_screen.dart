@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/loading_widget.dart';
 import '../bloc/chatBloc/chatBloc.dart';
 import '../bloc/chatBloc/blocEvent.dart';
 import '../bloc/chatBloc/blocState.dart';
@@ -93,7 +94,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           }
         },
         builder: (context, state) {
-          if (state is ChatLoading) return const Center(child: CircularProgressIndicator());
+          if (state is ChatLoading) return const LoadingWidget();
 
           if (state is ChatLoaded) {
             return ListView.builder(

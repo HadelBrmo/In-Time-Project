@@ -1,7 +1,7 @@
-import 'package:in_time/features/strategies/domain/entity/payment_unit_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/error/failures.dart';
+import '../entity/payment_unit_entity.dart';
 import '../entity/service_entity.dart';
 
 abstract class ServicesRepository {

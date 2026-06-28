@@ -4,6 +4,7 @@ import 'package:in_time/core/widgets/customAppBar.dart';
 
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/widgets/loading_widget.dart';
 import '../../../domain/entity/comment_entity.dart';
 import '../../bloc/comment/comment_bloc.dart';
 import '../../bloc/comment/comment_event.dart';
@@ -69,7 +70,7 @@ class _ServiceCommentsPageState extends State<ServiceCommentsPage> {
               child: BlocBuilder<CommentBloc, CommentState>(
                 builder: (context, state) {
                   if (state is CommentsLoadingState) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor));
+                    return const LoadingWidget();
                   } else if (state is CommentsLoadedState) {
                     if (state.comments.isEmpty) {
                       return const Center(

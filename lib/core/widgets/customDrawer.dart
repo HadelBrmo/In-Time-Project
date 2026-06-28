@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import '../../features/home/presentation/widgets/drawItem.dart';
+import '../../features/my_servings/presentation/bloc/my_servings_bloc.dart';
+import '../../features/my_servings/presentation/pages/my_servings_view.dart';
+import '../../injection_container.dart';
 import '../widgets/global_particles_wrapper.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -91,8 +95,22 @@ class CustomDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, AppRoutes.myRequestsPage);
                     },
                   ),
-                  drawerItem(icon: Icons.person_add_alt, text: "دعوة الأصدقاء"),
-                  drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
+                  drawerItem(
+                    icon: Icons.business_center,
+                    text: "عرض خدماتي",
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider<MyServingsBloc>(
+                            create: (context) => sl<MyServingsBloc>(),
+                            child: const MyServingsView(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),                 drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
                   drawerItem(icon: Icons.info_outline, text: "حول التطبيق"),
                   drawerItem(icon: Icons.logout, text: "تسجيل الخروج", isExit: true),
                 ].animate(interval: 40.ms)

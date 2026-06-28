@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/services/location_service.dart';
+import '../../../../../core/widgets/loading_widget.dart';
 
 class LocationPickerPage extends StatefulWidget {
   const LocationPickerPage({super.key});
@@ -40,9 +41,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
               ),
             },
           ),
-          if (_isLoading) const Center(child: CircularProgressIndicator(
-            color: AppColors.primaryColor,
-          )),
+          if (_isLoading) const LoadingWidget(),
         ],
       ),
       floatingActionButton: _tempLocation == null

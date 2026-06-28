@@ -5,6 +5,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../core/widgets/loading_widget.dart';
 import '../../bloc/loginBloc/login_bloc.dart';
 import '../../bloc/loginBloc/login_event.dart';
 import '../../bloc/loginBloc/login_state.dart';
@@ -84,7 +85,7 @@ class _LoginFormState extends State<LoginForm> {
 
               Center(
                 child: state is LoginLoading
-                    ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor))
+                    ? const LoadingWidget()
                     : CustomButton(
                   width: media.width * 0.7,
                   height: media.height * 0.07,

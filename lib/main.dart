@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/global_particles_wrapper.dart';
@@ -11,8 +10,7 @@ import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/loginBloc/login_bloc.dart';
-import 'package:in_time/features/strategies/presentation/bloc/service/services_bloc.dart';
-import 'package:in_time/features/strategies/presentation/bloc/service/services_event.dart';
+import 'features/strategies_services/presentation/bloc/service/services_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 

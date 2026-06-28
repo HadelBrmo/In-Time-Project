@@ -15,5 +15,6 @@
   static const String getReceivedRequestsUrl = '/servings/requests/received';
   static String acceptRequestUrl(int id) => '/servings/requests/$id/accept';
   static String rejectRequestUrl(int id) => '/servings/requests/$id/reject';
+  static const String getMyServingsUrl = '/servings/my';
 }
 

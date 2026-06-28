@@ -8,6 +8,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/customErrorView.dart';
+import '../../../../core/widgets/loading_widget.dart';
 import '../../../receivedRequests/presentation/pages/receivedRequestsView.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
@@ -148,9 +149,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                       child: BlocBuilder<RequestsBloc, RequestsState>(
                         builder: (context, state) {
                           if (state is RequestsLoadingState) {
-                            return const Center(
-                              child: CircularProgressIndicator(color: AppColors.primaryColor),
-                            );
+                            return const LoadingWidget();
                           } else if (state is RequestsLoadedState) {
                             final filteredRequests = state.requests.where((req) {
                               return req.serving.title.toLowerCase().contains(searchQuery.toLowerCase());

@@ -75,7 +75,7 @@ class ReceivedRequestCard extends StatelessWidget {
                     Text(
                       "طلب على خدمة: $servingTitle",
                       style: TextStyle(
-                        fontSize: media.width * 0.042,
+                        fontSize: media.width * 0.041,
                         color: AppColors.primaryColor,
                         fontWeight: FontWeight.w500,
                       ),
@@ -113,13 +113,12 @@ class ReceivedRequestCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(MediaQueryHelper media) {
-    // 1. حالة تم قبول الطلب
     if (request.status == 'accepted') {
       return SizedBox(
         width: double.infinity,
         height: media.height * 0.045,
         child: ElevatedButton(
-          onPressed: null, // معطل لأنه منتهي
+          onPressed: null,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green.withOpacity(0.12),
             disabledBackgroundColor: Colors.green.withOpacity(0.12),
@@ -134,13 +133,12 @@ class ReceivedRequestCard extends StatelessWidget {
       );
     }
 
-    // 2. حالة تم رفض الطلب
     if (request.status == 'rejected') {
       return SizedBox(
         width: double.infinity,
         height: media.height * 0.045,
         child: ElevatedButton(
-          onPressed: null, // معطل
+          onPressed: null,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.redAccent.withOpacity(0.12),
             disabledBackgroundColor: Colors.redAccent.withOpacity(0.12),

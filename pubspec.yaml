@@ -57,6 +57,7 @@ dependencies:
   flashy_tab_bar2: ^0.0.10
   particles_flutter: ^3.0.2
   confetti: ^0.8.0
+  lottie: ^3.4.0
 
 
 
@@ -100,6 +101,7 @@ flutter:
     - assets/icons/logo.png
     - assets/icons/Logo_01.png
     - assets/images/profile/profile.png
+    - assets/animations/smooth-triple-dot-loading.lottie
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

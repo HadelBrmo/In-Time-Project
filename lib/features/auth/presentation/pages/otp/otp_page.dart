@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
 import '../../bloc/SignUpBloc/sign up_bloc.dart';
 import '../../bloc/SignUpBloc/sign up_event.dart';
@@ -242,7 +243,7 @@ class _OtpPageState extends State<OtpPage> {
                       SizedBox(height: media.height * 0.05),
 
                       state.status == OtpStatus.loading
-                          ? const Center(child: CircularProgressIndicator(color: AppColors.primaryColor))
+                          ? const LoadingWidget()
                           : CustomButton(
                         text: "تأكيد ومتابعة",
                         onPressed: () {

@@ -4,20 +4,19 @@ import 'package:in_time/core/widgets/customAppBar.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/assets_image.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/widgets/loading_widget.dart';
 import '../../../../injection_container.dart';
 import '../../../requests/presentation/widgets/buildDisabledButton.dart';
 import '../../../requests/presentation/widgets/showRequestDialog.dart';
-import '../../../strategies/presentation/bloc/comment/comment_bloc.dart';
-import '../../../strategies/presentation/pages/comment/service_comments_page.dart';
-import '../../../strategies/domain/entity/service_entity.dart';
-import '../../../strategies/presentation/widgets/services/buildDetailsBody.dart';
+import '../../../strategies_services/presentation/bloc/service/services_bloc.dart';
+import '../../../strategies_services/presentation/bloc/service/services_event.dart';
+import '../../../strategies_services/presentation/bloc/service/services_state.dart';
+import '../../../strategies_services/presentation/widgets/services/buildDetailsBody.dart';
 import '../widgets/buildGridInfoRow.dart';
 import '../../../requests/presentation/bloc/request_bloc.dart';
 import '../../../requests/presentation/bloc/request_state.dart';
 
-import '../../../strategies/presentation/bloc/service/services_bloc.dart';
-import '../../../strategies/presentation/bloc/service/services_event.dart';
-import '../../../strategies/presentation/bloc/service/services_state.dart';
+
 
 class ServiceDetailsPage extends StatelessWidget {
   final int serviceId;
@@ -39,9 +38,7 @@ class ServiceDetailsPage extends StatelessWidget {
         body: BlocBuilder<ServicesBloc, ServicesState>(
           builder: (context, state) {
             if (state is ServiceDetailsLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
-              );
+              return const LoadingWidget();
             } else if (state is ServiceDetailsError) {
               return Center(
                 child: Text(state.message, style: const TextStyle(color: Colors.red)),

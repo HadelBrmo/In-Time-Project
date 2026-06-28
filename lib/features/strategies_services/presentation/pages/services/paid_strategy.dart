@@ -6,11 +6,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:confetti/confetti.dart';
 import 'package:in_time/core/widgets/custom_button.dart';
-import 'package:in_time/features/strategies/presentation/pages/services/serviceStrategy.dart';
+import 'package:in_time/features/strategies_services/presentation/pages/services/serviceStrategy.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/constants/mediaQuery.dart';
 import '../../../../../../core/widgets/customAppBar.dart';
 import '../../../../../../core/widgets/customTextFormField.dart';
+import '../../../../../../core/widgets/loading_widget.dart';
 import '../../../../../../core/widgets/buildLabel.dart';
 import '../../../../../core/widgets/customDrawer.dart';
 import '../../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
@@ -512,11 +513,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                 if (state is AddServiceLoadingState)
                   Container(
                     color: Colors.black.withOpacity(0.15),
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-                      ),
-                    ),
+                    child: const LoadingWidget(),
                   ),
               ],
             );

@@ -6,6 +6,7 @@ import '../../../../../core/constants/mediaQuery.dart';
 // import '../../../../../core/widgets/customAppBar.dart';
 import '../../../../../injection_container.dart';
 import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/loading_widget.dart';
 import '../../domain/entity/wallet_entity.dart';
 import '../bloc/wallet_bloc.dart';
 import '../bloc/wallet_event.dart';
@@ -37,9 +38,7 @@ class HoursBalancePage extends StatelessWidget {
           body: BlocBuilder<WalletBloc, WalletState>(
             builder: (context, state) {
               if (state is WalletLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primaryColor),
-                );
+                return const LoadingWidget();
               } else if (state is WalletError) {
                 return Center(
                   child: Text(

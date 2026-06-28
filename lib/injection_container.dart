@@ -23,6 +23,12 @@ import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemo
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/my_servings/data/datasources/my_servings_remote_data_source.dart';
+import 'features/my_servings/data/repository/my_servings_repository_impl.dart';
+import 'features/my_servings/domain/repository/my_servings_repository.dart';
+import 'features/my_servings/domain/usecases/get_my_servings_usecase.dart';
+import 'features/my_servings/domain/usecases/update_serving_usecase.dart';
+import 'features/my_servings/presentation/bloc/my_servings_bloc.dart';
 import 'features/receivedRequests/data/datasources/received_requests_remote_datasource.dart';
 import 'features/receivedRequests/data/repository/received_requests_repository_impl.dart';
 import 'features/receivedRequests/domain/repository/received_requests_repository.dart';
@@ -38,30 +44,29 @@ import 'features/requests/domain/usecases/create_serving_request_usecase.dart';
 import 'features/requests/domain/usecases/delete_request_usecase.dart';
 import 'features/requests/domain/usecases/get_my_requests_usecase.dart';
 import 'features/requests/presentation/bloc/request_bloc.dart';
-import 'features/strategies/data/datasources/comment_remote_data_source.dart';
-import 'features/strategies/data/datasources/services_remote_data_source.dart';
-import 'features/strategies/data/repository/comment_repository_impl.dart';
-import 'features/strategies/data/repository/services_repository_impl.dart';
-import 'features/strategies/domain/repository/comment_repository.dart';
-import 'features/strategies/domain/repository/servicesRepository.dart';
-import 'features/strategies/domain/usecases/comment/add_comment_usecase.dart';
-import 'features/strategies/domain/usecases/comment/get_comments_usecase.dart';
-import 'features/strategies/domain/usecases/comment/react_dislike_usecase.dart';
-import 'features/strategies/domain/usecases/comment/react_like_usecase.dart';
-import 'features/strategies/domain/usecases/comment/reply_to_comment_usecase.dart';
-import 'features/strategies/domain/usecases/service/add_service_usecase.dart';
-import 'features/strategies/domain/usecases/service/get_payment_units_usecase.dart';
-import 'features/strategies/domain/usecases/service/get_service_details_usecase.dart';
-import 'features/strategies/presentation/bloc/comment/comment_bloc.dart';
-import 'features/strategies/presentation/bloc/service/services_bloc.dart';
 import 'core/network/decorators/logging_interceptor.dart';
-
 // Auth Features 🚀
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
+import 'features/strategies_services/data/datasources/comment_remote_data_source.dart';
+import 'features/strategies_services/data/datasources/services_remote_data_source.dart';
+import 'features/strategies_services/data/repository/comment_repository_impl.dart';
+import 'features/strategies_services/data/repository/services_repository_impl.dart';
+import 'features/strategies_services/domain/repository/comment_repository.dart';
+import 'features/strategies_services/domain/repository/servicesRepository.dart';
+import 'features/strategies_services/domain/usecases/comment/add_comment_usecase.dart';
+import 'features/strategies_services/domain/usecases/comment/get_comments_usecase.dart';
+import 'features/strategies_services/domain/usecases/comment/react_dislike_usecase.dart';
+import 'features/strategies_services/domain/usecases/comment/react_like_usecase.dart';
+import 'features/strategies_services/domain/usecases/comment/reply_to_comment_usecase.dart';
+import 'features/strategies_services/domain/usecases/service/add_service_usecase.dart';
+import 'features/strategies_services/domain/usecases/service/get_payment_units_usecase.dart';
+import 'features/strategies_services/domain/usecases/service/get_service_details_usecase.dart';
+import 'features/strategies_services/presentation/bloc/comment/comment_bloc.dart';
+import 'features/strategies_services/presentation/bloc/service/services_bloc.dart';
 import 'features/wallet/data/datasources/wallet_remote_data_source.dart';
 import 'features/wallet/data/repository/wallet_repository_impl.dart';
 import 'features/wallet/domain/repository/wallet_repository.dart';
@@ -239,6 +244,26 @@ Future<void> init() async {
   // 4. Data Sources
   sl.registerLazySingleton<ReceivedRequestsRemoteDataSource>(
         () => ReceivedRequestsRemoteDataSourceImpl(dio: sl()),
+  );
+  // ==================== Feature: My Servings 💼 ====================
+  // 1. Bloc
+  sl.registerFactory(() => MyServingsBloc(
+    getMyServingsUseCase: sl(),
+    updateServingUseCase: sl(),
+  ));
+
+  // 2. Use Cases
+  sl.registerLazySingleton(() => GetMyServingsUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateServingUseCase(sl()));
+
+  // 3. Repositories
+  sl.registerLazySingleton<MyServingsRepository>(
+        () => MyServingsRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // 4. Data Sources
+  sl.registerLazySingleton<MyServingsRemoteDataSource>(
+        () => MyServingsRemoteDataSourceImpl(sl()),
   );
 
 }

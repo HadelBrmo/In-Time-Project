@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/widgets/customErrorView.dart';
+import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/utils/snackbar_utils.dart';
 import '../bloc/received_requests_bloc.dart';
 import '../bloc/received_requests_event.dart';
@@ -48,9 +49,7 @@ class _ReceivedRequestsViewState extends State<ReceivedRequestsView> {
         bool isProcessing = state is AcceptRequestLoadingState || state is RejectRequestLoadingState;
 
         if (state is ReceivedRequestsLoadingState) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.primaryColor),
-          );
+          return const LoadingWidget();
         }
 
         if (state is ReceivedRequestsLoadedState || isProcessing) {
@@ -109,9 +108,7 @@ class _ReceivedRequestsViewState extends State<ReceivedRequestsView> {
               if (isProcessing)
                 Container(
                   color: Colors.black12,
-                  child: const Center(
-                    child: CircularProgressIndicator(color: AppColors.primaryColor),
-                  ),
+                  child: const LoadingWidget(),
                 ),
             ],
           );

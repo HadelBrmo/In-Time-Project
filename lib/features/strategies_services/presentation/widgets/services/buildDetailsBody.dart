@@ -7,6 +7,7 @@ import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/theme/glowingBorder.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
+import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
 import '../../../../home/presentation/widgets/buildGridInfoRow.dart';
 import '../../../../requests/presentation/bloc/request_bloc.dart';
@@ -105,7 +106,7 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                           return const SizedBox(
                             width: 30,
                             height: 30,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor),
+                            child: LoadingWidget(size: 20),
                           );
                         }
                         return GestureDetector(
