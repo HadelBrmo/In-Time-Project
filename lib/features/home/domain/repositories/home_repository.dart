@@ -11,4 +11,10 @@ abstract class HomeRepository {
     int? skip,
     int? take,
   });
+  Future<Either<Failure, List<ServicingEntity>>> getNearbyServings({
+    required double lat,
+    required double lng,
+    required int skip,
+    required int take,
+  });
 }

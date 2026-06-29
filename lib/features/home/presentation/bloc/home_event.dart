@@ -50,3 +50,19 @@ class CancelServiceRequestEvent extends HomeEvent {
   @override
   List<Object?> get props => [serviceId];
 }
+
+class FetchNearbyServingsEvent extends HomeEvent {
+  final double lat;
+  final double lng;
+  final int skip;
+  final int take;
+  final bool isRefresh;
+
+  FetchNearbyServingsEvent({
+    required this.lat,
+    required this.lng,
+    required this.skip,
+    required this.take,
+    this.isRefresh = false,
+  });
+}

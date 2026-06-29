@@ -44,7 +44,6 @@ class MyServingsRepositoryImpl implements MyServingsRepository {
       await remoteDataSource.updateServing(id, model);
       return const Right(unit);
     } on ServerException catch (e) {
-      // 🛠️ التعديل: تمرير رسالة الخطأ هنا أيضاً
       return Left(ServerFailureWithDetails(message: 'حدث خطا في السيرفر'));
     }
   }

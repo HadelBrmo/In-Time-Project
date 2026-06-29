@@ -21,6 +21,7 @@ import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'features/home/data/datasources/home_datasources.dart';
 import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemoteDataSourceImpl;
 import 'features/home/domain/repositories/home_repository.dart';
+import 'features/home/domain/usecases/get_nearby_servings_useCase.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/my_servings/data/datasources/my_servings_remote_data_source.dart';
@@ -93,7 +94,10 @@ Future<void> init() async {
   );
   sl.registerFactory(() => LoginBloc(loginUseCase: sl()));
   sl.registerFactory(() => SignUpBloc(registerUseCase: sl()));
-  sl.registerFactory(() => HomeBloc(searchServingsUseCase: sl()));
+  sl.registerFactory(() => HomeBloc(
+    searchServingsUseCase: sl(),
+    getNearbyServingsUseCase: sl(),
+  ));
 
   // ==================== 2. Use Cases (LazySingleton) ====================
   sl.registerLazySingleton(() => GetChatsUseCase(sl()));
@@ -106,6 +110,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
   sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
+  sl.registerLazySingleton(() => GetNearbyServingsUseCase(sl()));
 
   // ==================== 3. Repositories (LazySingleton) ====================
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl()));

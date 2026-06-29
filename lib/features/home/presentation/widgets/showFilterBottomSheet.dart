@@ -90,7 +90,7 @@ class FilterBottomSheet extends StatelessWidget {
                     selected ? type['id'] : null,
                     selected ? type['name'] : null,
                     selectedPaymentUnitId,
-                    null, // سيتم تحديث الاسم المختار عبر الـ HomeScreen لاحقاً أو الحفاظ عليه
+                    null,
                   );
                   Navigator.pop(context);
                 },
