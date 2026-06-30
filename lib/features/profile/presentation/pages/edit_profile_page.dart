@@ -14,7 +14,7 @@ class EditProfilePage extends StatelessWidget {
     final media = MediaQueryHelper(context);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final avatarBgColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+    final avatarBgColor = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
     final shadowColor = isDarkMode ? Colors.black.withOpacity(0.3) : AppColors.blackColor.withOpacity(.04);
 
     return Scaffold(

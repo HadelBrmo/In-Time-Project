@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
     final media = MediaQueryHelper(context);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final containerColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+    final containerColor = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
     final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
     final shadowColor = isDarkMode ? Colors.black.withOpacity(0.3) : AppColors.blackColor.withOpacity(0.08);
 

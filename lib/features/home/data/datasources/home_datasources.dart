@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../my_servings/data/models/my_serving_model.dart';
 import '../models/service_item_model.dart';
@@ -17,6 +18,11 @@ abstract class HomeRemoteDataSource {
     required double lng,
     required int skip,
     required int take,
+  });
+
+  Future<void> updateServiceAvailability({
+    required int serviceId,
+    required Map<String, dynamic> data,
   });
 }
 
@@ -38,9 +44,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       'serving_type_id': servingTypeId,
       'payment_unit_id': paymentUnitId,
       'serving_category_id': servingCategoryId,
-      'name': (name != null && name
-          .trim()
-          .isNotEmpty) ? name : null,
+      'name': (name != null && name.trim().isNotEmpty) ? name : null,
       'skip': skip,
       'take': take,
     };
@@ -59,8 +63,12 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<List<ServiceModel>> getNearbyServings(
-      {required double lat, required double lng, required int skip, required int take,}) async {
+  Future<List<ServiceModel>> getNearbyServings({
+    required double lat,
+    required double lng,
+    required int skip,
+    required int take,
+  }) async {
     final response = await dio.post(
       '/servings/nearby',
       data: {
@@ -74,6 +82,23 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = response.data['data'];
       return responseData.map((json) => ServiceModel.fromJson(json)).toList();
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<void> updateServiceAvailability({
+    required int serviceId,
+    required Map<String, dynamic> data,
+  }) async {
+    final response = await dio.put(
+      ApiStringConstants.updateAvailabilityUrl(serviceId),
+      data: data,
+    );
+
+    if (response.statusCode == 200 && response.data['success'] == true) {
+      return;
     } else {
       throw ServerException();
     }

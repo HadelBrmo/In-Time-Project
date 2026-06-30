@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/constants/mediaQuery.dart';
@@ -9,20 +7,28 @@ import '../../../../../core/theme/glowingBorder.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
-import '../../../../home/presentation/widgets/buildGridInfoRow.dart';
+import '../home_widget/buildGridInfoRow.dart';
+import 'service_availability_manager.dart';
 import '../../../../requests/presentation/bloc/request_bloc.dart';
 import '../../../../requests/presentation/bloc/request_state.dart';
 import '../../../../requests/presentation/widgets/buildDisabledButton.dart';
 import '../../../../requests/presentation/widgets/showRequestDialog.dart';
-import '../../../domain/entity/service_entity.dart';
-import '../../bloc/comment/comment_bloc.dart';
-import '../../pages/comment/service_comments_page.dart';
+import '../../../../strategies_services/domain/entity/service_entity.dart';
+import '../../../../strategies_services/presentation/bloc/comment/comment_bloc.dart';
+import '../../../../strategies_services/presentation/pages/comment/service_comments_page.dart';
+import '../../bloc/home_bloc.dart';
+import '../../bloc/home_event.dart';
 
-Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFromRequests) {
+Widget buildDetailsBody(
+  BuildContext context,
+  ServiceEntity service,
+  bool isFromRequests,
+  bool isOwner,
+) {
   final media = MediaQueryHelper(context);
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-  final cardBg = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+  final cardBg = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
   final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
   final subTextColor = isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor;
   final infoItemBg = isDarkMode ? const Color(0xFF323232) : const Color(0xFFE8F8F5);
@@ -33,7 +39,6 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
 
   final bool isAlreadyRequested = isFromRequests || service.isRequested;
 
-  // 🎨 قائمة الألوان المخصصة التي طلبتِها للتوهج
   final glowColors = [
     AppColors.primaryColor,
     AppColors.secondaryColor,
@@ -95,7 +100,9 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                         ),
                       ],
                     ),
-                    isAlreadyRequested
+                    isOwner
+                        ? const SizedBox.shrink()
+                        : isAlreadyRequested
                         ? buildDisabledButton(media, isDarkMode, "تم الطلب")
                         : BlocBuilder<RequestsBloc, RequestsState>(
                       builder: (context, state) {
@@ -223,7 +230,7 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                         SizedBox(height: media.height * 0.02),
                         Row(
                           children: [
-                            Icon(Icons.grid_view_rounded, color: AppColors.primaryColor),
+                            const Icon(Icons.grid_view_rounded, color: AppColors.primaryColor),
                             SizedBox(width: media.width * 0.05),
                             Text("${service.categoryName ?? "خدمة منزلية"}"),
                           ],
@@ -231,7 +238,7 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
                         SizedBox(height: media.height * 0.02),
                         Row(
                           children: [
-                            Icon(Icons.location_on, color: AppColors.primaryColor),
+                            const Icon(Icons.location_on, color: AppColors.primaryColor),
                             SizedBox(width: media.width * 0.05),
                             Expanded(child: Text(shortAddress)),
                           ],
@@ -254,6 +261,149 @@ Widget buildDetailsBody(BuildContext context, ServiceEntity service, bool isFrom
               ),
               SizedBox(height: media.height * 0.025),
 
+
+              if (isOwner) ...[
+                buildAnimatedItem(
+                  delayFactor: 3,
+                  child: ServiceAvailabilityManager(
+                    serviceId: service.id ?? 0,
+                    existingSlots: service.availabilitySlots ?? [],
+                    onSaveSlots: (payload) {
+                      context.read<HomeBloc>().add(
+                        UpdateServiceAvailabilityEvent(
+                          serviceId: service.id ?? 0,
+                          slotsData: payload,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: media.height * 0.025),
+              ] else ...[
+                buildAnimatedItem(
+                  delayFactor: 3,
+                  child: GlowingBorder(
+                    borderRadius: 25,
+                    glowColors: glowColors,
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(media.width * 0.05),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        borderRadius: BorderRadius.circular(25),
+                        border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A)) : null,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.17),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_month, color: AppColors.primaryColor, size: 22),
+                              SizedBox(width: media.width * 0.02),
+                              Text(
+                                "الأوقات المتاحة للخدمة",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: media.height * 0.015),
+
+                          if (service.availabilitySlots == null || service.availabilitySlots!.isEmpty)
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(media.width * 0.04),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "لا توجد مواعيد عمل متاحة حالياً للخدمة",
+                                style: TextStyle(fontSize: 14, color: subTextColor),
+                              ),
+                            )
+                          else
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: service.availabilitySlots!.length,
+                              itemBuilder: (context, index) {
+                                final slot = service.availabilitySlots![index];
+
+                                String startTime = slot['start_time'] ?? '';
+                                String endTime = slot['end_time'] ?? '';
+                                if (startTime.length > 5) startTime = startTime.substring(0, 5);
+                                if (endTime.length > 5) endTime = endTime.substring(0, 5);
+
+                                String dayName = "";
+                                if (slot['day_of_week'] != null) {
+                                  final Map<int, String> numberToDayMap = {
+                                    1: "الإثنين", 2: "الثلاثاء", 3: "الأربعاء",
+                                    4: "الخميس", 5: "الجمعة", 6: "السبت", 7: "الأحد"
+                                  };
+                                  dayName = numberToDayMap[slot['day_of_week']] ?? "";
+                                } else if (slot['date'] != null) {
+                                  dayName = slot['date'].toString().split('T').first;
+                                }
+
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: media.width * 0.04,
+                                    vertical: media.height * 0.015,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isDarkMode ? const Color(0xFF2D2D2D) : const Color(0xFFF9F9F9),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey.withOpacity(0.2),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.check_circle_outline, color: AppColors.primaryColor, size: 18),
+                                          SizedBox(width: media.width * 0.02),
+                                          Text(
+                                            dayName,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: textColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.access_time_rounded, color: isDarkMode ? Colors.grey[400] : Colors.grey[600], size: 16),
+                                          SizedBox(width: media.width * 0.01),
+                                          Text(
+                                            "من $startTime إلى $endTime",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: isDarkMode ? Colors.grey[300] : Colors.black87,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: media.height * 0.025),
+              ],
               buildAnimatedItem(
                 delayFactor: 3,
                 child: GlowingBorder(

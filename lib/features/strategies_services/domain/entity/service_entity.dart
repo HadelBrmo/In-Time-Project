@@ -20,6 +20,8 @@ class ServiceEntity extends Equatable {
   final String? unitName;
   final String? servingTypeName;
   final bool isRequested;
+  final bool? isOwner;
+  final List<dynamic>? availabilitySlots;
 
   const ServiceEntity({
     this.id,
@@ -39,6 +41,8 @@ class ServiceEntity extends Equatable {
     this.unitName,
     this.servingTypeName,
     this.isRequested = false,
+    this.isOwner = false,
+    this.availabilitySlots = const [],
   });
 
   @override
@@ -60,5 +64,7 @@ class ServiceEntity extends Equatable {
     unitName,
     servingTypeName,
     isRequested,
+    isOwner,
+    availabilitySlots,
   ];
 }

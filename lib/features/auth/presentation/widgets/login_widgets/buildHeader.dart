@@ -7,8 +7,10 @@ import '../../../../../core/constants/mediaQuery.dart';
 Widget buildHeader(MediaQueryHelper media, BuildContext context) {
   final bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
   final bool isTablet = media.width > 600;
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
   return Container(
+
     height: isLandscape ? media.height * 0.35 : media.height * 0.45,
     width: double.infinity,
     decoration: const BoxDecoration(

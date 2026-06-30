@@ -73,4 +73,16 @@ class ServicesRepositoryImpl implements ServicesRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<dynamic>>> getAvailabilitySlots(int serviceId) async {
+    try {
+      final result = await remoteDataSource.getAvailabilitySlots(serviceId);
+      return Right(result);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

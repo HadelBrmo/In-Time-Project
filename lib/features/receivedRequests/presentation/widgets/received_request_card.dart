@@ -43,7 +43,7 @@ class ReceivedRequestCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: media.height * 0.015),
       padding: EdgeInsets.all(media.width * 0.04),
       decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF252525) : Colors.white,
+        color: isDarkMode ? AppColors.blackColor : Colors.white,
         borderRadius: BorderRadius.circular(media.width * 0.035),
         boxShadow: [
           BoxShadow(

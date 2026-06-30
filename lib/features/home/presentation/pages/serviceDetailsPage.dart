@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/assets_image.dart';
-import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../injection_container.dart';
-import '../../../requests/presentation/widgets/buildDisabledButton.dart';
-import '../../../requests/presentation/widgets/showRequestDialog.dart';
 import '../../../strategies_services/presentation/bloc/service/services_bloc.dart';
 import '../../../strategies_services/presentation/bloc/service/services_event.dart';
 import '../../../strategies_services/presentation/bloc/service/services_state.dart';
-import '../../../strategies_services/presentation/widgets/services/buildDetailsBody.dart';
-import '../widgets/buildGridInfoRow.dart';
-import '../../../requests/presentation/bloc/request_bloc.dart';
-import '../../../requests/presentation/bloc/request_state.dart';
-
-
+import '../widgets/service_details/buildDetailsBody.dart';
+import '../bloc/home_bloc.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
   final int serviceId;
   final bool isFromRequests;
+  final bool? isFromMyServings;
 
   const ServiceDetailsPage({
     super.key,
     required this.serviceId,
     this.isFromRequests = false,
+    this.isFromMyServings = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ServicesBloc>()..add(GetServiceDetailsEvent(serviceId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<ServicesBloc>()..add(GetServiceDetailsEvent(serviceId)),
+        ),
+        BlocProvider(
+          create: (context) => sl<HomeBloc>(),
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: const CustomAppBar(title: Text('تفاصيل الخدمة')),
@@ -45,7 +45,14 @@ class ServiceDetailsPage extends StatelessWidget {
               );
             } else if (state is ServiceDetailsLoaded) {
               final service = state.service;
-              return buildDetailsBody(context, service,isFromRequests);
+              final bool isOwner = (isFromMyServings == true) ? true : (service.isOwner ?? false);
+
+              return buildDetailsBody(
+                context,
+                service,
+                isFromRequests,
+                isOwner,
+              );
             }
             return const Center(child: Text("جاري تحضير البيانات..."));
           },
@@ -53,6 +60,4 @@ class ServiceDetailsPage extends StatelessWidget {
       ),
     );
   }
-
-
 }

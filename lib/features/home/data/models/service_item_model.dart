@@ -20,6 +20,7 @@ class ServiceModel extends ServicingEntity {
     super.unitName,
     super.servingTypeName,
     super.isRequested,
+    super.isOwner,
   });
 
   Map<String, dynamic> toJson() {
@@ -41,6 +42,7 @@ class ServiceModel extends ServicingEntity {
       'unit_name': unitName,
       'serving_type_name': servingTypeName,
       'requested': isRequested,
+      'isOwner': isOwner,
     };
   }
 
@@ -67,6 +69,7 @@ class ServiceModel extends ServicingEntity {
       categoryName: json['category_name'] ?? json['categoryName'],
 
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1 || json['requested'] == true),
+      isOwner: json['isOwner'] is bool ? json['isOwner'] : (json['isOwner'] == 1 || json['isOwner'] == true),
     );
   }
 }

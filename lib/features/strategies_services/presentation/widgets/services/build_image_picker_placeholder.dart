@@ -17,7 +17,7 @@ Widget buildImagePickerPlaceholder({
     width: double.infinity,
     height: media.height * 0.18,
     decoration: BoxDecoration(
-      color: isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor,
+      color: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
       borderRadius: BorderRadius.circular(media.width * 0.05),
       border: Border.all(
         color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[200]!,

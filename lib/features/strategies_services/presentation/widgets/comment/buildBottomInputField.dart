@@ -13,7 +13,7 @@ Widget buildBottomInputField(
     TextEditingController commentController,
     int servingId,
     ) {
-  final inputBg = isDarkMode ? const Color(0xFF252525) : Colors.white;
+  final inputBg = isDarkMode ? AppColors.blackColor : Colors.white;
 
   return Container(
     padding: EdgeInsets.only(

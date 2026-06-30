@@ -25,3 +25,5 @@ class HomeErrorState extends HomeState {
   @override
   List<Object?> get props => [message];
 }
+
+class UpdateAvailabilitySuccessState extends HomeState {}

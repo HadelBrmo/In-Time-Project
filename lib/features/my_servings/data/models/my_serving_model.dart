@@ -12,6 +12,7 @@ class MyServingModel extends MyServingEntity {
     required super.createdAt,
     required super.servingTypeName,
     required super.unitName,
+    super.isOwner,
   });
 
 
@@ -27,6 +28,7 @@ class MyServingModel extends MyServingEntity {
       createdAt: json['created_at'] ?? '',
       servingTypeName: json['serving_type_name'] ?? 'paid',
       unitName: json['unit_name'] ?? 'ل.س',
+      isOwner: json['isOwner'] is bool ? json['isOwner'] : (json['isOwner'] == 1 || json['isOwner'] == true),
     );
   }
 
@@ -36,6 +38,7 @@ class MyServingModel extends MyServingEntity {
       'description': description,
       'cost_amount': costAmount,
       'meeting_type': meetingType,
+      'isOwner': isOwner,
     };
   }
 }

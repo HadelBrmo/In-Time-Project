@@ -10,6 +10,7 @@ class MyServingEntity {
   final String createdAt;
   final String servingTypeName;
   final String unitName;
+  final bool? isOwner;
 
   MyServingEntity({
     required this.id,
@@ -21,5 +22,6 @@ class MyServingEntity {
     required this.createdAt,
     required this.servingTypeName,
     required this.unitName,
+    this.isOwner= false,
   });
 }

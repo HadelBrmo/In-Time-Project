@@ -2,15 +2,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/service_entity.dart';
 import '../../domain/usecases/get_nearby_servings_useCase.dart';
 import '../../domain/usecases/search_services_usecase.dart';
+import '../../domain/usecases/update_availability_useCase.dart';
 import 'home_event.dart';
 import 'home_state.dart';
-
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final SearchServingsUseCase searchServingsUseCase;
   final GetNearbyServingsUseCase getNearbyServingsUseCase;
+  final UpdateAvailabilityUseCase updateAvailabilityUseCase;
 
-  HomeBloc({required this.searchServingsUseCase, required this.getNearbyServingsUseCase}) : super(HomeInitialState()) {
+  HomeBloc({
+    required this.searchServingsUseCase,
+    required this.getNearbyServingsUseCase,
+    required this.updateAvailabilityUseCase,
+  }) : super(HomeInitialState()) {
 
     on<FetchHomeServingsEvent>((event, emit) async {
       List<ServicingEntity> oldServings = [];
@@ -33,11 +38,36 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         );
 
         final fullList = event.isRefresh ? newServings : [...oldServings, ...newServings];
-
         emit(HomeSuccessState(servings: fullList));
       } catch (e) {
         emit(HomeErrorState(message: e.toString()));
       }
+    });
+
+    on<FetchNearbyServingsEvent>((event, emit) async {
+      List<ServicingEntity> oldServings = [];
+      if (!event.isRefresh && state is HomeSuccessState) {
+        oldServings = (state as HomeSuccessState).servings;
+      }
+
+      if (event.isRefresh) {
+        emit(HomeLoadingState());
+      }
+
+      final failureOrData = await getNearbyServingsUseCase(
+        lat: event.lat,
+        lng: event.lng,
+        skip: event.skip,
+        take: event.take,
+      );
+
+      failureOrData.fold(
+            (failure) => emit(HomeErrorState(message: "فشل جلب الخدمات القريبة")),
+            (newServings) {
+          final fullList = event.isRefresh ? newServings : [...oldServings, ...newServings];
+          emit(HomeSuccessState(servings: fullList));
+        },
+      );
     });
 
     on<RequestServiceEvent>((event, emit) {
@@ -66,24 +96,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
-    on<FetchNearbyServingsEvent>((event, emit) async {
-      if (event.isRefresh) {
+    on<UpdateServiceAvailabilityEvent>((event, emit) async {
+      try {
         emit(HomeLoadingState());
+
+        final failureOrSuccess = await updateAvailabilityUseCase(
+            serviceId: event.serviceId,
+            data: event.slotsData
+        );
+
+        failureOrSuccess.fold(
+          (failure) => emit(const HomeErrorState(message: "فشل تحديث المواعيد")),
+          (_) => emit(UpdateAvailabilitySuccessState()),
+        );
+
+      } catch (e) {
+        emit(HomeErrorState(message: e.toString()));
       }
-
-      final failureOrData = await getNearbyServingsUseCase(
-        lat: event.lat,
-        lng: event.lng,
-        skip: event.skip,
-        take: event.take,
-      );
-
-      failureOrData.fold(
-            (failure) => emit(HomeErrorState(message: "فشل جلب الخدمات القريبة")),
-            (servings) => emit(HomeSuccessState(servings: servings)),
-      );
     });
   }
+
 
   ServicingEntity _cloneServiceWithRequestedStatus(ServicingEntity old, bool newStatus) {
     return ServicingEntity(
@@ -106,5 +138,4 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       isRequested: newStatus,
     );
   }
-
 }

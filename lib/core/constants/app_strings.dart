@@ -16,5 +16,6 @@
   static String acceptRequestUrl(int id) => '/servings/requests/$id/accept';
   static String rejectRequestUrl(int id) => '/servings/requests/$id/reject';
   static const String getMyServingsUrl = '/servings/my';
+  static String updateAvailabilityUrl(int serviceId) => '/servings/$serviceId/availability-slots';
 }
 

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
-import '../../features/home/presentation/widgets/drawItem.dart';
+import '../../features/home/presentation/widgets/home_widget/drawItem.dart';
 import '../../features/my_servings/presentation/bloc/my_servings_bloc.dart';
 import '../../features/my_servings/presentation/pages/my_servings_view.dart';
 import '../../injection_container.dart';
@@ -15,7 +15,10 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final drawerBgColor = Theme.of(context).scaffoldBackgroundColor;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    final drawerBgColor = isDarkMode ? AppColors.blackColor : Colors.white;
+    final itemTextColor = isDarkMode ? Colors.white : Colors.black87;
 
     return Drawer(
       backgroundColor: drawerBgColor,
@@ -110,7 +113,8 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       );
                     },
-                  ),                 drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
+                  ),
+                  drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
                   drawerItem(icon: Icons.info_outline, text: "حول التطبيق"),
                   drawerItem(icon: Icons.logout, text: "تسجيل الخروج", isExit: true),
                 ].animate(interval: 40.ms)

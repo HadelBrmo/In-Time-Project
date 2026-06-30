@@ -12,7 +12,7 @@ class CustomTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   int? maxLines;
   final TextInputType keyboardType;
-  final Color? fillColor; // إضافة معامل اللون الاختياري
+  final Color? fillColor;
 
   CustomTextFormField({
     super.key,
@@ -40,13 +40,14 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final defaultFillColor = isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor;
+    final defaultFillColor = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
     final defaultBorderColor = isDarkMode ? AppColors.greyColor : AppColors.greyColor.withOpacity(0.3);
-    final defaultTextColor =  AppColors.blackColor;
+    final defaultTextColor = isDarkMode ? Colors.white : AppColors.blackColor;
     final defaultHintColor = isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor;
 
     return Directionality(
       textDirection: TextDirection.rtl,
+
       child: TextFormField(
         maxLines: widget.maxLines,
         controller: widget.controller,
@@ -55,7 +56,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         validator: widget.validator,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
-        style: TextStyle(fontSize: 16, color: defaultTextColor),
+        style: TextStyle(fontSize: 15, color: defaultTextColor),
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: TextStyle(color: defaultHintColor, fontSize: 14),

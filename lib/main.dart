@@ -50,37 +50,50 @@ class _MyAppState extends State<MyApp> {
               create: (context) => sl<SignUpBloc>(),
             ),
           ],
-          child:  MaterialApp(
+          child: MaterialApp(
             localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
             ],
-        supportedLocales: const [
-        Locale('ar', 'SA'),
-        Locale('en', 'US'),
-        ],
-        debugShowCheckedModeBanner: false,
+            supportedLocales: const [
+              Locale('ar', 'SA'),
+              Locale('en', 'US'),
+            ],
+            debugShowCheckedModeBanner: false,
 
-        theme: AppTheme.lightMode,
-        darkTheme: AppTheme.darkMode,
-        themeMode: ThemeMode.system,
+            theme: AppTheme.lightMode,
+            darkTheme: AppTheme.darkMode,
+            themeMode: ThemeMode.system,
 
-        builder: (context, child) {
-        final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+            builder: (context, child) {
+              final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
-        final backgroundColor = isDarkMode ? const Color(0xFF1E1E1E) : const Color(0xFFF5F5F5);
+              final backgroundColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
 
-        return Scaffold(
-        backgroundColor: backgroundColor,
-        body: GlobalParticlesWrapper(
-        child: child ?? const SizedBox.shrink(),
-        ),
-        );
-        },
-        initialRoute: '/',
-        onGenerateRoute: AppRoutes.generateRoute,
-        ),
+              return Scaffold(
+                backgroundColor: backgroundColor,
+                body: Stack(
+                  children: [
+                    const Positioned.fill(
+                      child: GlobalParticlesWrapper(
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
+
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        scaffoldBackgroundColor: Colors.transparent,
+                      ),
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              );
+            },
+            initialRoute: '/',
+            onGenerateRoute: AppRoutes.generateRoute,
+          ),
         );
       },
     );

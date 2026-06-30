@@ -57,4 +57,19 @@ class HomeRepositoryImpl implements HomeRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateServiceAvailability({
+    required int serviceId,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await remoteDataSource.updateServiceAvailability(serviceId: serviceId, data: data);
+      return const Right(null);
+    } on ServerException {
+      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

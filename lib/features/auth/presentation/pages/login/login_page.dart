@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 
+import '../../../../../core/widgets/global_particles_wrapper.dart';
 import '../../../../../injection_container.dart';
 import '../../bloc/loginBloc/login_bloc.dart';
 import '../../widgets/login_widgets/LoginForm.dart';
@@ -16,45 +17,47 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
-
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    return GlobalParticlesWrapper(
+    child:   Scaffold(
       body: SingleChildScrollView(
         child: Stack(
           children: [
             buildHeader(media, context),
-            Container(
-              margin: EdgeInsets.only(
-                top: media.height * 0.22,
-                right: media.width * 0.03,
-                left: media.width * 0.03,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(60)),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: media.width * 0.08,
+            GlobalParticlesWrapper(
+              child: Container(
+                margin: EdgeInsets.only(
+                  top: media.height * 0.22,
+                  right: media.width * 0.03,
+                  left: media.width * 0.03,
                 ),
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          'assets/icons/Logo_01.png',
-                          height: media.height * 0.18,
+                decoration: BoxDecoration(
+                  color:  isDarkMode ? AppColors.blackColor : Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(60)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: media.width * 0.08,
+                  ),
+                  child: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Image.asset(
+                            'assets/icons/Logo_01.png',
+                            height: media.height * 0.18,
+                          ),
                         ),
-                      ),
-                      BlocProvider(
-                        create: (context) => sl<LoginBloc>(),
-                        child: const LoginForm(),
-                      ),
+                        BlocProvider(
+                          create: (context) => sl<LoginBloc>(),
+                          child: const LoginForm(),
+                        ),
 
-                      SizedBox(height: media.height * 0.02),
-                      buildFooterLinks(media, context),
-                    ],
+                        SizedBox(height: media.height * 0.02),
+                        buildFooterLinks(media, context),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -62,6 +65,6 @@ class LoginScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../home/presentation/pages/serviceDetailsPage.dart';
 import '../../domain/entity/my_serving_entity.dart';
 
 class MyServingCard extends StatelessWidget {
@@ -41,135 +42,144 @@ class MyServingCard extends StatelessWidget {
     final typeDetails = _getServingTypeDetails(serving.servingTypeName);
     final typeColor = typeDetails['color'] as Color;
 
-    return Container(
-      margin: EdgeInsets.only(bottom: media.height * 0.02),
-      padding: EdgeInsets.all(media.width * 0.04),
-      decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xFF252525) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // السطر الأول: التاريخ ونوع الخدمة (Badge رفيع بالزاوية)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.calendar_month_outlined, size: 14, color: AppColors.greyColor),
-                  SizedBox(width: 4),
-                  Text(
-                    _formatDate(serving.createdAt),
-                    style: TextStyle(color: AppColors.greyColor, fontSize: 11),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: typeColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  typeDetails['text'],
-                  style: TextStyle(color: typeColor, fontSize: 11, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ServiceDetailsPage(serviceId: serving.id!),
           ),
-          SizedBox(height: media.height * 0.01),
-
-          // السطر الثاني: عنوان الخدمة وطبيعة اللقاء
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  serving.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: media.width * 0.045,
-                    color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: media.height * 0.02),
+        padding: EdgeInsets.all(media.width * 0.04),
+        decoration: BoxDecoration(
+          color: isDarkMode ? AppColors.blackColor : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            )
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.calendar_month_outlined, size: 14, color: AppColors.greyColor),
+                    SizedBox(width: 4),
+                    Text(
+                      _formatDate(serving.createdAt),
+                      style: TextStyle(color: AppColors.greyColor, fontSize: 11),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: typeColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    typeDetails['text'],
+                    style: TextStyle(color: typeColor, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  serving.meetingType == 'direct' ? "مباشر" : "أونلاين",
-                  style: const TextStyle(color: AppColors.primaryColor, fontSize: 11, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: media.height * 0.01),
-
-          // الوصف
-          Text(
-            serving.description,
-            style: TextStyle(
-              color: isDarkMode ? AppColors.greyColor : Colors.black54,
-              height: 1.3,
-              fontSize: media.width * 0.035,
+              ],
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: media.height * 0.015),
+            SizedBox(height: media.height * 0.01),
 
-          Divider(color: Colors.grey.withOpacity(0.1), height: 1),
-          SizedBox(height: media.height * 0.01),
-
-          // السطر الأخير: التكلفة + وحدة القياس وزر التعديل
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    serving.servingTypeName == 'voluntary' ? Icons.favorite : Icons.monetization_on,
-                    color: serving.servingTypeName == 'voluntary' ? Colors.green : Colors.amber,
-                    size: 18,
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    serving.servingTypeName == 'voluntary'
-                        ? "عمل تطوعي"
-                        : "${serving.costAmount.toInt()} ${serving.unitName}",
+            // السطر الثاني: عنوان الخدمة وطبيعة اللقاء
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    serving.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: media.width * 0.038,
-                      color: serving.servingTypeName == 'voluntary'
-                          ? Colors.green
-                          : (isDarkMode ? Colors.amber[200] : Colors.amber[800]),
+                      fontSize: media.width * 0.045,
+                      color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
                     ),
                   ),
-                ],
-              ),
-              IconButton(
-                onPressed: onEdit,
-                icon: const Icon(Icons.edit_calendar_outlined, color: AppColors.primaryColor, size: 22),
-                style: IconButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor.withOpacity(0.08),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    serving.meetingType == 'direct' ? "مباشر" : "أونلاين",
+                    style: const TextStyle(color: AppColors.primaryColor, fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: media.height * 0.01),
+
+            // الوصف
+            Text(
+              serving.description,
+              style: TextStyle(
+                color: isDarkMode ? AppColors.greyColor : Colors.black54,
+                height: 1.3,
+                fontSize: media.width * 0.035,
               ),
-            ],
-          )
-        ],
-      ),
-    ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.15, end: 0, curve: Curves.easeOutBack);
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: media.height * 0.015),
+
+            Divider(color: Colors.grey.withOpacity(0.1), height: 1),
+            SizedBox(height: media.height * 0.01),
+
+            // السطر الأخير: التكلفة + وحدة القياس وزر التعديل
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      serving.servingTypeName == 'voluntary' ? Icons.favorite : Icons.monetization_on,
+                      color: serving.servingTypeName == 'voluntary' ? Colors.green : Colors.amber,
+                      size: 18,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      serving.servingTypeName == 'voluntary'
+                          ? "عمل تطوعي"
+                          : "${serving.costAmount.toInt()} ${serving.unitName}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: media.width * 0.038,
+                        color: serving.servingTypeName == 'voluntary'
+                            ? Colors.green
+                            : (isDarkMode ? Colors.amber[200] : Colors.amber[800]),
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit_calendar_outlined, color: AppColors.primaryColor, size: 22),
+                  style: IconButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor.withOpacity(0.08),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.15, end: 0, curve: Curves.easeOutBack),
+    );
   }
 }

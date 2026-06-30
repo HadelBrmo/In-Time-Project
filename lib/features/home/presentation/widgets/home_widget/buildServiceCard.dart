@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/assets_image.dart';
-import '../../../../core/theme/glowingBorder.dart';
-import '../../domain/entities/service_entity.dart';
-import '../pages/serviceDetailsPage.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/assets_image.dart';
+import '../../../../../core/theme/glowingBorder.dart';
+import '../../../domain/entities/service_entity.dart';
+import '../../pages/serviceDetailsPage.dart';
 
 Widget buildServiceCard(BuildContext context, ServicingEntity serving, double width, double height) {
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -76,7 +76,10 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ServiceDetailsPage(serviceId: serving.id!),
+              builder: (_) => ServiceDetailsPage(
+                serviceId: serving.id!,
+                isFromMyServings: false,
+              ),
             ),
           );
         },
@@ -85,7 +88,7 @@ Widget buildServiceCard(BuildContext context, ServicingEntity serving, double wi
           height: 120,
           padding: EdgeInsets.all(width * 0.03,),
           decoration: BoxDecoration(
-            color: isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor,
+            color: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
             border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A), width: 1) : null,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [

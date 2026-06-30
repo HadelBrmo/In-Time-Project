@@ -15,7 +15,7 @@ Widget buildCommentCard(
     bool isDarkMode, {
       required VoidCallback onReplyTap,
     }) {
-  final cardColor = isDarkMode ? const Color(0xFF252525) : Colors.white;
+  final cardColor = isDarkMode ? AppColors.blackColor : Colors.white;
   final nameColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
 
   String formatCommentTime(String createdAtString) {

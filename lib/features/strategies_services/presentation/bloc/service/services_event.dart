@@ -35,3 +35,12 @@ class GetServiceDetailsEvent extends ServicesEvent {
   @override
   List<Object?> get props => [serviceId];
 }
+
+class GetAvailabilitySlotsEvent extends ServicesEvent {
+  final int serviceId;
+
+  const GetAvailabilitySlotsEvent(this.serviceId);
+
+  @override
+  List<Object?> get props => [serviceId];
+}

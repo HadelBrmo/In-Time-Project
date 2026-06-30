@@ -12,11 +12,9 @@ import '../../../auth/presentation/pages/locationPicker/location_picker_page.dar
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
-import '../widgets/buildServiceCard.dart';
-
-// تأكدي من استيراد كلاساتك بشكل صحيح هنا
-import '../widgets/showFilterBottomSheet.dart';
-import '../widgets/showPaginationDialog.dart';
+import '../widgets/home_widget/buildServiceCard.dart';
+import '../widgets/home_widget/showFilterBottomSheet.dart';
+import '../widgets/home_widget/showPaginationDialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -110,9 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
         currentTake: _currentTake,
         onConfirm: (newTake) {
           setState(() {
-            _currentTake = newTake;
             _currentSkip = _currentSkip + _currentTake;
+
+            _currentTake = newTake;
           });
+
           _triggerFetch(isRefresh: false);
         },
       ),

@@ -23,6 +23,7 @@ import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemo
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/get_nearby_servings_useCase.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
+import 'features/home/domain/usecases/update_availability_useCase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/my_servings/data/datasources/my_servings_remote_data_source.dart';
 import 'features/my_servings/data/repository/my_servings_repository_impl.dart';
@@ -66,6 +67,7 @@ import 'features/strategies_services/domain/usecases/comment/reply_to_comment_us
 import 'features/strategies_services/domain/usecases/service/add_service_usecase.dart';
 import 'features/strategies_services/domain/usecases/service/get_payment_units_usecase.dart';
 import 'features/strategies_services/domain/usecases/service/get_service_details_usecase.dart';
+import 'features/strategies_services/domain/usecases/service/get_availability_slots_usecase.dart';
 import 'features/strategies_services/presentation/bloc/comment/comment_bloc.dart';
 import 'features/strategies_services/presentation/bloc/service/services_bloc.dart';
 import 'features/wallet/data/datasources/wallet_remote_data_source.dart';
@@ -86,17 +88,18 @@ Future<void> init() async {
   ));
   sl.registerFactory(() => OtpBloc(sendOtpUseCase: sl()));
   sl.registerFactory(
-        () => ServicesBloc(
+    () => ServicesBloc(
       addServiceUseCase: sl(),
       getPaymentUnitsUseCase: sl(),
       getServiceDetailsUseCase: sl(),
+      getAvailabilitySlotsUseCase: sl(),
     ),
   );
   sl.registerFactory(() => LoginBloc(loginUseCase: sl()));
   sl.registerFactory(() => SignUpBloc(registerUseCase: sl()));
   sl.registerFactory(() => HomeBloc(
     searchServingsUseCase: sl(),
-    getNearbyServingsUseCase: sl(),
+    getNearbyServingsUseCase: sl(), updateAvailabilityUseCase: sl(),
   ));
 
   // ==================== 2. Use Cases (LazySingleton) ====================
@@ -109,8 +112,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => GetAvailabilitySlotsUseCase(sl()));
   sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
   sl.registerLazySingleton(() => GetNearbyServingsUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateAvailabilityUseCase(sl()));
 
   // ==================== 3. Repositories (LazySingleton) ====================
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl()));

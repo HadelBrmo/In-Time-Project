@@ -26,15 +26,7 @@ class FetchHomeServingsEvent extends HomeEvent {
   });
 
   @override
-  List<Object?> get props => [
-    servingTypeId,
-    paymentUnitId,
-    servingCategoryId,
-    name,
-    skip,
-    take,
-    isRefresh,
-  ];
+  List<Object?> get props => [servingTypeId, paymentUnitId, servingCategoryId, name, skip, take, isRefresh];
 }
 
 class RequestServiceEvent extends HomeEvent {
@@ -58,11 +50,27 @@ class FetchNearbyServingsEvent extends HomeEvent {
   final int take;
   final bool isRefresh;
 
-  FetchNearbyServingsEvent({
+  const FetchNearbyServingsEvent({
     required this.lat,
     required this.lng,
     required this.skip,
     required this.take,
     this.isRefresh = false,
   });
+
+  @override
+  List<Object?> get props => [lat, lng, skip, take, isRefresh];
+}
+
+class UpdateServiceAvailabilityEvent extends HomeEvent {
+  final int serviceId;
+  final Map<String, dynamic> slotsData;
+
+  const UpdateServiceAvailabilityEvent({
+    required this.serviceId,
+    required this.slotsData,
+  });
+
+  @override
+  List<Object?> get props => [serviceId, slotsData];
 }

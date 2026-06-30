@@ -36,6 +36,11 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
 
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    final labelColor = isDarkMode ? Colors.white : AppColors.blackColor;
+    final inputFillColor = isDarkMode ? const Color(0xFF2E2E2E) : AppColors.whiteColor;
+
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
@@ -53,11 +58,12 @@ class _LoginFormState extends State<LoginForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("البريد الإلكتروني",
-                  style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(
+                "البريد الإلكتروني",
+                style: TextStyle(color: labelColor, fontSize: 15, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: media.height * 0.01),
               CustomTextFormField(
-                fillColor: AppColors.whiteColor,
                 controller: _emailController,
                 hintText: "ادخل بريدك الإلكتروني",
                 keyboardType: TextInputType.emailAddress,
@@ -66,11 +72,12 @@ class _LoginFormState extends State<LoginForm> {
 
               SizedBox(height: media.height * 0.02),
 
-              Text("كلمة المرور",
-                  style: TextStyle(color: AppColors.blackColor, fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(
+                "كلمة المرور",
+                style: TextStyle(color: labelColor, fontSize: 15, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: media.height * 0.01),
               CustomTextFormField(
-                fillColor: AppColors.whiteColor,
                 controller: _passwordController,
                 hintText: "ادخل كلمة المرور",
                 isPassword: true,
@@ -79,7 +86,7 @@ class _LoginFormState extends State<LoginForm> {
 
               SizedBox(height: media.height * 0.02),
 
-              _buildRememberMeRow(),
+              _buildRememberMeRow(isDarkMode),
 
               SizedBox(height: media.height * 0.04),
 
@@ -110,7 +117,7 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _buildRememberMeRow() {
+  Widget _buildRememberMeRow(bool isDarkMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -124,11 +131,22 @@ class _LoginFormState extends State<LoginForm> {
               value: isRememberMe,
               onChanged: (val) => setState(() => isRememberMe = val!),
               activeColor: AppColors.primaryColor,
-              fillColor: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primaryColor : Colors.white),
-              side: BorderSide(color: AppColors.greyColor.withOpacity(0.5), width: 1.5),
+              fillColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return AppColors.primaryColor;
+                }
+                return isDarkMode ? const Color(0xFF2E2E2E) : Colors.white;
+              }),
+              side: BorderSide(
+                color: isDarkMode ? Colors.white54 : AppColors.greyColor.withOpacity(0.5),
+                width: 1.5,
+              ),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
             ),
-            const Text("تذكرني", style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+            const Text(
+              "تذكرني",
+              style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ],

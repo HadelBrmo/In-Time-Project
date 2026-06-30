@@ -52,7 +52,7 @@ class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
             decoration: BoxDecoration(
               color: isSelected
                   ? (isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor)
-                  : (isDarkMode ? const Color(0xFF252525) : Colors.grey[100]),
+                  : (isDarkMode ? AppColors.blackColor : Colors.grey[100]),
               borderRadius: BorderRadius.circular(media.width * 0.025),
               border: isDarkMode && !isSelected
                   ? Border.all(color: const Color(0xFF3A3A3A))

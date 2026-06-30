@@ -19,18 +19,22 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     navigateToBoarding(context);
   }
+
   @override
   Widget build(BuildContext context) {
-    final orientation=MediaQuery.of(context).orientation;
-    final isLandscape=orientation==Orientation.landscape;
+    final orientation = MediaQuery.of(context).orientation;
+    final isLandscape = orientation == Orientation.landscape;
+
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body:Center(
+          backgroundColor: Colors.transparent,
+          body: Center(
           child: isLandscape
               ? buildLandscapeLayout()
               : buildPortraitLayout(),
-        ) ,
+        ),
       ),
     );
   }

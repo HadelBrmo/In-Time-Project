@@ -20,6 +20,7 @@ class ServicingEntity extends Equatable {
   final String? unitName;
   final String? servingTypeName;
   final bool isRequested;
+  final bool? isOwner;
 
   const ServicingEntity({
     this.id,
@@ -39,6 +40,7 @@ class ServicingEntity extends Equatable {
     this.unitName,
     this.servingTypeName,
     this.isRequested = false,
+    this.isOwner,
   });
 
   @override
@@ -46,6 +48,6 @@ class ServicingEntity extends Equatable {
     id, title, description, categoryId, costAmount, unitId,
     locationAddress, locationLat, locationLng, meetingType, imageUrl,
     userFullName, userEmail, categoryName, unitName, servingTypeName,
-    isRequested,
+    isRequested,isOwner,
   ];
 }

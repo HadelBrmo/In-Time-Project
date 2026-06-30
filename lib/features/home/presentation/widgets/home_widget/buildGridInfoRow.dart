@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/mediaQuery.dart';
 
 Widget buildGridInfoRow(
     BuildContext context, {

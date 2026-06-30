@@ -13,7 +13,7 @@ Widget buildRequestCard({
   required VoidCallback onTap,
   required VoidCallback onLongPress,
 }) {
-  final cardColor = isDarkMode ? const Color(0xFF252525) : Colors.white;
+  final cardColor = isDarkMode ? AppColors.blackColor : Colors.white;
   final titleColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
   final statusEnum = RequestStatus.fromString(request.status);
 

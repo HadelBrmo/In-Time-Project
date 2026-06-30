@@ -22,7 +22,7 @@ Widget buildDropdownColumn({
         height: media.height * 0.07,
         padding: EdgeInsets.symmetric(horizontal: media.width * 0.025),
         decoration: BoxDecoration(
-          color: isDarkMode ? const Color(0xFF252525) : Colors.transparent,
+          color: isDarkMode ? AppColors.blackColor : Colors.transparent,
           borderRadius: BorderRadius.circular(media.width * 0.04),
           border: Border.all(
             color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[300]!,
@@ -32,7 +32,7 @@ Widget buildDropdownColumn({
           child: DropdownButton<String>(
             isExpanded: true,
             value: selectedValue,
-            dropdownColor: isDarkMode ? const Color(0xFF252525) : AppColors.whiteColor,
+            dropdownColor: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
             hint: Text(
               hint,
               style: TextStyle(
