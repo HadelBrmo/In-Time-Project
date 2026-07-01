@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
-import '../../../my_servings/data/models/my_serving_model.dart';
 import '../models/service_item_model.dart';
 
 abstract class HomeRemoteDataSource {

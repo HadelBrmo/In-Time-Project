@@ -1,17 +1,17 @@
-// features/services/data/models/service_model.dart
-import '../../domain/entities/service_entity.dart';
 
-class ServiceModel extends ServicingEntity {
+import '../../../servings/domain/entity/service_entity.dart';
+
+class ServiceModel extends ServiceEntity {
   const ServiceModel({
     super.id,
     required super.title,
     required super.description,
-    required super.categoryId,
-    required super.costAmount,
+    super.categoryId,
+    super.costAmount,
     super.unitId,
-    required super.locationAddress,
-    required super.locationLat,
-    required super.locationLng,
+    super.locationAddress,
+    super.locationLat,
+    super.locationLng,
     super.meetingType,
     super.imageUrl,
     super.userFullName,
@@ -21,6 +21,7 @@ class ServiceModel extends ServicingEntity {
     super.servingTypeName,
     super.isRequested,
     super.isOwner,
+    super.createdAt,
   });
 
   Map<String, dynamic> toJson() {
@@ -43,6 +44,7 @@ class ServiceModel extends ServicingEntity {
       'serving_type_name': servingTypeName,
       'requested': isRequested,
       'isOwner': isOwner,
+      'created_at': createdAt,
     };
   }
 
@@ -70,6 +72,7 @@ class ServiceModel extends ServicingEntity {
 
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1 || json['requested'] == true),
       isOwner: json['isOwner'] is bool ? json['isOwner'] : (json['isOwner'] == 1 || json['isOwner'] == true),
+      createdAt: json['created_at']?.toString(),
     );
   }
 }

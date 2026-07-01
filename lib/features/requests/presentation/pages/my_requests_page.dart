@@ -9,7 +9,7 @@ import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/customErrorView.dart';
 import '../../../../core/widgets/loading_widget.dart';
-import '../../../receivedRequests/presentation/pages/receivedRequestsView.dart';
+import 'package:in_time/features/requests/presentation/pages/receivedRequestsView.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
 import '../bloc/request_state.dart';

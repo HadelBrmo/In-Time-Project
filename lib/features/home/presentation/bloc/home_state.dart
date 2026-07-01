@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/service_entity.dart';
+import '../../../servings/domain/entity/service_entity.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -11,7 +11,7 @@ class HomeInitialState extends HomeState {}
 class HomeLoadingState extends HomeState {}
 
 class HomeSuccessState extends HomeState {
-  final List<ServicingEntity> servings;
+  final List<ServiceEntity> servings;
   const HomeSuccessState({required this.servings});
 
   @override

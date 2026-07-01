@@ -7,15 +7,15 @@ import '../../../../../core/theme/glowingBorder.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
+import '../../../../servings/domain/entity/service_entity.dart';
+import '../../../../servings/presentation/bloc/comment/comment_bloc.dart';
+import '../../../../servings/presentation/pages/comment/service_comments_page.dart';
 import '../home_widget/buildGridInfoRow.dart';
 import 'service_availability_manager.dart';
 import '../../../../requests/presentation/bloc/request_bloc.dart';
 import '../../../../requests/presentation/bloc/request_state.dart';
 import '../../../../requests/presentation/widgets/buildDisabledButton.dart';
 import '../../../../requests/presentation/widgets/showRequestDialog.dart';
-import '../../../../strategies_services/domain/entity/service_entity.dart';
-import '../../../../strategies_services/presentation/bloc/comment/comment_bloc.dart';
-import '../../../../strategies_services/presentation/pages/comment/service_comments_page.dart';
 import '../../bloc/home_bloc.dart';
 import '../../bloc/home_event.dart';
 

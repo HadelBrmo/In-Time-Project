@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../injection_container.dart';
-import '../../../strategies_services/presentation/bloc/service/services_bloc.dart';
-import '../../../strategies_services/presentation/bloc/service/services_event.dart';
-import '../../../strategies_services/presentation/bloc/service/services_state.dart';
+import '../../../servings/presentation/bloc/service/services_bloc.dart';
+import '../../../servings/presentation/bloc/service/services_event.dart';
+import '../../../servings/presentation/bloc/service/services_state.dart';
 import '../widgets/service_details/buildDetailsBody.dart';
 import '../bloc/home_bloc.dart';
 

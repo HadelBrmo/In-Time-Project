@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
-import '../../domain/entities/service_entity.dart';
+import '../../../servings/domain/entity/service_entity.dart';
 import '../../domain/repositories/home_repository.dart';
 import '../datasources/home_datasources.dart';
 
@@ -12,7 +12,7 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, List<ServicingEntity>>> searchServings({
+  Future<Either<Failure, List<ServiceEntity>>> searchServings({
     int? servingTypeId,
     int? paymentUnitId,
     int? servingCategoryId,
@@ -37,7 +37,7 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<Either<Failure, List<ServicingEntity>>> getNearbyServings({
+  Future<Either<Failure, List<ServiceEntity>>> getNearbyServings({
     required double lat,
     required double lng,
     required int skip,

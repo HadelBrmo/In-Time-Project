@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import '../../features/home/presentation/widgets/home_widget/drawItem.dart';
-import '../../features/my_servings/presentation/bloc/my_servings_bloc.dart';
-import '../../features/my_servings/presentation/pages/my_servings_view.dart';
+import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
+import '../../features/servings/presentation/pages/my_servings_view.dart';
 import '../../injection_container.dart';
 import '../widgets/global_particles_wrapper.dart';
 

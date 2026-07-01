@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/theme/glowingBorder.dart';
-import '../../../domain/entities/service_entity.dart';
+import '../../../../servings/domain/entity/service_entity.dart';
 import '../../pages/serviceDetailsPage.dart';
 
-Widget buildServiceCard(BuildContext context, ServicingEntity serving, double width, double height) {
+Widget buildServiceCard(BuildContext context, ServiceEntity serving, double width, double height) {
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
   final address = serving.locationAddress;

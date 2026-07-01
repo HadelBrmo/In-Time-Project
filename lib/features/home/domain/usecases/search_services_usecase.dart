@@ -1,5 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
-import '../entities/service_entity.dart';
+﻿import '../../../servings/domain/entity/service_entity.dart';
 import '../repositories/home_repository.dart';
 
 class SearchServingsUseCase {
@@ -7,7 +6,7 @@ class SearchServingsUseCase {
 
   SearchServingsUseCase(this.repository);
 
-  Future<List<ServicingEntity>> call({
+  Future<List<ServiceEntity>> call({
     int? servingTypeId,
     int? paymentUnitId,
     int? servingCategoryId,

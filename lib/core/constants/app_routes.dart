@@ -6,17 +6,17 @@ import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
-import '../../features/home/domain/entities/service_entity.dart';
+import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/home/presentation/pages/serviceDetailsPage.dart';
-import '../../features/receivedRequests/presentation/bloc/received_requests_bloc.dart';
+import '../../features/requests/presentation/bloc/received_requests/received_requests_bloc.dart';
 import '../../features/requests/domain/entity/request_entity.dart';
 import '../../features/requests/presentation/bloc/request_bloc.dart';
 import '../../features/requests/presentation/pages/my_requests_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
-import '../../features/strategies_services/presentation/pages/services/paid_strategy.dart';
+import '../../features/servings/presentation/pages/services/paid_strategy.dart';
 import '../../injection_container.dart';
 import '../constants/app_colors.dart';
 import '../widgets/customBottomNavBar.dart';
@@ -107,11 +107,8 @@ class AppRoutes {
 
         if (args is int) {
           serviceId = args;
-        } else if (args is ServicingEntity) {
+        } else if (args is ServiceEntity) {
           serviceId = args.id ?? 0;
-        } else if (args is RequestServingEntity) {
-          serviceId = args.id ?? 0;
-          isFromRequests = true;
         } else if (args is Map<String, dynamic>) {
           serviceId = args['serviceId'] ?? 0;
           isFromRequests = args['isFromRequests'] ?? false;

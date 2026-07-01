@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/service_entity.dart';
+import '../../../servings/domain/entity/service_entity.dart';
 import '../../domain/usecases/get_nearby_servings_useCase.dart';
 import '../../domain/usecases/search_services_usecase.dart';
 import '../../domain/usecases/update_availability_useCase.dart';
@@ -18,7 +18,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }) : super(HomeInitialState()) {
 
     on<FetchHomeServingsEvent>((event, emit) async {
-      List<ServicingEntity> oldServings = [];
+      List<ServiceEntity> oldServings = [];
       if (!event.isRefresh && state is HomeSuccessState) {
         oldServings = (state as HomeSuccessState).servings;
       }
@@ -45,7 +45,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<FetchNearbyServingsEvent>((event, emit) async {
-      List<ServicingEntity> oldServings = [];
+      List<ServiceEntity> oldServings = [];
       if (!event.isRefresh && state is HomeSuccessState) {
         oldServings = (state as HomeSuccessState).servings;
       }
@@ -117,8 +117,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
 
-  ServicingEntity _cloneServiceWithRequestedStatus(ServicingEntity old, bool newStatus) {
-    return ServicingEntity(
+  ServiceEntity _cloneServiceWithRequestedStatus(ServiceEntity old, bool newStatus) {
+    return ServiceEntity(
       id: old.id,
       title: old.title,
       description: old.description,
@@ -136,6 +136,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       unitName: old.unitName,
       servingTypeName: old.servingTypeName,
       isRequested: newStatus,
+      isOwner: old.isOwner,
+      availabilitySlots: old.availabilitySlots,
+      createdAt: old.createdAt,
     );
   }
 }
