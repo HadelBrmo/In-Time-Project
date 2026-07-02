@@ -1,98 +1,103 @@
-// chat_remote_data_source.dart
-import '../Models/chatModel.dart';
+import 'package:dio/dio.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../models/chat_model.dart';
+import '../models/message_model.dart';
+import '../models/chat_user_model.dart';
 
 abstract class ChatRemoteDataSource {
   Future<List<ChatModel>> getChats();
+  Future<ChatModel> createPersonalChat(int receiverId, String content);
+  Future<ChatModel> createGroupChat(String name, List<int> memberIds);
+  Future<void> updateGroup(int chatId, String name);
+  Future<List<MessageModel>> getMessages(int chatId);
+  Future<MessageModel> sendMessage(int chatId, String content);
+  Future<void> markAsRead(int chatId);
+  Future<void> markAsReceived(int chatId);
+  Future<List<ChatUserModel>> getMembers(int chatId);
+  Future<void> addMembers(int chatId, List<int> userIds);
+  Future<void> removeMember(int chatId, int userId);
+  Future<void> leaveGroup(int chatId);
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
+  final Dio dio;
+
+  ChatRemoteDataSourceImpl({required this.dio});
+
   @override
   Future<List<ChatModel>> getChats() async {
-    await Future.delayed(const Duration(seconds: 1));
+    final response = await dio.get(ApiStringConstants.chatsUrl);
+    final List data = response.data['data'];
+    return data.map((json) => ChatModel.fromJson(json)).toList();
+  }
 
-    final List<Map<String, dynamic>> mockJson = [
-      {
-        'id': '1',
-        'senderName': 'Aya',
-        'lastMessage': 'شو رايك نطلع بكرة الساعة 3؟',
-        'profileUrl': 'assets/images/images1.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toString(),
-        'unreadCount': 2,
-      },
-      {
-        'id': '2',
-        'senderName': 'Flutter Developer',
-        'lastMessage': 'Clean Architecture is great!',
-        'profileUrl': '',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 0,
-      },
-      {
-        'id': '3',
-        'senderName': 'Farah',
-        'lastMessage': 'it is a good idea, let\'s do it',
-        'profileUrl': 'assets/images/images3.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 4,
-      },
-      {
-        'id': '4',
-        'senderName': 'Alaa',
-        'lastMessage': 'يعطيك العافية , الدرس بكرة عالساعة 10',
-        'profileUrl': 'assets/images/images4.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 1,
-      },
-      {
-        'id': '5',
-        'senderName': 'Boushra',
-        'lastMessage': 'I will travel tomorrow , see you soon!',
-      'profileUrl': 'assets/images/images5.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 0,
-      },
-      {
-        'id': '6',
-        'senderName': 'IT 5th Year SE(2025-2026)',
-        'lastMessage': 'شو عطى الدكتور ابي اخر شي ',
-        'profileUrl': 'assets/images/1761076167097.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 0,
-      },
-      {
-        'id': '7',
-        'senderName': 'Sara',
-        'lastMessage': 'رح استناكي بالطابق الاول ',
-        'profileUrl': '',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 6,
-      },
-      {
-        'id': '8',
-        'senderName': 'English Academy',
-        'lastMessage': 'Hello every one , Don\'t be late please',
-        'profileUrl': 'assets/images/images3.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 3,
-      },
-      {
-        'id': '9',
-        'senderName': 'Ghina',
-        'lastMessage': 'عم جهز حالي لامتحان الماجستير ان شاء الله',
-        'profileUrl': 'assets/images/images2.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 0,
-      },
-      {
-        'id': '10',
-        'senderName': 'Monna',
-        'lastMessage': 'نراكم غدا ان شاء الله , كونو على استعداد تام يا صديقاتي',
-        'profileUrl': 'assets/images/images1.jpg',
-        'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toString(),
-        'unreadCount': 2,
-      },
-    ];
+  @override
+  Future<ChatModel> createPersonalChat(int receiverId, String content) async {
+    final response = await dio.post(ApiStringConstants.chatsUrl, data: {
+      'type': 'personal',
+      'receiver_id': receiverId,
+      'content': content,
+    });
+    return ChatModel.fromJson(response.data['data']);
+  }
 
-    return mockJson.map((json) => ChatModel.fromJson(json)).toList();
+  @override
+  Future<ChatModel> createGroupChat(String name, List<int> memberIds) async {
+    final response = await dio.post(ApiStringConstants.chatsUrl, data: {
+      'type': 'group',
+      'name': name,
+      'member_ids': memberIds,
+    });
+    return ChatModel.fromJson(response.data['data']['chat']);
+  }
+
+  @override
+  Future<void> updateGroup(int chatId, String name) async {
+    await dio.put(ApiStringConstants.updateGroupUrl(chatId), data: {'name': name});
+  }
+
+  @override
+  Future<List<MessageModel>> getMessages(int chatId) async {
+    final response = await dio.get(ApiStringConstants.messagesUrl(chatId));
+    final List data = response.data['data'];
+    return data.map((json) => MessageModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<MessageModel> sendMessage(int chatId, String content) async {
+    final response = await dio.post(ApiStringConstants.messagesUrl(chatId), data: {'content': content});
+    return MessageModel.fromJson(response.data['data']['message']);
+  }
+
+  @override
+  Future<void> markAsRead(int chatId) async {
+    await dio.put(ApiStringConstants.markAsReadUrl(chatId));
+  }
+
+  @override
+  Future<void> markAsReceived(int chatId) async {
+    await dio.put(ApiStringConstants.markAsReceivedUrl(chatId));
+  }
+
+  @override
+  Future<List<ChatUserModel>> getMembers(int chatId) async {
+    final response = await dio.get(ApiStringConstants.membersUrl(chatId));
+    final List data = response.data['data'];
+    return data.map((json) => ChatUserModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<void> addMembers(int chatId, List<int> userIds) async {
+    await dio.post(ApiStringConstants.membersUrl(chatId), data: {'user_ids': userIds});
+  }
+
+  @override
+  Future<void> removeMember(int chatId, int userId) async {
+    await dio.delete(ApiStringConstants.removeMemberUrl(chatId, userId));
+  }
+
+  @override
+  Future<void> leaveGroup(int chatId) async {
+    await dio.post(ApiStringConstants.leaveGroupUrl(chatId));
   }
 }

@@ -17,5 +17,13 @@
   static String rejectRequestUrl(int id) => '/servings/requests/$id/reject';
   static const String getMyServingsUrl = '/servings/my';
   static String updateAvailabilityUrl(int serviceId) => '/servings/$serviceId/availability-slots';
+  static const String chatsUrl = '/chats';
+  static String updateGroupUrl(int chatId) => '/chats/$chatId';
+  static String messagesUrl(int chatId) => '/chats/$chatId/messages';
+  static String markAsReadUrl(int chatId) => '/chats/$chatId/read';
+  static String markAsReceivedUrl(int chatId) => '/chats/$chatId/received';
+  static String membersUrl(int chatId) => '/chats/$chatId/members';
+  static String removeMemberUrl(int chatId, int userId) => '/chats/$chatId/members/$userId';
+  static String leaveGroupUrl(int chatId) => '/chats/$chatId/leave';
 }
 

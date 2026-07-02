@@ -1,71 +1,120 @@
-
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/entities/chatEntity.dart';
-import '../../../domain/usecases/deleteChatUseCase.dart';
+import '../../../domain/usecases/create_group_chat_usecase.dart';
+import '../../../domain/usecases/create_personal_chat_usecase.dart';
 import '../../../domain/usecases/getChatsUseCase.dart';
-import '../../../domain/usecases/searchChatsUseCase.dart';
+import '../../../domain/usecases/get_messages_usecase.dart';
+import '../../../domain/usecases/send_message_usecase.dart';
 import 'blocEvent.dart';
 import 'blocState.dart';
 
+
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final GetChatsUseCase getChatsUseCase;
-  final DeleteChatUseCase deleteChatUseCase;
-  final SearchChatsUseCase searchChatsUseCase;
+  final GetMessagesUseCase getMessagesUseCase;
+  final SendMessageUseCase sendMessageUseCase;
+  final CreatePersonalChatUseCase createPersonalChatUseCase;
+  final CreateGroupChatUseCase createGroupChatUseCase;
 
-  List<ChatEntity> _allChats = [];
-  ChatEntity? _lastDeletedChat;
-  int? _lastDeletedIndex;
+  Timer? _chatsTimer;
+  Timer? _messagesTimer;
 
   ChatBloc({
     required this.getChatsUseCase,
-    required this.deleteChatUseCase,
-    required this.searchChatsUseCase,
+    required this.getMessagesUseCase,
+    required this.sendMessageUseCase,
+    required this.createPersonalChatUseCase, required this.createGroupChatUseCase,
   }) : super(ChatInitial()) {
 
-    on<LoadChatsEvent>((event, emit) async {
-      emit(ChatLoading());
-      try {
-        _allChats = await getChatsUseCase();
-        emit(ChatLoaded(chats: _allChats));
-      } catch (e) {
-        emit(ChatError("فشل تحميل المحادثات"));
-      }
+    on<GetChatsEvent>(_onGetChats);
+    on<GetMessagesEvent>(_onGetMessages);
+    on<SendMessageEvent>(_onSendMessage);
+    on<CreatePersonalChatEvent>(_onCreatePersonalChat);
+    on<CreateGroupChatEvent>(_onCreateGroupChat);
+  }
+
+  void startChatsPulling() {
+    _chatsTimer?.cancel();
+    add(const GetChatsEvent(isSilent: false));
+    _chatsTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      add(const GetChatsEvent(isSilent: true));
     });
+  }
 
-    on<DeleteChatEvent>((event, emit) async {
-      if (state is ChatLoaded) {
-        _lastDeletedIndex = _allChats.indexWhere((c) => c.id == event.chatId);
-        _lastDeletedChat = _allChats[_lastDeletedIndex!];
-
-        _allChats.removeAt(_lastDeletedIndex!);
-        emit(ChatLoaded(chats: List.from(_allChats), deletedChatId: event.chatId));
-
-      }
+  void startMessagesPulling(int chatId) {
+    _messagesTimer?.cancel();
+    add(GetMessagesEvent(chatId, isSilent: false));
+    _messagesTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      add(GetMessagesEvent(chatId, isSilent: true));
     });
+  }
 
-    on<UndoDeleteEvent>((event, emit) {
-      if (_lastDeletedChat != null && _lastDeletedIndex != null) {
-        _allChats.insert(_lastDeletedIndex!, _lastDeletedChat!);
-        emit(ChatLoaded(chats: List.from(_allChats)));
-        _lastDeletedChat = null;
-        _lastDeletedIndex = null;
-      }
-    });
+  void stopChatsPulling() => _chatsTimer?.cancel();
 
-    on<SearchChatsEvent>((event, emit) async {
-      if (event.query.isEmpty) {
-        emit(ChatLoaded(chats: _allChats));
-        return;
-      }
-      emit(ChatLoading());
+  void stopMessagesPulling() => _messagesTimer?.cancel();
 
-      try {
-        final searchResults = await searchChatsUseCase(event.query);
+  Future<void> _onGetChats(GetChatsEvent event, Emitter<ChatState> emit) async {
+    if (!event.isSilent) emit(ChatsLoading());
+    final failureOrChats = await getChatsUseCase();
+    failureOrChats.fold(
+          (failure) => emit(const ChatsError("Failed to fetch chats")),
+          (chats) => emit(ChatsLoaded(chats)),
+    );
+  }
 
-        emit(ChatLoaded(chats: searchResults));
-      } catch (e) {
-        emit(ChatError("حدث خطأ أثناء البحث"));
-      }
-    });
+  Future<void> _onGetMessages(GetMessagesEvent event, Emitter<ChatState> emit) async {
+    if (!event.isSilent) emit(MessagesLoading());
+    final failureOrMessages = await getMessagesUseCase(event.chatId);
+    failureOrMessages.fold(
+          (failure) => emit(const ChatsError("Failed to fetch messages")),
+          (messages) => emit(MessagesLoaded(messages)),
+    );
+  }
+
+  Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
+    final failureOrMessage = await sendMessageUseCase(chatId: event.chatId, content: event.content);
+    failureOrMessage.fold(
+          (failure) => emit(const ChatsError("Failed to send message")),
+          (message) {
+        emit(MessageSent(message));
+        add(GetMessagesEvent(event.chatId, isSilent: true));
+      },
+    );
+  }
+
+  Future<void> _onCreatePersonalChat(CreatePersonalChatEvent event, Emitter<ChatState> emit) async {
+    emit(ChatsLoading());
+    final failureOrChat = await createPersonalChatUseCase(receiverId: event.receiverId, content: event.content);
+    failureOrChat.fold(
+          (failure) => emit(const ChatsError("Failed to create chat")),
+          (chat) {
+        add(const GetChatsEvent(isSilent: true));
+      },
+    );
+  }
+
+  Future<void> _onCreateGroupChat(CreateGroupChatEvent event, Emitter<ChatState> emit) async {
+    emit(ChatsLoading());
+
+    final failureOrChat = await createGroupChatUseCase(
+      name: event.name,
+      memberIds: event.memberIds,
+    );
+
+    failureOrChat.fold(
+          (failure) => emit(const ChatsError("Failed to create group chat")),
+          (chat) {
+        add(const GetChatsEvent(isSilent: true));
+      },
+    );
+  }
+
+
+
+  @override
+  Future<void> close() {
+    _chatsTimer?.cancel();
+    _messagesTimer?.cancel();
+    return super.close();
   }
 }

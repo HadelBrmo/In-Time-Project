@@ -14,6 +14,7 @@ class ServiceModel extends ServiceEntity {
     super.locationLng,
     super.meetingType,
     super.imageUrl,
+    super.userId,
     super.userFullName,
     super.userEmail,
     super.categoryName,
@@ -64,6 +65,7 @@ class ServiceModel extends ServiceEntity {
 
       meetingType: json['meeting_type'],
       imageUrl: json['image_url'],
+      userId: json['user_id'] is int ? json['user_id'] : int.tryParse(json['user_id']?.toString() ?? ''),
       userFullName: json['user_full_name'] ?? json['userFullName'],
       userEmail: json['user_email'] ?? json['userEmail'],
       unitName: json['unit_name'] ?? json['unitName'],

@@ -12,9 +12,11 @@ import 'features/auth/presentation/bloc/otpBloc/otp_bloc.dart';
 import 'features/chat/data/datasources/chatRemoteDataSource.dart';
 import 'features/chat/data/repository/chatRepositoryImpl.dart';
 import 'features/chat/domain/repository/chatRepository.dart';
-import 'features/chat/domain/usecases/deleteChatUseCase.dart';
 import 'features/chat/domain/usecases/getChatsUseCase.dart';
-import 'features/chat/domain/usecases/searchChatsUseCase.dart';
+import 'features/chat/domain/usecases/get_messages_usecase.dart';
+import 'features/chat/domain/usecases/send_message_usecase.dart';
+import 'features/chat/domain/usecases/create_group_chat_usecase.dart';
+import 'features/chat/domain/usecases/create_personal_chat_usecase.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 
 // Services/Strategies Features
@@ -79,8 +81,9 @@ Future<void> init() async {
   // ==================== 1. Blocs (Factory) ====================
   sl.registerFactory(() => ChatBloc(
     getChatsUseCase: sl(),
-    deleteChatUseCase: sl(),
-    searchChatsUseCase: sl(),
+    getMessagesUseCase: sl(),
+    sendMessageUseCase: sl(),
+    createPersonalChatUseCase: sl(), createGroupChatUseCase: sl(),
   ));
   sl.registerFactory(() => OtpBloc(sendOtpUseCase: sl()));
   sl.registerFactory(
@@ -100,8 +103,11 @@ Future<void> init() async {
 
   // ==================== 2. Use Cases (LazySingleton) ====================
   sl.registerLazySingleton(() => GetChatsUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteChatUseCase(sl()));
-  sl.registerLazySingleton(() => SearchChatsUseCase(sl()));
+  sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
+  sl.registerLazySingleton(() => SendMessageUseCase(sl()));
+  sl.registerLazySingleton(() => CreatePersonalChatUseCase(sl()));
+  sl.registerLazySingleton(() => CreateGroupChatUseCase(sl()));
+
   sl.registerLazySingleton(() => AddServiceUseCase(sl()));
   sl.registerLazySingleton(() => SendOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
@@ -125,7 +131,7 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl()));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
-  sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl());
+  sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));

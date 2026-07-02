@@ -1,31 +1,45 @@
-class ChatEntity {
-  final String id;
-  final String senderName;
-  final String lastMessage;
-  final String profileUrl;
-  final DateTime timestamp;
-  final int unreadCount;
-  final bool isArchived;
+import 'package:equatable/equatable.dart';
 
-  ChatEntity({
+import 'message_entity.dart';
+
+class ChatEntity extends Equatable {
+  final int id;
+  final String type;
+  final String? name;
+  final int? createdBy;
+  final int unreadCount;
+  final MessageEntity? latestMessage;
+  final ChatUserEntity? otherUser;
+  final List<ChatUserEntity>? users;
+
+  const ChatEntity({
     required this.id,
-    required this.senderName,
-    required this.lastMessage,
-    required this.profileUrl,
-    required this.timestamp,
+    required this.type,
+    this.name,
+    this.createdBy,
     required this.unreadCount,
-    this.isArchived = false,
+    this.latestMessage,
+    this.otherUser,
+    this.users,
   });
 
-  ChatEntity copyWith({bool? isArchived}) {
-    return ChatEntity(
-      id: id,
-      senderName: senderName,
-      lastMessage: lastMessage,
-      profileUrl: profileUrl,
-      timestamp: timestamp,
-      unreadCount: unreadCount,
-      isArchived: isArchived ?? this.isArchived,
-    );
-  }
+  @override
+  List<Object?> get props => [id, type, name, createdBy, unreadCount, latestMessage, otherUser, users];
+}
+
+class ChatUserEntity extends Equatable {
+  final int id;
+  final String fullName;
+  final String? profilePicture;
+  final String? role;
+
+  const ChatUserEntity({
+    required this.id,
+    required this.fullName,
+    this.profilePicture,
+    this.role,
+  });
+
+  @override
+  List<Object?> get props => [id, fullName, profilePicture, role];
 }

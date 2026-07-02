@@ -1,9 +1,11 @@
-// chat_repository_impl.dart
-
-
+import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/chatEntity.dart';
+import '../../domain/entities/message_entity.dart';
 import '../../domain/repository/chatRepository.dart';
 import '../datasources/chatRemoteDataSource.dart';
+
 
 class ChatRepositoryImpl implements ChatRepository {
   final ChatRemoteDataSource remoteDataSource;
@@ -11,20 +13,122 @@ class ChatRepositoryImpl implements ChatRepository {
   ChatRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<ChatEntity>> getChats() async {
-
-    return await remoteDataSource.getChats();
+  Future<Either<Failure, List<ChatEntity>>> getChats() async {
+    try {
+      final remoteChats = await remoteDataSource.getChats();
+      return Right(remoteChats);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
-  Future<void> deleteChat(String chatId) async {
-    print("Chat $chatId deleted from mock server");
+  Future<Either<Failure, ChatEntity>> createPersonalChat(int receiverId, String content) async {
+    try {
+      final chat = await remoteDataSource.createPersonalChat(receiverId, content);
+      return Right(chat);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
-  Future<List<ChatEntity>> searchChats(String query) async {
-    final allChats = await remoteDataSource.getChats();
-    return allChats.where((chat) =>
-        chat.senderName.toLowerCase().contains(query.toLowerCase())).toList();
+  Future<Either<Failure, ChatEntity>> createGroupChat(String name, List<int> memberIds) async {
+    try {
+      final chat = await remoteDataSource.createGroupChat(name, memberIds);
+      return Right(chat);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> updateGroup(int chatId, String name) async {
+    try {
+      await remoteDataSource.updateGroup(chatId, name);
+      return const Right(unit);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MessageEntity>>> getMessages(int chatId) async {
+    try {
+      final messages = await remoteDataSource.getMessages(chatId);
+      return Right(messages);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, MessageEntity>> sendMessage(int chatId, String content) async {
+    try {
+      final message = await remoteDataSource.sendMessage(chatId, content);
+      return Right(message);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> markAsRead(int chatId) async {
+    try {
+      await remoteDataSource.markAsRead(chatId);
+      return const Right(unit);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> markAsReceived(int chatId) async {
+    try {
+      await remoteDataSource.markAsReceived(chatId);
+      return const Right(unit);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ChatUserEntity>>> getMembers(int chatId) async {
+    try {
+      final members = await remoteDataSource.getMembers(chatId);
+      return Right(members);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> addMembers(int chatId, List<int> userIds) async {
+    try {
+      await remoteDataSource.addMembers(chatId, userIds);
+      return const Right(unit);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> removeMember(int chatId, int userId) async {
+    try {
+      await remoteDataSource.removeMember(chatId, userId);
+      return const Right(unit);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> leaveGroup(int chatId) async {
+    try {
+      await remoteDataSource.leaveGroup(chatId);
+      return const Right(unit);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 }

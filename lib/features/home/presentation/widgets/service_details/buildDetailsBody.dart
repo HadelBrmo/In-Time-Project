@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/app_routes.dart';
 import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/theme/glowingBorder.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
+import '../../../../chat/presentation/bloc/chatBloc/blocEvent.dart';
+import '../../../../chat/presentation/bloc/chatBloc/blocState.dart';
+import '../../../../chat/presentation/bloc/chatBloc/chatBloc.dart';
 import '../../../../servings/domain/entity/service_entity.dart';
 import '../../../../servings/presentation/bloc/comment/comment_bloc.dart';
 import '../../../../servings/presentation/pages/comment/service_comments_page.dart';
@@ -19,12 +23,13 @@ import '../../../../requests/presentation/widgets/showRequestDialog.dart';
 import '../../bloc/home_bloc.dart';
 import '../../bloc/home_event.dart';
 
+
 Widget buildDetailsBody(
-  BuildContext context,
-  ServiceEntity service,
-  bool isFromRequests,
-  bool isOwner,
-) {
+    BuildContext context,
+    ServiceEntity service,
+    bool isFromRequests,
+    bool isOwner,
+    ) {
   final media = MediaQueryHelper(context);
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -48,24 +53,50 @@ Widget buildDetailsBody(
 
   return Directionality(
     textDirection: TextDirection.rtl,
-    child: BlocProvider(
-      create: (context) => sl<RequestsBloc>(),
-      child: BlocListener<RequestsBloc, RequestsState>(
-        listener: (context, state) {
-          if (state is CreateRequestLoadingState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('جاري إرسال طلبك...'), backgroundColor: AppColors.primaryColor),
-            );
-          } else if (state is CreateRequestSuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: Colors.green),
-            );
-          } else if (state is CreateRequestErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage), backgroundColor: Colors.red),
-            );
-          }
-        },
+    // دمج الـ ChatBloc والـ RequestsBloc معاً في شجرة العناصر
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<RequestsBloc>()),
+        BlocProvider(create: (context) => sl<ChatBloc>()),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<RequestsBloc, RequestsState>(
+            listener: (context, state) {
+              if (state is CreateRequestLoadingState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('جاري إرسال طلبك...'), backgroundColor: AppColors.primaryColor),
+                );
+              } else if (state is CreateRequestSuccessState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message), backgroundColor: Colors.green),
+                );
+              } else if (state is CreateRequestErrorState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage), backgroundColor: Colors.red),
+                );
+              }
+            },
+          ),
+          BlocListener<ChatBloc, ChatState>(
+            listener: (context, state) {
+              if (state is ChatsLoading) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('جاري فتح المحادثة...'), backgroundColor: AppColors.primaryColor),
+                );
+              } else if (state is ChatInitial) {
+                // في حال نجاح السيرفر بإنشاء أو جلب الشات، الـ Bloc يطلق تحديث لقائمة الشاتات،
+                // وهنا ننتقل باستخدام المعرف الحقيقي للغرفة
+                // ملاحظة: يفضل مستقبلاً إضافة حالة ChatCreatedState مخصصة بالـ Bloc لتمرير الـ ID المباشر،
+                // أو الانتقال الآمن عبر توجيه المستخدم لقائمة المحادثات الرئيسية.
+              } else if (state is ChatsError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+                );
+              }
+            },
+          ),
+        ],
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: media.height * 0.02),
           child: Column(
@@ -260,7 +291,6 @@ Widget buildDetailsBody(
                 ),
               ),
               SizedBox(height: media.height * 0.025),
-
 
               if (isOwner) ...[
                 buildAnimatedItem(
@@ -457,6 +487,44 @@ Widget buildDetailsBody(
               ),
               SizedBox(height: media.height * 0.04),
 
+              // زر مراسلة المعدل لحل خطأ السيرفر والانتقال لقائمة المحادثات بشكل آمن وديناميكي
+              buildAnimatedItem(
+                delayFactor: 4,
+                child: Builder( // نستخدم Builder لضمان توفير الـ Context الصحيح للـ BlocProvider المحقون بالأعلى
+                    builder: (context) {
+                      return Center(
+                        child: SizedBox(
+                          width: media.width * 0.85,
+                          height: media.height * 0.065,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.read<ChatBloc>().add(
+                                CreatePersonalChatEvent(
+                                  service.userId ?? 0,
+                                  "مرحباً، أود الاستفسار عن خدمتك: ${service.title}",
+                                ),
+                              );
+
+                              Navigator.pushNamed(context, AppRoutes.chatListScreen);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: const Text(
+                              "مراسلة",
+                              style: TextStyle(color: AppColors.whiteColor, fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                ),
+              ),
+              SizedBox(height: media.height * 0.04),
               buildAnimatedItem(
                 delayFactor: 4,
                 child: Center(

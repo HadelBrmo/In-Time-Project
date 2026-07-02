@@ -84,9 +84,9 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
   @override
   Future<List<ReceivedRequestGroupModel>> getReceivedRequests() async {
     try {
-      final response = await dio.post(
+      final response = await dio.get(
         '/servings/requests/received',
-        data: {
+        queryParameters: {
           'skip': 0,
           'take': 100,
         },

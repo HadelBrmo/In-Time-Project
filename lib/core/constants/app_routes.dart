@@ -5,7 +5,10 @@ import 'package:in_time/features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
-import '../../features/chat/presentation/pages/chat_screen.dart';
+import '../../features/chat/presentation/bloc/chatBloc/chatBloc.dart';
+import '../../features/chat/presentation/pages/chats_page.dart';
+import '../../features/chat/presentation/pages/chat_room_page.dart';
+import '../../features/chat/presentation/pages/create_group_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
@@ -36,6 +39,8 @@ class AppRoutes {
   static const String submitComplaintPage = '/submitComplaintPage';
   static const String myRequestsPage = '/myRequestsPage';
   static const String serviceDetailsPage = '/serviceDetailsPage';
+  static const String chatRoomPage = '/chatRoomPage';
+  static const String createGroupScreen = '/createGroupScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -63,8 +68,38 @@ class AppRoutes {
       case signUpPage3:
         return MaterialPageRoute(builder: (_) => const SignUpPage3(), settings: settings);
 
+      case createGroupScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => sl<ChatBloc>(),
+            child: const CreateGroupPage(),
+          ),
+        );
+
       case chatListScreen:
-        return MaterialPageRoute(builder: (_) => ChatListScreen(), settings: settings);
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => sl<ChatBloc>(),
+            child: const ChatsPage(),
+          ),
+          settings: settings,
+        );
+
+      case chatRoomPage:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final chatId = args?['chatId'] as int? ?? 0;
+        final chatTitle = args?['chatTitle'] as String? ?? "محادثة";
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => sl<ChatBloc>(),
+            child: ChatRoomPage(
+              chatId: chatId,
+              chatTitle: chatTitle,
+            ),
+          ),
+          settings: settings,
+        );
 
       case homeScreen:
         return MaterialPageRoute(

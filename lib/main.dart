@@ -37,9 +37,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider<ChatBloc>(
-              create: (context) => sl<ChatBloc>()..add(LoadChatsEvent()),
-            ),
+
             BlocProvider<ServicesBloc>(
               create: (context) => sl<ServicesBloc>(),
             ),
