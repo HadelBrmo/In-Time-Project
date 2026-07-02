@@ -35,7 +35,9 @@ Widget buildFooterLinks(MediaQueryHelper media, BuildContext context) {
       ),
       SizedBox(height: media.height * 0.01),
       TextButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, '/homeScreen');
+        },
         child: const Text(
           "الدخول كزائر",
           style: TextStyle(

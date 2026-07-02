@@ -5,6 +5,7 @@ import '../../../../../core/constants/app_routes.dart';
 import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/theme/glowingBorder.dart';
+import '../../../../../core/utils/auth_utils.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
@@ -53,7 +54,6 @@ Widget buildDetailsBody(
 
   return Directionality(
     textDirection: TextDirection.rtl,
-    // دمج الـ ChatBloc والـ RequestsBloc معاً في شجرة العناصر
     child: MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => sl<RequestsBloc>()),
@@ -85,10 +85,6 @@ Widget buildDetailsBody(
                   const SnackBar(content: Text('جاري فتح المحادثة...'), backgroundColor: AppColors.primaryColor),
                 );
               } else if (state is ChatInitial) {
-                // في حال نجاح السيرفر بإنشاء أو جلب الشات، الـ Bloc يطلق تحديث لقائمة الشاتات،
-                // وهنا ننتقل باستخدام المعرف الحقيقي للغرفة
-                // ملاحظة: يفضل مستقبلاً إضافة حالة ChatCreatedState مخصصة بالـ Bloc لتمرير الـ ID المباشر،
-                // أو الانتقال الآمن عبر توجيه المستخدم لقائمة المحادثات الرئيسية.
               } else if (state is ChatsError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.message), backgroundColor: Colors.red),
@@ -149,14 +145,16 @@ Widget buildDetailsBody(
                         }
                         return GestureDetector(
                           onTap: () {
-                            showRequestDialog(
-                              context: context,
-                              servingId: service.id ?? 0,
-                              media: media,
-                              isDarkMode: isDarkMode,
-                              cardBg: cardBg,
-                              textColor: textColor,
-                            );
+                            if (AuthUtils.checkAuth(context)) {
+                              showRequestDialog(
+                                context: context,
+                                servingId: service.id ?? 0,
+                                media: media,
+                                isDarkMode: isDarkMode,
+                                cardBg: cardBg,
+                                textColor: textColor,
+                              );
+                            }
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: media.width * 0.04, vertical: media.height * 0.005),
@@ -487,10 +485,9 @@ Widget buildDetailsBody(
               ),
               SizedBox(height: media.height * 0.04),
 
-              // زر مراسلة المعدل لحل خطأ السيرفر والانتقال لقائمة المحادثات بشكل آمن وديناميكي
               buildAnimatedItem(
                 delayFactor: 4,
-                child: Builder( // نستخدم Builder لضمان توفير الـ Context الصحيح للـ BlocProvider المحقون بالأعلى
+                child: Builder( 
                     builder: (context) {
                       return Center(
                         child: SizedBox(
@@ -498,14 +495,16 @@ Widget buildDetailsBody(
                           height: media.height * 0.065,
                           child: ElevatedButton(
                             onPressed: () {
-                              context.read<ChatBloc>().add(
-                                CreatePersonalChatEvent(
-                                  service.userId ?? 0,
-                                  "مرحباً، أود الاستفسار عن خدمتك: ${service.title}",
-                                ),
-                              );
+                              if (AuthUtils.checkAuth(context)) {
+                                context.read<ChatBloc>().add(
+                                  CreatePersonalChatEvent(
+                                    service.userId ?? 0,
+                                    "مرحباً، أود الاستفسار عن خدمتك: ${service.title}",
+                                  ),
+                                );
 
-                              Navigator.pushNamed(context, AppRoutes.chatListScreen);
+                                Navigator.pushNamed(context, AppRoutes.chatListScreen);
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primaryColor,

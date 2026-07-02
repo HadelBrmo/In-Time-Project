@@ -1,0 +1,76 @@
+// features/services/domain/entities/service_entity.dart
+
+import 'package:equatable/equatable.dart';
+
+class ServiceEntity extends Equatable {
+  final int? id;
+  final String title;
+  final String description;
+  final String? categoryId;
+  final String? costAmount;
+  final String? unitId;
+  final String? locationAddress;
+  final double? locationLat;
+  final double? locationLng;
+  final String? meetingType;
+  final String? imageUrl;
+  final int? userId;
+  final String? userFullName;
+  final String? userEmail;
+  final String? categoryName;
+  final String? unitName;
+  final String? servingTypeName;
+  final bool isRequested;
+  final bool? isOwner;
+  final List<dynamic>? availabilitySlots;
+  final String? createdAt;
+
+  const ServiceEntity({
+    this.id,
+    required this.title,
+    required this.description,
+    this.categoryId,
+    this.costAmount,
+    this.unitId,
+    this.locationAddress,
+    this.locationLat,
+    this.locationLng,
+    this.meetingType,
+    this.imageUrl,
+    this.userId,
+    this.userFullName,
+    this.userEmail,
+    this.categoryName,
+    this.unitName,
+    this.servingTypeName,
+    this.isRequested = false,
+    this.isOwner = false,
+    this.availabilitySlots = const [],
+    this.createdAt,
+  });
+
+  @override
+  List<Object?> get props => [
+    id,
+    title,
+    description,
+    categoryId,
+    costAmount,
+    unitId,
+    locationAddress,
+    locationLat,
+    locationLng,
+    meetingType,
+    imageUrl,
+    userId,
+    userFullName,
+    userEmail,
+    categoryName,
+    unitName,
+    servingTypeName,
+    isRequested,
+    isOwner,
+    availabilitySlots,
+    createdAt,
+  ];
+}

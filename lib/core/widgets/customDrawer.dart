@@ -8,6 +8,7 @@ import '../../features/home/presentation/widgets/home_widget/drawItem.dart';
 import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
 import '../../features/servings/presentation/pages/my_servings_view.dart';
 import '../../injection_container.dart';
+import '../utils/auth_utils.dart';
 import '../widgets/global_particles_wrapper.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -116,7 +117,12 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
                   drawerItem(icon: Icons.info_outline, text: "حول التطبيق"),
-                  drawerItem(icon: Icons.logout, text: "تسجيل الخروج", isExit: true),
+                  drawerItem(
+                    icon: Icons.logout,
+                    text: "تسجيل الخروج",
+                    isExit: true,
+                    onTap: () => AuthUtils.logout(context),
+                  ),
                 ].animate(interval: 40.ms)
                     .fade(duration: 350.ms)
                     .slideX(
