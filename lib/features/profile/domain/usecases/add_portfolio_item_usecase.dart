@@ -1,4 +1,0 @@
-﻿class AddPortfolioItemUseCase {}
-
-class AddItemParams {}
-

@@ -1,4 +1,0 @@
-﻿class SubmitComplaintUseCase {}
-
-class SubmitParams {}
-

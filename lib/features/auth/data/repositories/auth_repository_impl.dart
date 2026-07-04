@@ -57,6 +57,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   Future<void> _saveAuthData(LoginAuthEntity authData) async {
+    if (authData.userId != 0) {
+      await sharedPreferences.setInt("user_id", authData.userId);
+    }
+    await sharedPreferences.setString("full_name", authData.fullName);
+    await sharedPreferences.setString("email", authData.email);
+    if (authData.profilePicture != null) {
+      await sharedPreferences.setString("profile_picture", authData.profilePicture!);
+    }
     if (authData.token.isNotEmpty) {
       await sharedPreferences.setString("token", authData.token);
     }

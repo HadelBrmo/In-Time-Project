@@ -40,6 +40,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   smooth_page_indicator: ^2.0.1
   image_picker: ^1.2.2
+  file_picker: ^8.3.5
   google_maps_flutter: ^2.17.0
   geolocator: ^14.0.2
   http: ^1.6.0

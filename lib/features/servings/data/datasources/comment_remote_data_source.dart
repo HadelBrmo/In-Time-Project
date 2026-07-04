@@ -70,7 +70,7 @@ class CommentRemoteDataSourceImpl implements CommentRemoteDataSource {
 
   @override
   Future<void> reactLike(int commentId) async {
-    final response = await dio.post('/comments/$commentId/like', data: {});
+    final response = await dio.post('/comments/$commentId/react', data: {'type': 'like'});
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw ServerException();
     }
@@ -78,7 +78,7 @@ class CommentRemoteDataSourceImpl implements CommentRemoteDataSource {
 
   @override
   Future<void> reactDislike(int commentId) async {
-    final response = await dio.post('/comments/$commentId/dislike', data: {});
+    final response = await dio.post('/comments/$commentId/react', data: {'type': 'dislike'});
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw ServerException();
     }

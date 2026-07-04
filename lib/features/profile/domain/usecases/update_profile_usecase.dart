@@ -1,4 +1,0 @@
-﻿class UpdateProfileUseCase {}
-
-class UpdateParams {}
-

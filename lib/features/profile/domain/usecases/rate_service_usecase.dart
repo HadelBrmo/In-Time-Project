@@ -1,4 +1,0 @@
-﻿class RateServiceUseCase {}
-
-class RateParams {}
-

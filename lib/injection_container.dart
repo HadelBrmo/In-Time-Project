@@ -74,6 +74,21 @@ import 'features/wallet/domain/repository/wallet_repository.dart';
 import 'features/wallet/domain/usecases/get_my_wallets_usecase.dart';
 import 'features/wallet/presentation/bloc/wallet_bloc.dart';
 
+// Complaints Feature 📢
+import 'features/complaints/data/datasources/complaint_remote_data_source.dart';
+import 'features/complaints/data/repositories/complaint_repository_impl.dart';
+import 'features/complaints/domain/repositories/i_complaint_repository.dart';
+import 'features/complaints/domain/usecases/submit_complaint_usecase.dart';
+import 'features/complaints/presentation/bloc/complaint_bloc.dart';
+
+// Profile Feature 👤
+import 'features/profile/data/datasources/profile_remote_data_source.dart';
+import 'features/profile/data/repositories/profile_repository_impl.dart';
+import 'features/profile/domain/repositories/i_profile_repository.dart';
+import 'features/profile/domain/usecases/get_user_profile_usecase.dart';
+import 'features/profile/domain/usecases/update_profile_usecase.dart';
+import 'features/profile/presentation/bloc/profile_bloc.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -248,5 +263,21 @@ Future<void> init() async {
   // 2. Use Cases
   sl.registerLazySingleton(() => GetMyServingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateServingUseCase(sl()));
+
+  // ==================== Feature: Complaints 📢 ====================
+  sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));
+  sl.registerLazySingleton(() => SubmitComplaintUseCase(sl()));
+  sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<ComplaintRemoteDataSource>(() => ComplaintRemoteDataSourceImpl(dio: sl()));
+
+  // ==================== Feature: Profile 👤 ====================
+  sl.registerFactory(() => ProfileBloc(
+    getUserProfileUseCase: sl(),
+    updateProfileUseCase: sl(),
+  ));
+  sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(dio: sl()));
 
 }

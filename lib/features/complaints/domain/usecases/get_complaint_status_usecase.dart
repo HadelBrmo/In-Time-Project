@@ -1,4 +1,0 @@
-﻿class GetComplaintStatusUseCase {}
-
-class GetStatusParams {}
-

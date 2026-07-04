@@ -9,6 +9,7 @@ import '../../features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import '../../features/chat/presentation/pages/chats_page.dart';
 import '../../features/chat/presentation/pages/chat_room_page.dart';
 import '../../features/chat/presentation/pages/create_group_page.dart';
+import '../../features/complaints/presentation/bloc/complaint_bloc.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
@@ -114,8 +115,18 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => PaidServicePage(), settings: settings);
 
       case submitComplaintPage:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final servingId = args?['servingId'] as int? ?? 0;
+        final accusedUserId = args?['accusedUserId'] as int? ?? 0;
+
         return MaterialPageRoute(
-          builder: (_) => const SubmitComplaintPage(),
+          builder: (_) => BlocProvider(
+            create: (context) => sl<ComplaintBloc>(),
+            child: SubmitComplaintPage(
+              servingId: servingId,
+              accusedUserId: accusedUserId,
+            ),
+          ),
           settings: settings,
         );
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import '../../features/home/presentation/widgets/home_widget/drawItem.dart';
@@ -17,9 +18,18 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     final drawerBgColor = isDarkMode ? AppColors.blackColor : Colors.white;
-    final itemTextColor = isDarkMode ? Colors.white : Colors.black87;
+
+    final prefs = sl<SharedPreferences>();
+    final String fullName = prefs.getString('full_name') ?? "زائر";
+    final String email = prefs.getString('email') ?? "guest@in-time.com";
+    final String? profilePic = prefs.getString('profile_picture');
+
+    final String? fullImageUrl = (profilePic != null && profilePic.isNotEmpty)
+        ? (profilePic.startsWith('http')
+            ? profilePic
+            : 'http://ali.ba-tech.tech/storage/$profilePic')
+        : null;
 
     return Drawer(
       backgroundColor: drawerBgColor,
@@ -44,12 +54,14 @@ class CustomDrawer extends StatelessWidget {
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 47.r,
-                        backgroundImage: const AssetImage('assets/images/myPhoto.jpg'),
+                        backgroundImage: fullImageUrl != null
+                            ? NetworkImage(fullImageUrl)
+                            : const AssetImage('assets/images/profile/profile.png') as ImageProvider,
                       ),
                     ),
                     SizedBox(height: 10.h),
                     Text(
-                      "هديل برمو",
+                      fullName,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.sp,
@@ -57,7 +69,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "hadelbrmo11@gmail.com",
+                      email,
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 15.sp,
