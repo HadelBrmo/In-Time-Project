@@ -10,6 +10,7 @@ import '../../features/chat/presentation/pages/chats_page.dart';
 import '../../features/chat/presentation/pages/chat_room_page.dart';
 import '../../features/chat/presentation/pages/create_group_page.dart';
 import '../../features/complaints/presentation/bloc/complaint_bloc.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
@@ -42,6 +43,7 @@ class AppRoutes {
   static const String serviceDetailsPage = '/serviceDetailsPage';
   static const String chatRoomPage = '/chatRoomPage';
   static const String createGroupScreen = '/createGroupScreen';
+  static const String profilePage = '/profilePage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -156,6 +158,12 @@ class AppRoutes {
             serviceId: serviceId,
             isFromRequests: isFromRequests,
           ),
+          settings: settings,
+        );
+
+      case profilePage:
+        return MaterialPageRoute(
+          builder: (_) => const ProfilePage(),
           settings: settings,
         );
 

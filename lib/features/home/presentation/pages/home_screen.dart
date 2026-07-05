@@ -134,12 +134,12 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: const Icon(
-                Icons.chat_bubble_outline_rounded,
+                Icons.person,
                 color: AppColors.whiteColor,
                 size: 24,
               ),
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.chatListScreen);
+                Navigator.pushNamed(context, AppRoutes.profilePage);
               },
             ),
             IconButton(

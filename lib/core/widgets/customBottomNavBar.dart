@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/injection_container.dart';
 
+import '../../features/chat/presentation/pages/chats_page.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/wallet/presentation/pages/hours_balance_page.dart';
+import '../constants/app_routes.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -68,7 +70,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     final List<Widget> screens = [
-      ProfilePage(),
+      //ProfilePage(),
+      ChatsPage(),
       const Center(child: Text("صفحة لوحة الشرف")),
       HoursBalancePage(),
       const HomeScreen(),
@@ -106,7 +109,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             children: [
               Row(
                 children: [
-                  _buildNavItem(icon: Icons.person_outline, label: "الشخصية", index: 0, isDarkMode: isDarkMode),
+                  _buildNavItem(icon: Icons.chat, label: "المحادثة", index: 0, isDarkMode: isDarkMode),
                   SizedBox(width: 35.w),
                   _buildNavItem(icon: Icons.emoji_events_outlined, label: "لوحة الشرف", index: 1, isDarkMode: isDarkMode),
                 ],

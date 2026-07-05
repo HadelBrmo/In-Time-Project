@@ -5,9 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
+import '../../features/about_app/presentation/pages/about_app_page.dart';
 import '../../features/home/presentation/widgets/home_widget/drawItem.dart';
 import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
 import '../../features/servings/presentation/pages/my_servings_view.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../injection_container.dart';
 import '../utils/auth_utils.dart';
 import '../widgets/global_particles_wrapper.dart';
@@ -92,7 +94,16 @@ class CustomDrawer extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
                 children: [
-                  drawerItem(icon: Icons.settings_outlined, text: "الإعدادات"),
+                  drawerItem(
+                    icon: Icons.settings_outlined,
+                    text: "الإعدادات",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsPage()),
+                      );
+                    },
+                  ),
                   drawerItem(icon: Icons.brightness_6_outlined, text: "المظهر"),
                   drawerItem(
                     icon: Icons.chat_bubble_outline,
@@ -128,7 +139,16 @@ class CustomDrawer extends StatelessWidget {
                     },
                   ),
                   drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
-                  drawerItem(icon: Icons.info_outline, text: "حول التطبيق"),
+                  drawerItem(
+                    icon: Icons.info_outline,
+                    text: "حول التطبيق",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AboutAppPage()),
+                      );
+                    },
+                  ),
                   drawerItem(
                     icon: Icons.logout,
                     text: "تسجيل الخروج",
