@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:in_time/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:in_time/injection_container.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import 'package:in_time/core/constants/app_colors.dart';
@@ -51,6 +52,10 @@ class AuthUtils {
     final prefs = sl<SharedPreferences>();
     await prefs.remove('token');
     await prefs.remove('refresh_token');
+
+    final authLocal = sl<AuthLocalDataSource>();
+    await authLocal.clearToken();
+
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
   }
 }

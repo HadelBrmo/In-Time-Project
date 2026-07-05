@@ -17,4 +17,13 @@ class ChatUserModel extends ChatUserEntity {
       role: json['role'] as String?,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'full_name': fullName,
+      'profile_picture': profilePicture,
+      'role': role,
+    };
+  }
 }

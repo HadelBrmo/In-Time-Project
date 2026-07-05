@@ -9,4 +9,11 @@ class PaymentUnitModel extends PaymentUnitEntity {
       name: json['name'] ?? '',
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 }

@@ -27,4 +27,17 @@ class MessageModel extends MessageEntity {
           : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'chat_id': chatId,
+      'sender_id': senderId,
+      'content': content,
+      'created_at': createdAt.toIso8601String(),
+      'received_count': receivedCount,
+      'read_count': readCount,
+      'sender': (sender as ChatUserModel?)?.toJson(),
+    };
+  }
 }

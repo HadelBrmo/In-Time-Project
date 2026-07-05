@@ -5,11 +5,16 @@ import '../../../../core/error/failures.dart';
 import '../../../servings/domain/entity/service_entity.dart';
 import '../../domain/repositories/home_repository.dart';
 import '../datasources/home_datasources.dart';
+import '../datasources/home_local_datasource.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDataSource remoteDataSource;
+  final HomeLocalDataSource localDataSource;
 
-  HomeRepositoryImpl({required this.remoteDataSource});
+  HomeRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
   Future<Either<Failure, List<ServiceEntity>>> searchServings({
@@ -30,8 +35,13 @@ class HomeRepositoryImpl implements HomeRepository {
         take: take,
       );
 
+      await localDataSource.cacheSearchServings(remoteServings);
       return Right(remoteServings);
     } catch (e) {
+      final localServings = await localDataSource.getCachedSearchServings();
+      if (localServings.isNotEmpty) {
+        return Right(localServings);
+      }
       return Left(ServerFailure());
     }
   }
@@ -50,10 +60,13 @@ class HomeRepositoryImpl implements HomeRepository {
         skip: skip,
         take: take,
       );
+      await localDataSource.cacheNearbyServings(remoteData);
       return Right(remoteData);
-    } on ServerException {
-      return Left(ServerFailure());
     } catch (e) {
+      final localData = await localDataSource.getCachedNearbyServings();
+      if (localData.isNotEmpty) {
+        return Right(localData);
+      }
       return Left(ServerFailure());
     }
   }

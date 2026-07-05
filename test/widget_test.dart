@@ -17,7 +17,7 @@ void main() async{
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
 
     await di.init();
-    await tester.pumpWidget(MyApp(
+    await tester.pumpWidget(MyApp(initialRoute: '/',
 
     ));
 

@@ -53,12 +53,14 @@ dependencies:
   dartz: ^0.10.1
   dio: ^5.9.2
   hive: ^2.2.3
+  hive_flutter: ^1.1.0
   flutter_animate: ^4.5.2
   crystal_navigation_bar: ^1.1.0
   flashy_tab_bar2: ^0.0.10
   particles_flutter: ^3.0.2
   confetti: ^0.8.0
   lottie: ^3.4.0
+  flutter_secure_storage: ^10.3.1
 
 
 

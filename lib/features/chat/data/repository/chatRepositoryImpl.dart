@@ -5,19 +5,29 @@ import '../../domain/entities/chatEntity.dart';
 import '../../domain/entities/message_entity.dart';
 import '../../domain/repository/chatRepository.dart';
 import '../datasources/chatRemoteDataSource.dart';
+import '../datasources/chat_local_data_source.dart';
 
 
 class ChatRepositoryImpl implements ChatRepository {
   final ChatRemoteDataSource remoteDataSource;
+  final ChatLocalDataSource localDataSource;
 
-  ChatRepositoryImpl({required this.remoteDataSource});
+  ChatRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
   Future<Either<Failure, List<ChatEntity>>> getChats() async {
     try {
       final remoteChats = await remoteDataSource.getChats();
+      await localDataSource.cacheChats(remoteChats);
       return Right(remoteChats);
-    } on ServerException {
+    } catch (e) {
+      final localChats = await localDataSource.getCachedChats();
+      if (localChats.isNotEmpty) {
+        return Right(localChats);
+      }
       return Left(ServerFailure());
     }
   }
@@ -56,8 +66,13 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<Either<Failure, List<MessageEntity>>> getMessages(int chatId) async {
     try {
       final messages = await remoteDataSource.getMessages(chatId);
+      await localDataSource.cacheMessages(chatId, messages);
       return Right(messages);
-    } on ServerException {
+    } catch (e) {
+      final localMessages = await localDataSource.getCachedMessages(chatId);
+      if (localMessages.isNotEmpty) {
+        return Right(localMessages);
+      }
       return Left(ServerFailure());
     }
   }

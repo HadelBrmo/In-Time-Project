@@ -45,28 +45,25 @@
 |:---|:---|
 | 🔄 **Time-Based Exchange** | Three economic models: `Barter`, `Paid`, and `Volunteer` services. |
 | 💰 **Hour Wallet** | Users start with 2 initial hours. Earn more by providing services to others. |
-| 🗺️ **Smart Map & Nearby** | GPS-powered service discovery with offline fallback & distance sorting. |
-| 💬 **Real-Time Negotiation** | In-app WebSocket chat for scheduling, details, and file exchange. |
-| 🏆 **Gamification & Leaderboard** | Badges, progress tracking, and monthly Top 5 rankings to boost engagement. |
-| 📝 **Complaint & Dispute System** | Trackable tickets (`Pending`, `Processing`, `Resolved/Rejected`) with admin moderation. |
-| ⭐ **Ratings & Threaded Comments** | Verified reviews and nested replies to build platform trust. |
-| 👤 **Guest Mode & OCR Verification** | Browse freely without login. Register with OCR-based ID/Passport verification. |
-| 📦 **Service Bundles** | Package multiple services into single "vouchers" for flexible redemption. |
-| 🛡️ **Admin Control Panel** | Dispute resolution, service verification, leaderboard management, and user moderation. |
+| 🗺️ **Smart Map & Nearby** | GPS-powered live service discovery with Google Maps integration and distance-based sorting. |
+| 💬 **In-App Messaging** | Built-in chat system with automated polling queues for reliable messaging, scheduling, and service confirmation. |
+| 🏆 **Gamification & Leaderboard** | Honor board tracking, user progress, and monthly rankings to boost community engagement. |
+| 📝 **Complaint & Dispute System** | Trackable tickets (`Processing`, `Done`, `Rejected`) with full theme support and context-aware error handling. |
+| ⭐ **Ratings & Reviews** | Verified reviews, ratings, and feedback systems to build platform trust. |
+| 👤 **Guest Mode** | Allows users to browse active services and explore the platform freely without initial login. |
 
 ---
-
 ## 🛠️ Technical Stack
 - **Framework:** Flutter 3.x
 - **Language:** Dart
-- **State Management:** BLoC Pattern + Dart Streams
+- **State Management:** BLoC Pattern (flutter_bloc) + Dart Streams
 - **Architecture:** Clean Architecture (Presentation → Domain → Data)
-- **Dependency Injection:** `get_it` + `injectable`
-- **Local Storage:** Isar/Hive, `flutter_secure_storage`
-- **Networking:** Dio, WebSocket/Socket.io
-- **Key Packages:** `google_mlkit_text_recognition`, `geolocator`, `google_maps_flutter`, `connectivity_plus`, `freezed`, `json_serializable`, `bloc_test`
-
----
+- **Dependency Injection:** `get_it` (Service Locator)
+- **Functional Programming:** `dartz` (Either Left/Right Error handling)
+- **Local Storage / Caching:** `hive` (Fast NoSQL local object storage),`flutter_secure_storage` (Encrypted storage for sensitive data like Tokens)
+- **Networking:** `dio` (HTTP client with interceptors) & `http`
+- **Key UI & Animation Packages:** `flutter_animate`, `lottie`, `confetti`, `smooth_page_indicator`, `flutter_screenutil`
+- **Location Services:** `google_maps_flutter` & `geolocator`
 
 ## 🏗️ Architecture & Design Patterns
 The project strictly follows **Clean Architecture** to ensure separation of concerns, high testability, and long-term maintainability.
@@ -149,28 +146,29 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 ```text
 lib/
 ├── core/
-│   ├── constants/          # API, Colors, Strings, Routes
-│   ├── error/              # Exceptions & Failures
-│   ├── network/            # Dio, Endpoints, Decorators
-│   ├── strategies/         # Service Pricing Strategies
-│   ├── services/           # SecureStorage, Notifications, Geo
-│   ├── utils/              # Validators, Formatters
-│   ├── widgets/            # Shared UI Components
-│   └── usecase/            # Base UseCase Contract
+│   ├── constants/          # الأكواد الثابتة: API, Colors, Strings, Routes
+│   ├── error/              # إدارة الأخطاء: Exceptions & Failures
+│   ├── network/            # إعدادات الشبكة: Dio Client, Interceptors, Decorators
+│   ├── theme/              # التصميم: AppTheme, GlowingBorder, Custom Styles
+│   ├── utils/              # أدوات مساعدة: AuthUtils, SnackBarUtils, Validators
+│   ├── widgets/            # عناصر واجهة مستخدم مشتركة: CustomAppBar, LoadingWidget
+│   └── services/           # خدمات النظام: LocationService, NotificationService
 │
 ├── features/
-│   ├── auth/               # UC-02, UC-13: Login, Register, OCR
-│   ├── home/               # UC-04, UC-14: Search, Filters
-│   ├── services/           # UC-03, UC-17: Add Services
-│   ├── exchange/           # UC-01, UC-07: Requests
-│   ├── chat/               # UC-05: Real-time Messaging
-│   ├── complaints/         # UC-06: Submit & Track
-│   ├── profile/            # UC-10: Edit Profile, Ratings
-│   ├── nearby/             # UC-11: GPS Discovery
-│   └── rewards/            # UC-15, UC-16: Hours, Leaderboard
+│   ├── auth/               # تسجيل الدخول، إنشاء الحساب، ونظام الـ OTP
+│   ├── home/               # الصفحة الرئيسية، البحث، والخدمات القريبة (Nearby)
+│   ├── servings/           # إضافة وإدارة الخدمات، التعليقات، وأنماط التسعير (Strategies)
+│   ├── requests/           # إدارة الطلبات المرسلة والمستلمة (بدل exchange)
+│   ├── chat/               # المحادثات الفورية، المجموعات، ونظام الـ Polling
+│   ├── complaints/         # تقديم الشكاوى وتتبع حالتها (Processing, Done)
+│   ├── profile/            # الملف الشخصي، التقييمات، ومعرض الأعمال
+│   ├── wallet/             # المحفظة الزمنية وعرض رصيد الساعات
+│   ├── rewards/            # لوحة الشرف (Leaderboard)، الأوسمة، والجوائز
+│   ├── splash/             # شاشة البداية المتحركة
+│   └── onboarding/         # شاشات التعريف بالتطبيق للمستخدم الجديد
 │
-├── injection_container.dart
-└── main.dart
+├── injection_container.dart # محرك حقن التبعيات (Service Locator)
+└── main.dart                # نقطة انطلاق التطبيق وإعدادات التشغيل الأساسية
 
 🚀 Getting Started
 Prerequisites
@@ -196,14 +194,13 @@ flutter build ios --release      # iOS
 🧪 Testing & Quality Assurance
 Unit Testing: bloc_test + mocktail for Business Logic & Repositories
 Widget Testing: UI component validation
-Code Generation: freezed + json_serializable for immutable models
 Performance: Pagination, compute() for heavy tasks, Firebase Performance Monitoring
-Offline-First: Isar/Hive caching with connectivity_plus sync queues
+Offline-First: Hive caching with connectivity_plus sync queues
 Security: flutter_secure_storage for tokens, Dio interceptors for auto-refresh
 Logging: logger (dev) + Firebase Crashlytics (prod)
 
 👥 Team & University
-Developers: Hadel Brmo & Baraa Alahmed
+Developers: Hadel Brmo 
 University: Damascus University
 Project Type: Graduation Project
 

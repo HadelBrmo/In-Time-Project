@@ -1,27 +1,39 @@
-﻿import 'dart:math';
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/global_particles_wrapper.dart';
+import 'features/auth/data/datasources/auth_local_data_source.dart';
 import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/loginBloc/login_bloc.dart';
-import 'features/servings/presentation/bloc/service/services_bloc.dart';
+import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await Hive.initFlutter();
+
   await di.init();
-  runApp(const MyApp());
+
+  final authLocal = sl<AuthLocalDataSource>();
+  final String? token = await authLocal.getToken();
+
+  final String initialRoute = (token != null && token.isNotEmpty) ? '/home' : '/';
+
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -37,7 +49,6 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return MultiBlocProvider(
           providers: [
-
             BlocProvider<ServicesBloc>(
               create: (context) => sl<ServicesBloc>(),
             ),
@@ -46,6 +57,9 @@ class _MyAppState extends State<MyApp> {
             ),
             BlocProvider<SignUpBloc>(
               create: (context) => sl<SignUpBloc>(),
+            ),
+            BlocProvider<ChatBloc>(
+              create: (context) => sl<ChatBloc>(),
             ),
           ],
           child: MaterialApp(
@@ -59,14 +73,11 @@ class _MyAppState extends State<MyApp> {
               Locale('en', 'US'),
             ],
             debugShowCheckedModeBanner: false,
-
             theme: AppTheme.lightMode,
             darkTheme: AppTheme.darkMode,
             themeMode: ThemeMode.system,
-
             builder: (context, child) {
               final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-
               final backgroundColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
 
               return Scaffold(
@@ -78,7 +89,6 @@ class _MyAppState extends State<MyApp> {
                         child: SizedBox.shrink(),
                       ),
                     ),
-
                     Theme(
                       data: Theme.of(context).copyWith(
                         scaffoldBackgroundColor: Colors.transparent,
@@ -89,7 +99,7 @@ class _MyAppState extends State<MyApp> {
                 ),
               );
             },
-            initialRoute: '/',
+            initialRoute: widget.initialRoute,
             onGenerateRoute: AppRoutes.generateRoute,
           ),
         );

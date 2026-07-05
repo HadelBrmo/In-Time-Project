@@ -6,14 +6,17 @@ import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/login_auth_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
+  final AuthLocalDataSource localDataSource;
   final SharedPreferences sharedPreferences;
 
   AuthRepositoryImpl({
     required this.remoteDataSource,
+    required this.localDataSource,
     required this.sharedPreferences,
   });
 
@@ -66,6 +69,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await sharedPreferences.setString("profile_picture", authData.profilePicture!);
     }
     if (authData.token.isNotEmpty) {
+      await localDataSource.saveToken(authData.token);
       await sharedPreferences.setString("token", authData.token);
     }
     if (authData.refreshToken != null) {

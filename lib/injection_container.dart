@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // Chat Features
 import 'core/constants/app_strings.dart';
 import 'features/auth/domain/usecases/sendOtpUseCase.dart';
@@ -10,6 +11,7 @@ import 'features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import 'features/auth/presentation/bloc/loginBloc/login_bloc.dart';
 import 'features/auth/presentation/bloc/otpBloc/otp_bloc.dart';
 import 'features/chat/data/datasources/chatRemoteDataSource.dart';
+import 'features/chat/data/datasources/chat_local_data_source.dart';
 import 'features/chat/data/repository/chatRepositoryImpl.dart';
 import 'features/chat/domain/repository/chatRepository.dart';
 import 'features/chat/domain/usecases/getChatsUseCase.dart';
@@ -21,6 +23,7 @@ import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 
 // Services/Strategies Features
 import 'features/home/data/datasources/home_datasources.dart';
+import 'features/home/data/datasources/home_local_datasource.dart';
 import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemoteDataSourceImpl;
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/get_nearby_servings_useCase.dart';
@@ -48,10 +51,12 @@ import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
+import 'features/auth/data/datasources/auth_local_data_source.dart';
 
 // Servings Feature 🛠️
 import 'features/servings/data/datasources/comment_remote_data_source.dart';
 import 'features/servings/data/datasources/services_remote_data_source.dart';
+import 'features/servings/data/datasources/services_local_datasource.dart';
 import 'features/servings/data/repository/comment_repository_impl.dart';
 import 'features/servings/data/repository/services_repository_impl.dart';
 import 'features/servings/domain/repository/comment_repository.dart';
@@ -135,31 +140,47 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateAvailabilityUseCase(sl()));
 
   // ==================== 3. Repositories (LazySingleton) ====================
-  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl()));
-  sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(
+    remoteDataSource: sl(),
+    localDataSource: sl(),
+  ));
+  sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(
+    remoteDataSource: sl(),
+    localDataSource: sl(),
+  ));
 
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(
     remoteDataSource: sl(),
+    localDataSource: sl(),
     sharedPreferences: sl(),
   ));
 
-  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(
+    remoteDataSource: sl(),
+    localDataSource: sl(),
+  ));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ChatLocalDataSource>(() => ChatLocalDataSourceImpl());
   sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ServicesLocalDataSource>(() => ServicesLocalDataSourceImpl());
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl());
+  sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl()));
 
   // ==================== 5. External Libraries ====================
   final sharedPrefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPrefs);
+  sl.registerLazySingleton<FlutterSecureStorage>(() => const FlutterSecureStorage());
+
   if (!sl.isRegistered<Dio>()) {
     final dio = Dio(
       BaseOptions(
         baseUrl: ApiStringConstants.baseUrl,
-        connectTimeout: const Duration(seconds: 20),
-        receiveTimeout: const Duration(seconds: 20),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -167,13 +188,12 @@ Future<void> init() async {
       ),
     );
 
-
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final prefs = sl<SharedPreferences>();
-          String? token = prefs.getString('token');
-
+          // استخدام AuthLocalDataSource لجلب التوكن
+          final authLocal = sl<AuthLocalDataSource>();
+          final String? token = await authLocal.getToken();
 
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';

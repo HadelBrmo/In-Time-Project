@@ -77,7 +77,11 @@ class _PaidServicePageState extends State<PaidServicePage> {
       _priceController.text = "0";
     } else {
       _serviceStrategy = PaidServiceStrategy();
-      context.read<ServicesBloc>().add(GetPaymentUnitsEvent());
+      final bloc = context.read<ServicesBloc>();
+      if (bloc.state is GetPaymentUnitsSuccessState) {
+        paymentUnitsFromServer = (bloc.state as GetPaymentUnitsSuccessState).units;
+      }
+      bloc.add(GetPaymentUnitsEvent());
     }
   }
 

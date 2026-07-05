@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/buildLabel.dart';
 import '../../../../../core/constants/mediaQuery.dart';
@@ -19,31 +20,30 @@ Widget buildDropdownColumn({
     children: [
       buildLabel(context,label),
       Container(
-        height: media.height * 0.07,
         padding: EdgeInsets.symmetric(horizontal: media.width * 0.025),
         decoration: BoxDecoration(
-          color: isDarkMode ? AppColors.blackColor : Colors.transparent,
+          color: isDarkMode ? AppColors.blackColor : Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(media.width * 0.04),
           border: Border.all(
-            color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[300]!,
+            color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.white24,
           ),
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             isExpanded: true,
             value: selectedValue,
-            dropdownColor: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
+            dropdownColor: isDarkMode ? AppColors.blackColor : const Color(0xFF2C2C2C),
             hint: Text(
               hint,
               style: TextStyle(
-                fontSize: media.width * 0.03,
-                color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
+                fontSize: 14.sp,
+                color: Colors.white70,
               ),
             ),
             icon: Icon(
-              Icons.arrow_drop_down,
-              color: isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor,
-              size: media.width * 0.06,
+              Icons.arrow_drop_down_circle_outlined,
+              color: AppColors.primaryColor,
+              size: 24.sp,
             ),
             items: items.map((String value) {
               return DropdownMenuItem<String>(
@@ -51,8 +51,8 @@ Widget buildDropdownColumn({
                 child: Text(
                   value,
                   style: TextStyle(
-                    fontSize: media.width * 0.035,
-                    color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                    fontSize: 14.sp,
+                    color: Colors.white,
                   ),
                 ),
               );

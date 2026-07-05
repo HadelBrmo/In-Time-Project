@@ -32,4 +32,17 @@ class ChatModel extends ChatEntity {
           : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type,
+      'name': name,
+      'created_by': createdBy,
+      'unread_count': unreadCount,
+      'latest_message': (latestMessage as MessageModel?)?.toJson(),
+      'other_user': (otherUser as ChatUserModel?)?.toJson(),
+      'users': users?.map((u) => (u as ChatUserModel).toJson()).toList(),
+    };
+  }
 }

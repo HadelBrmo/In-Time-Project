@@ -71,18 +71,12 @@ class AppRoutes {
 
       case createGroupScreen:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => sl<ChatBloc>(),
-            child: const CreateGroupPage(),
-          ),
+          builder: (_) => const CreateGroupPage(),
         );
 
       case chatListScreen:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => sl<ChatBloc>(),
-            child: const ChatsPage(),
-          ),
+          builder: (_) => const ChatsPage(),
           settings: settings,
         );
 
@@ -92,12 +86,9 @@ class AppRoutes {
         final chatTitle = args?['chatTitle'] as String? ?? "محادثة";
 
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => sl<ChatBloc>(),
-            child: ChatRoomPage(
-              chatId: chatId,
-              chatTitle: chatTitle,
-            ),
+          builder: (_) => ChatRoomPage(
+            chatId: chatId,
+            chatTitle: chatTitle,
           ),
           settings: settings,
         );
