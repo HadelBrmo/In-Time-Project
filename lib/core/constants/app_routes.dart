@@ -48,56 +48,42 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(
-          builder: (_) => SplashPage(),
-          settings: settings,
-        );
+        return _buildPageRoute(page: SplashPage(), settings: settings);
 
       case onboarding:
-        return MaterialPageRoute(
-          builder: (_) => const OnboardingScreen(),
-          settings: settings,
-        );
+        return _buildPageRoute(page: const OnboardingScreen(), settings: settings);
 
       case login:
-        return MaterialPageRoute(builder: (_) => const LoginScreen(), settings: settings);
+        return _buildPageRoute(page: const LoginScreen(), settings: settings);
 
       case signUpPage1:
-        return MaterialPageRoute(builder: (_) => const SignUpPage1(), settings: settings);
+        return _buildPageRoute(page: const SignUpPage1(), settings: settings);
 
       case signUpPage2:
-        return MaterialPageRoute(builder: (_) => const SignUpPage2(), settings: settings);
+        return _buildPageRoute(page: const SignUpPage2(), settings: settings);
 
       case signUpPage3:
-        return MaterialPageRoute(builder: (_) => const SignUpPage3(), settings: settings);
+        return _buildPageRoute(page: const SignUpPage3(), settings: settings);
 
       case createGroupScreen:
-        return MaterialPageRoute(
-          builder: (_) => const CreateGroupPage(),
-        );
+        return _buildPageRoute(page: const CreateGroupPage(), settings: settings);
 
       case chatListScreen:
-        return MaterialPageRoute(
-          builder: (_) => const ChatsPage(),
-          settings: settings,
-        );
+        return _buildPageRoute(page: const ChatsPage(), settings: settings);
 
       case chatRoomPage:
         final args = settings.arguments as Map<String, dynamic>?;
         final chatId = args?['chatId'] as int? ?? 0;
         final chatTitle = args?['chatTitle'] as String? ?? "محادثة";
 
-        return MaterialPageRoute(
-          builder: (_) => ChatRoomPage(
-            chatId: chatId,
-            chatTitle: chatTitle,
-          ),
+        return _buildPageRoute(
+          page: ChatRoomPage(chatId: chatId, chatTitle: chatTitle),
           settings: settings,
         );
 
       case homeScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildPageRoute(
+          page: BlocProvider(
             create: (context) => sl<HomeBloc>()..add(const FetchHomeServingsEvent(isRefresh: true)),
             child: const CustomBottomNavBar(),
           ),
@@ -105,34 +91,27 @@ class AppRoutes {
         );
 
       case paidStrategyPage:
-        return MaterialPageRoute(builder: (_) => PaidServicePage(), settings: settings);
+        return _buildPageRoute(page: PaidServicePage(), settings: settings);
 
       case submitComplaintPage:
         final args = settings.arguments as Map<String, dynamic>?;
         final servingId = args?['servingId'] as int? ?? 0;
         final accusedUserId = args?['accusedUserId'] as int? ?? 0;
 
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildPageRoute(
+          page: BlocProvider(
             create: (context) => sl<ComplaintBloc>(),
-            child: SubmitComplaintPage(
-              servingId: servingId,
-              accusedUserId: accusedUserId,
-            ),
+            child: SubmitComplaintPage(servingId: servingId, accusedUserId: accusedUserId),
           ),
           settings: settings,
         );
 
       case myRequestsPage:
-        return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
+        return _buildPageRoute(
+          page: MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (context) => sl<RequestsBloc>(),
-              ),
-              BlocProvider(
-                create: (context) => sl<ReceivedRequestsBloc>(),
-              ),
+              BlocProvider(create: (context) => sl<RequestsBloc>()),
+              BlocProvider(create: (context) => sl<ReceivedRequestsBloc>()),
             ],
             child: const MyRequestsPage(),
           ),
@@ -153,27 +132,57 @@ class AppRoutes {
           isFromRequests = args['isFromRequests'] ?? false;
         }
 
-        return MaterialPageRoute(
-          builder: (_) => ServiceDetailsPage(
-            serviceId: serviceId,
-            isFromRequests: isFromRequests,
-          ),
+        return _buildPageRoute(
+          page: ServiceDetailsPage(serviceId: serviceId, isFromRequests: isFromRequests),
           settings: settings,
         );
 
       case profilePage:
-        return MaterialPageRoute(
-          builder: (_) => const ProfilePage(),
-          settings: settings,
-        );
+        return _buildPageRoute(page: const ProfilePage(), settings: settings);
 
       default:
-        return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text('Page not found')),
-          ),
+        return _buildPageRoute(
+          page: const Scaffold(body: Center(child: Text('Page not found'))),
           settings: settings,
         );
     }
+  }
+
+  static Route<dynamic> _buildPageRoute({required Widget page, required RouteSettings settings}) {
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: const Duration(milliseconds: 320),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+
+
+        final scaleAnimation = Tween<double>(
+          begin: 0.85,
+          end: 1.0,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.bounceIn,
+        ));
+
+
+        final fadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeIn,
+        ));
+
+        // دمج الحركتين معاً لخروج ناعم ومنبثق من الشاشة
+        return ScaleTransition(
+          scale: scaleAnimation,
+          child: FadeTransition(
+            opacity: fadeAnimation,
+            child: child,
+          ),
+        );
+      },
+    );
   }
 }

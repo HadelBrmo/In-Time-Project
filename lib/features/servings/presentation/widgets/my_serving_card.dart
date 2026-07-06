@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../home/presentation/pages/serviceDetailsPage.dart';
 import '../../domain/entity/service_entity.dart';
 
@@ -22,45 +23,57 @@ class MyServingCard extends StatelessWidget {
     }
   }
 
-  Map<String, dynamic> _getServingTypeDetails(String? type) {
+  Map<String, dynamic> _getServingTypeDetails(BuildContext context, String? type) {
     switch (type?.toLowerCase()) {
       case 'paid':
-        return {'text': 'مدفوعة', 'color': Colors.amber};
+      case 'مدفوعة':
+        return {'text': context.tr('paid'), 'color': Colors.amber};
       case 'voluntary':
-        return {'text': 'تطوعية', 'color': Colors.green};
+      case 'تطوعية':
+        return {'text': context.tr('voluntary'), 'color': Colors.green};
       case 'exchange':
-        return {'text': 'تبادلية', 'color': Colors.purple};
+      case 'تبادلية':
+        return {'text': context.tr('exchange'), 'color': Colors.purple};
       default:
-        return {'text': 'أخرى', 'color': Colors.blue};
+        return {'text': type ?? context.tr('others'), 'color': Colors.blue};
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
-    final typeDetails = _getServingTypeDetails(serving.servingTypeName);
+    final typeDetails = _getServingTypeDetails(context, serving.servingTypeName);
     final typeColor = typeDetails['color'] as Color;
 
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ServiceDetailsPage(serviceId: serving.id!),
-          ),
-        );
+        if (serving.id != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ServiceDetailsPage(serviceId: serving.id!),
+            ),
+          );
+        }
       },
       child: Container(
         margin: EdgeInsets.only(bottom: media.height * 0.02),
         padding: EdgeInsets.all(media.width * 0.04),
         decoration: BoxDecoration(
-          color: isDarkMode ? AppColors.blackColor : Colors.white,
+          color: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDarkMode
+                ? AppColors.whiteColor.withOpacity(0.08)
+                : AppColors.greyColor.withOpacity(0.2),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: isDarkMode ? Colors.black.withOpacity(0.2) : Colors.black.withOpacity(0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             )
@@ -74,11 +87,11 @@ class MyServingCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.calendar_month_outlined, size: 14, color: AppColors.greyColor),
+                    const Icon(Icons.calendar_month_outlined, size: 14, color: AppColors.greyColor),
                     const SizedBox(width: 4),
                     Text(
                       _formatDate(serving.createdAt),
-                      style: const TextStyle(color: AppColors.greyColor, fontSize: 11),
+                      style: theme.textTheme.titleMedium?.copyWith(color: AppColors.greyColor, fontSize: 11),
                     ),
                   ],
                 ),
@@ -90,7 +103,7 @@ class MyServingCard extends StatelessWidget {
                   ),
                   child: Text(
                     typeDetails['text'],
-                    style: TextStyle(color: typeColor, fontSize: 11, fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium?.copyWith(color: typeColor, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -103,8 +116,7 @@ class MyServingCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     serving.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                    style: theme.textTheme.headlineSmall?.copyWith(
                       fontSize: media.width * 0.045,
                       color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
                     ),
@@ -117,8 +129,8 @@ class MyServingCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    serving.meetingType == 'direct' ? "مباشر" : "أونلاين",
-                    style: const TextStyle(color: AppColors.primaryColor, fontSize: 11, fontWeight: FontWeight.bold),
+                    serving.meetingType == 'direct' ? context.tr('direct') : context.tr('online'),
+                    style: theme.textTheme.titleMedium?.copyWith(color: AppColors.primaryColor, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -127,7 +139,7 @@ class MyServingCard extends StatelessWidget {
 
             Text(
               serving.description,
-              style: TextStyle(
+              style: theme.textTheme.titleMedium?.copyWith(
                 color: isDarkMode ? AppColors.greyColor : Colors.black54,
                 height: 1.3,
                 fontSize: media.width * 0.035,
@@ -137,7 +149,7 @@ class MyServingCard extends StatelessWidget {
             ),
             SizedBox(height: media.height * 0.015),
 
-            Divider(color: Colors.grey.withOpacity(0.1), height: 1),
+            Divider(color: AppColors.greyColor.withOpacity(0.1), height: 1),
             SizedBox(height: media.height * 0.01),
 
             Row(
@@ -153,9 +165,9 @@ class MyServingCard extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       serving.servingTypeName == 'voluntary'
-                          ? "عمل تطوعي"
+                          ? context.tr('voluntary_work')
                           : "${serving.costAmount ?? '0'} ${serving.unitName ?? ''}",
-                      style: TextStyle(
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: media.width * 0.038,
                         color: serving.servingTypeName == 'voluntary'

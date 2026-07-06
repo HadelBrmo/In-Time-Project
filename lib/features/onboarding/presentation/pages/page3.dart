@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/assets_image.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/global_particles_wrapper.dart';
 
 class Page3 extends StatelessWidget {
@@ -9,12 +11,12 @@ class Page3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
-    final Color iconAndTextColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : Colors.black;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    final Color iconAndTextColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: GlobalParticlesWrapper(
         child: SafeArea(
           child: SingleChildScrollView(
@@ -45,9 +47,9 @@ class Page3 extends StatelessWidget {
                         height: media.isPortrait ? media.height * 0.45 : media.height * 0.5,
                       ),
                       Text(
-                        'انضم لمجتمع متعاون',
+                        context.tr('onboarding_3_title'),
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        style: theme.textTheme.titleLarge?.copyWith(
                           fontSize: media.isPortrait ? 24 : 22,
                           color: iconAndTextColor,
                         ),
@@ -56,9 +58,9 @@ class Page3 extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: Text(
-                          'القيمة الحقيقية تكمن في التعاون، وتبادل المعرفة، ومشاركة الخبرات مع الآخرين',
+                          context.tr('onboarding_3_desc'),
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: media.isPortrait ? 20 : 14,
                           ),
                         ),

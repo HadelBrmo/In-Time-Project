@@ -25,6 +25,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
+    final theme = Theme.of(context);
 
     return SizedBox(
       width: width ?? media.width * 0.48,
@@ -33,14 +34,14 @@ class CustomButton extends StatelessWidget {
           ? OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: AppColors.primaryColor),
+          side: const BorderSide(color: AppColors.primaryColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontSize: fontSize ?? 16,
             color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
@@ -57,7 +58,7 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontSize: fontSize ?? 16,
             color: AppColors.whiteColor,
             fontWeight: FontWeight.bold,

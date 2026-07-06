@@ -2,6 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/utils/validators.dart';
@@ -40,12 +41,12 @@ class _SignUpPage1State extends State<SignUpPage1> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
     final media = MediaQueryHelper(context);
 
-    final scaffoldBg = isDarkMode ? AppColors.blackColor : Colors.white;
-    final containerBg = isDarkMode ? AppColors.blackColor : Colors.white;
-    final avatarOuterBg = isDarkMode ? const Color(0xFF333333) : Colors.grey[300];
+    final containerBg = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
+    final avatarOuterBg = isDarkMode ? const Color(0xFF333333) : AppColors.greyColor.withOpacity(0.3);
     final avatarInnerBg = isDarkMode ? const Color(0xFF1E1E1E) : AppColors.whiteColor;
 
     return BlocListener<SignUpBloc, SignUpState>(
@@ -88,27 +89,27 @@ class _SignUpPage1State extends State<SignUpPage1> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                buildLabel(context, "الاسم الثلاثي"),
+                                buildLabel(context, context.tr('full_name')),
                                 CustomTextFormField(
                                   controller: _nameController,
-                                  hintText: "ادخل اسمك الثلاثي",
+                                  hintText: context.tr('enter_full_name'),
                                   validator: Validators.validateFullName,
                                 ),
                                 SizedBox(height: media.height * 0.02),
-                                buildLabel(context, "الوظيفة الحالية"),
+                                buildLabel(context, context.tr('current_job')),
                                 CustomTextFormField(
                                   fillColor: isDarkMode ? const Color(0xFF1E1E1E) : AppColors.whiteColor,
                                   controller: _jobController,
-                                  hintText: "ادخل وظيفتك الحالية",
-                                  validator: (value) => Validators.validateRequired(value, "الوظيفة الحالية"),
+                                  hintText: context.tr('enter_current_job'),
+                                  validator: (value) => Validators.validateRequired(value, context.tr('current_job')),
                                 ),
                                 SizedBox(height: media.height * 0.02),
-                                buildLabel(context, "العنوان"),
+                                buildLabel(context, context.tr('address')),
                                 CustomTextFormField(
                                   fillColor: isDarkMode ? const Color(0xFF1E1E1E) : AppColors.whiteColor,
                                   controller: _addressController,
-                                  hintText: "حدد عنوانك الحالي ",
-                                  validator: (value) => Validators.validateRequired(value, "العنوان"),
+                                  hintText: context.tr('select_current_address'),
+                                  validator: (value) => Validators.validateRequired(value, context.tr('address')),
                                 ),
                                 SizedBox(height: media.height * 0.02),
                                 Row(
@@ -118,7 +119,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          buildLabel(context, "الجنس"),
+                                          buildLabel(context, context.tr('gender')),
                                           BlocBuilder<SignUpBloc, SignUpState>(
                                             builder: (context, state) =>
                                                 buildGenderDropdown(context, state.gender),
@@ -130,9 +131,9 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                     Expanded(
                                       child: CustomDatePickerField(
                                         controller: _birthDateController,
-                                        label: "تاريخ الميلاد",
-                                        hintText: "يوم/شهر/سنة",
-                                        validator: (value) => Validators.validateRequired(value, "تاريخ الميلاد"),
+                                        label: context.tr('birth_date'),
+                                        hintText: context.tr('date_format_hint'),
+                                        validator: (value) => Validators.validateRequired(value, context.tr('birth_date')),
                                         onDateSelected: (date) {
                                           context.read<SignUpBloc>().add(UpdateBirthDateEvent(date));
                                         },
@@ -143,7 +144,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                 SizedBox(height: media.height * 0.05),
                                 Center(
                                   child: CustomButton(
-                                    text: "التالي",
+                                    text: context.tr('next'),
                                     width: media.width * 0.65,
                                     height: 55,
                                     fontSize: 18,
@@ -202,7 +203,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                                   child: const CircleAvatar(
                                     backgroundColor: AppColors.primaryColor,
                                     radius: 18,
-                                    child: Icon(Icons.edit, color: Colors.white, size: 18),
+                                    child: Icon(Icons.edit, color: AppColors.whiteColor, size: 18),
                                   ),
                                 ),
                               ),

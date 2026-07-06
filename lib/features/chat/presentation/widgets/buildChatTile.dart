@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_routes.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../domain/entities/chatEntity.dart';
 import '../bloc/chatBloc/chatBloc.dart';
 
@@ -42,7 +43,7 @@ Widget buildChatTile(BuildContext context, ChatEntity chat, ThemeData theme) {
       ),
     ),
     subtitle: Text(
-      chat.latestMessage?.content ?? (isGroup ? 'لا توجد رسائل بعد' : ''),
+      chat.latestMessage?.content ?? (isGroup ? context.tr('no_messages_yet') : ''),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: theme.textTheme.bodyMedium?.copyWith(
@@ -56,10 +57,10 @@ Widget buildChatTile(BuildContext context, ChatEntity chat, ThemeData theme) {
         if (hasUnread)
           Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+            decoration: const BoxDecoration(color: AppColors.primaryColor, shape: BoxShape.circle),
             child: Text(
               '${chat.unreadCount}',
-              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ).animate().scale(curve: Curves.elasticOut, duration: 400.ms),
       ],

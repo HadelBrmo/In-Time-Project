@@ -4,6 +4,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_routes.dart';
 import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/theme/glowingBorder.dart';
 import '../../../../../core/utils/auth_utils.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
@@ -32,7 +33,8 @@ Widget buildDetailsBody(
     bool isOwner,
     ) {
   final media = MediaQueryHelper(context);
-  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  final theme = Theme.of(context);
+  final isDarkMode = theme.brightness == Brightness.dark;
 
   final cardBg = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
   final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
@@ -65,7 +67,7 @@ Widget buildDetailsBody(
             listener: (context, state) {
               if (state is CreateRequestLoadingState) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('جاري إرسال طلبك...'), backgroundColor: AppColors.primaryColor),
+                  SnackBar(content: Text(context.tr('sending_request')), backgroundColor: AppColors.primaryColor),
                 );
               } else if (state is CreateRequestSuccessState) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +84,7 @@ Widget buildDetailsBody(
             listener: (context, state) {
               if (state is ChatsLoading) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('جاري فتح المحادثة...'), backgroundColor: AppColors.primaryColor),
+                  SnackBar(content: Text(context.tr('opening_chat')), backgroundColor: AppColors.primaryColor),
                 );
               } else if (state is ChatInitial) {
               } else if (state is ChatsError) {
@@ -115,13 +117,13 @@ Widget buildDetailsBody(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              service.userFullName ?? "مستخدم النظام",
-                              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: textColor),
+                              service.userFullName ?? context.tr('system_user'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontSize: 17, fontWeight: FontWeight.bold, color: textColor),
                             ),
                             if (service.userEmail != null && service.userEmail!.isNotEmpty)
                               Text(
                                 service.userEmail!,
-                                style: TextStyle(fontSize: 15.5, color: subTextColor),
+                                style: theme.textTheme.titleMedium?.copyWith(fontSize: 15.5, color: subTextColor),
                               ),
                           ],
                         ),
@@ -130,11 +132,11 @@ Widget buildDetailsBody(
                     isOwner
                         ? const SizedBox.shrink()
                         : isAlreadyRequested
-                        ? buildDisabledButton(media, isDarkMode, "تم الطلب")
+                        ? buildDisabledButton(media, isDarkMode, context.tr('requested'))
                         : BlocBuilder<RequestsBloc, RequestsState>(
                       builder: (context, state) {
                         if (state is CreateRequestSuccessState) {
-                          return buildDisabledButton(media, isDarkMode, "تم الطلب");
+                          return buildDisabledButton(media, isDarkMode, context.tr('requested'));
                         }
                         if (state is CreateRequestLoadingState) {
                           return const SizedBox(
@@ -162,9 +164,9 @@ Widget buildDetailsBody(
                               color: AppColors.primaryColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Text(
-                              "طلب",
-                              style: TextStyle(color: AppColors.whiteColor, fontWeight: FontWeight.bold),
+                            child: Text(
+                              context.tr('request'),
+                              style: const TextStyle(color: AppColors.whiteColor, fontWeight: FontWeight.bold),
                             ),
                           ),
                         );
@@ -236,7 +238,7 @@ Widget buildDetailsBody(
                             Expanded(
                               child: Text(
                                 service.title,
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor),
+                                style: theme.textTheme.headlineSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.bold, color: textColor),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -261,7 +263,7 @@ Widget buildDetailsBody(
                           children: [
                             const Icon(Icons.grid_view_rounded, color: AppColors.primaryColor),
                             SizedBox(width: media.width * 0.05),
-                            Text("${service.categoryName ?? "خدمة منزلية"}"),
+                            Text(service.categoryName ?? context.tr('home_service'), style: theme.textTheme.titleMedium),
                           ],
                         ),
                         SizedBox(height: media.height * 0.02),
@@ -269,7 +271,7 @@ Widget buildDetailsBody(
                           children: [
                             const Icon(Icons.location_on, color: AppColors.primaryColor),
                             SizedBox(width: media.width * 0.05),
-                            Expanded(child: Text(shortAddress)),
+                            Expanded(child: Text(shortAddress, style: theme.textTheme.titleMedium)),
                           ],
                         ),
                         SizedBox(height: media.height * 0.02),
@@ -278,7 +280,7 @@ Widget buildDetailsBody(
                           icon1: Icons.money_outlined,
                           text1: "${service.costAmount ?? '0'} ${service.unitName ?? ''}",
                           icon2: Icons.assignment,
-                          text2: service.meetingType == 'online' ? "خدمة أونلاين" : "خدمة حضورية",
+                          text2: service.meetingType == 'online' ? context.tr('online_service') : context.tr('physical_service'),
                           infoItemBg: infoItemBg,
                           textColor: textColor,
                           media: media,
@@ -307,131 +309,130 @@ Widget buildDetailsBody(
                   ),
                 ),
                 SizedBox(height: media.height * 0.025),
-              ] else ...[
-                buildAnimatedItem(
-                  delayFactor: 3,
-                  child: GlowingBorder(
-                    borderRadius: 25,
-                    glowColors: glowColors,
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(media.width * 0.05),
-                      decoration: BoxDecoration(
-                        color: cardBg,
-                        borderRadius: BorderRadius.circular(25),
-                        border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A)) : null,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.17),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.calendar_month, color: AppColors.primaryColor, size: 22),
-                              SizedBox(width: media.width * 0.02),
-                              Text(
-                                "الأوقات المتاحة للخدمة",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: media.height * 0.015),
-
-                          if (service.availabilitySlots == null || service.availabilitySlots!.isEmpty)
-                            Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(media.width * 0.04),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "لا توجد مواعيد عمل متاحة حالياً للخدمة",
-                                style: TextStyle(fontSize: 14, color: subTextColor),
-                              ),
-                            )
-                          else
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: service.availabilitySlots!.length,
-                              itemBuilder: (context, index) {
-                                final slot = service.availabilitySlots![index];
-
-                                String startTime = slot['start_time'] ?? '';
-                                String endTime = slot['end_time'] ?? '';
-                                if (startTime.length > 5) startTime = startTime.substring(0, 5);
-                                if (endTime.length > 5) endTime = endTime.substring(0, 5);
-
-                                String dayName = "";
-                                if (slot['day_of_week'] != null) {
-                                  final Map<int, String> numberToDayMap = {
-                                    1: "الإثنين", 2: "الثلاثاء", 3: "الأربعاء",
-                                    4: "الخميس", 5: "الجمعة", 6: "السبت", 7: "الأحد"
-                                  };
-                                  dayName = numberToDayMap[slot['day_of_week']] ?? "";
-                                } else if (slot['date'] != null) {
-                                  dayName = slot['date'].toString().split('T').first;
-                                }
-
-                                return Container(
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: media.width * 0.04,
-                                    vertical: media.height * 0.015,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: isDarkMode ? const Color(0xFF2D2D2D) : const Color(0xFFF9F9F9),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey.withOpacity(0.2),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(Icons.check_circle_outline, color: AppColors.primaryColor, size: 18),
-                                          SizedBox(width: media.width * 0.02),
-                                          Text(
-                                            dayName,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: textColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.access_time_rounded, color: isDarkMode ? Colors.grey[400] : Colors.grey[600], size: 16),
-                                          SizedBox(width: media.width * 0.01),
-                                          Text(
-                                            "من $startTime إلى $endTime",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: isDarkMode ? Colors.grey[300] : Colors.black87,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+              ],
+              buildAnimatedItem(
+                delayFactor: 3,
+                child: GlowingBorder(
+                  borderRadius: 25,
+                  glowColors: glowColors,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(media.width * 0.05),
+                    decoration: BoxDecoration(
+                      color: cardBg,
+                      borderRadius: BorderRadius.circular(25),
+                      border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A)) : null,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.17),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.calendar_month, color: AppColors.primaryColor, size: 22),
+                            SizedBox(width: media.width * 0.02),
+                            Text(
+                              context.tr('available_times'),
+                              style: theme.textTheme.titleSmall?.copyWith(fontSize: 16, color: textColor),
                             ),
-                        ],
-                      ),
+                          ],
+                        ),
+                        SizedBox(height: media.height * 0.015),
+
+                        if (service.availabilitySlots == null || service.availabilitySlots!.isEmpty)
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(media.width * 0.04),
+                            alignment: Alignment.center,
+                            child: Text(
+                              context.tr('no_available_times'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontSize: 14, color: subTextColor),
+                            ),
+                          )
+                        else
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: service.availabilitySlots!.length,
+                            itemBuilder: (context, index) {
+                              final slot = service.availabilitySlots![index];
+
+                              String startTime = slot['start_time'] ?? '';
+                              String endTime = slot['end_time'] ?? '';
+                              if (startTime.length > 5) startTime = startTime.substring(0, 5);
+                              if (endTime.length > 5) endTime = endTime.substring(0, 5);
+
+                              String dayName = "";
+                              if (slot['day_of_week'] != null) {
+                                final Map<int, String> numberToDayMap = {
+                                  1: context.tr('monday'), 2: context.tr('tuesday'), 3: context.tr('wednesday'),
+                                  4: context.tr('thursday'), 5: context.tr('friday'), 6: context.tr('saturday'), 7: context.tr('sunday')
+                                };
+                                dayName = numberToDayMap[slot['day_of_week']] ?? "";
+                              } else if (slot['date'] != null) {
+                                dayName = slot['date'].toString().split('T').first;
+                              }
+
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: media.width * 0.04,
+                                  vertical: media.height * 0.015,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isDarkMode ? const Color(0xFF2D2D2D) : const Color(0xFFF9F9F9),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: isDarkMode ? const Color(0xFF3A3A3A) : AppColors.greyColor.withOpacity(0.2),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.check_circle_outline, color: AppColors.primaryColor, size: 18),
+                                        SizedBox(width: media.width * 0.02),
+                                        Text(
+                                          dayName,
+                                          style: theme.textTheme.titleMedium?.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: textColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.access_time_rounded, color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor, size: 16),
+                                        SizedBox(width: media.width * 0.01),
+                                        Text(
+                                          "${context.tr('from')} $startTime ${context.tr('to')} $endTime",
+                                          style: theme.textTheme.titleMedium?.copyWith(
+                                            fontSize: 13,
+                                            color: isDarkMode ? AppColors.greyColor : Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: media.height * 0.025),
-              ],
+              ),
+              SizedBox(height: media.height * 0.025),
               buildAnimatedItem(
                 delayFactor: 3,
                 child: GlowingBorder(
@@ -460,8 +461,8 @@ Widget buildDetailsBody(
                             const Icon(Icons.description, color: AppColors.primaryColor, size: 22),
                             SizedBox(width: media.width * 0.02),
                             Text(
-                              "وصف الخدمة",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+                              context.tr('service_description'),
+                              style: theme.textTheme.titleSmall?.copyWith(fontSize: 16, color: textColor),
                             ),
                           ],
                         ),
@@ -475,7 +476,7 @@ Widget buildDetailsBody(
                           ),
                           child: Text(
                             service.description,
-                            style: TextStyle(fontSize: 14, color: subTextColor, height: 1.5),
+                            style: theme.textTheme.titleMedium?.copyWith(fontSize: 14, color: subTextColor, height: 1.5),
                           ),
                         ),
                       ],
@@ -499,7 +500,7 @@ Widget buildDetailsBody(
                                 context.read<ChatBloc>().add(
                                   CreatePersonalChatEvent(
                                     service.userId ?? 0,
-                                    "مرحباً، أود الاستفسار عن خدمتك: ${service.title}",
+                                    "${context.tr('chat_inquiry')} ${service.title}",
                                   ),
                                 );
 
@@ -513,9 +514,9 @@ Widget buildDetailsBody(
                               ),
                               elevation: 2,
                             ),
-                            child: const Text(
-                              "مراسلة",
-                              style: TextStyle(color: AppColors.whiteColor, fontSize: 18, fontWeight: FontWeight.bold),
+                            child: Text(
+                              context.tr('message'),
+                              style: theme.textTheme.titleSmall?.copyWith(color: AppColors.whiteColor, fontSize: 18),
                             ),
                           ),
                         ),
@@ -549,9 +550,9 @@ Widget buildDetailsBody(
                         ),
                         elevation: 2,
                       ),
-                      child: const Text(
-                        "التعليقات",
-                        style: TextStyle(color: AppColors.whiteColor, fontSize: 18, fontWeight: FontWeight.bold),
+                      child: Text(
+                        context.tr('comments'),
+                        style: theme.textTheme.titleSmall?.copyWith(color: AppColors.whiteColor, fontSize: 18),
                       ),
                     ),
                   ),

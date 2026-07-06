@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/constants/app_colors.dart';
 
 Widget buildSecurityActionRow({
   required BuildContext context,
@@ -22,10 +22,10 @@ Widget buildSecurityActionRow({
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: const Color(0xFF2EC5B6).withOpacity(0.1),
+              color: AppColors.primaryColor.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: const Color(0xFF2EC5B6), size: 20.sp),
+            child: Icon(icon, color: AppColors.primaryColor, size: 20.sp),
           ),
           SizedBox(width: 12.w),
 
@@ -35,18 +35,17 @@ Widget buildSecurityActionRow({
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: theme.textTheme.bodyLarge?.color,
                   ),
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   subtitle,
-                  style: TextStyle(
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontSize: 11.sp,
-                    color: isDarkMode ? Colors.white54 : Colors.grey[600],
+                    color: isDarkMode ? AppColors.whiteColor.withOpacity(0.54) : AppColors.darkGreyColor,
                   ),
                 ),
               ],
@@ -55,7 +54,7 @@ Widget buildSecurityActionRow({
 
           Icon(
             Icons.arrow_forward_ios_rounded,
-            color: isDarkMode ? Colors.white38 : Colors.grey[400],
+            color: isDarkMode ? AppColors.whiteColor.withOpacity(0.38) : AppColors.greyColor,
             size: 14.sp,
           ),
         ],

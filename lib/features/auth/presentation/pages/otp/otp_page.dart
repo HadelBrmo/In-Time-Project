@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
@@ -97,10 +98,10 @@ class _OtpPageState extends State<OtpPage> {
           listener: (context, state) {
             if (state.status == OtpStatus.success) {
               _startTimer();
-              SnackBarUtils.showSuccess(context, "تم إعادة إرسال رمز التحقق بنجاح!");
+              SnackBarUtils.showSuccess(context, context.tr('otp_resend_success'));
             }
             if (state.status == OtpStatus.error) {
-              SnackBarUtils.showError(context, "عذراً حدث خطأ، يرجى المحاولة لاحقاً");
+              SnackBarUtils.showError(context, context.tr('error_occured'));
             }
           },
           builder: (context, state) {
@@ -117,7 +118,7 @@ class _OtpPageState extends State<OtpPage> {
                       Container(
                         padding: EdgeInsets.all(media.width * 0.05),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withValues(alpha: 0.15),
+                          color: AppColors.primaryColor.withOpacity(0.15),
                           shape: BoxShape.circle,
                         ),
                         child:  Icon(
@@ -128,7 +129,7 @@ class _OtpPageState extends State<OtpPage> {
                       ),
                       SizedBox(height: media.height * 0.04),
                       Text(
-                        "التحقق من الحساب",
+                        context.tr('account_verification'),
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontSize: 22.sp,
                         ),
@@ -143,7 +144,7 @@ class _OtpPageState extends State<OtpPage> {
                             height: 1.5,
                           ),
                           children: [
-                            const TextSpan(text: "لقد أرسلنا رمز تفعيل مكون من 6 أرقام إلى بريدك الإلكتروني:\n"),
+                            TextSpan(text: context.tr('otp_instruction')),
                             TextSpan(
                               text: widget.email,
                               style: const TextStyle(
@@ -167,9 +168,8 @@ class _OtpPageState extends State<OtpPage> {
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                               maxLength: 1,
-                              style: TextStyle(
+                              style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
                                 color: AppColors.primaryColor,
                               ),
                               cursorColor: AppColors.primaryColor,
@@ -213,9 +213,9 @@ class _OtpPageState extends State<OtpPage> {
                               SendOtpRequestedEvent(email: widget.email),
                             );
                           },
-                          child: const Text(
-                            "إعادة إرسال الرمز",
-                            style: TextStyle(
+                          child: Text(
+                            context.tr('resend_code'),
+                            style: theme.textTheme.titleMedium?.copyWith(
                               color: AppColors.primaryColor,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
@@ -232,7 +232,7 @@ class _OtpPageState extends State<OtpPage> {
                             ),
                             SizedBox(width: media.width * 0.01),
                             Text(
-                              "إعادة الإرسال خلال $_secondsRemaining ثانية",
+                              "${context.tr('resend_in')} $_secondsRemaining ${context.tr('seconds')}",
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontSize: 13.sp,
                               ),
@@ -245,14 +245,13 @@ class _OtpPageState extends State<OtpPage> {
                       state.status == OtpStatus.loading
                           ? const LoadingWidget()
                           : CustomButton(
-                        text: "تأكيد ومتابعة",
+                        text: context.tr('confirm_continue'),
                         onPressed: () {
                           String otpCode = _getCompleteOtp();
                           if (otpCode.length < 6) {
-                            SnackBarUtils.showWarning(context, "يرجى إدخال الرمز المكون من 6 أرقام كاملاً");
+                            SnackBarUtils.showWarning(context, context.tr('enter_full_otp'));
                             return;
                           }
-                          print("OTP Verified successfully: $otpCode");
 
                           context.read<SignUpBloc>().add(
                                 UpdateSignUpFieldsEvent(otp: otpCode, email: widget.email),

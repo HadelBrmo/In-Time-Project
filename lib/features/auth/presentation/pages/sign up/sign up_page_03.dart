@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/widgets/buildLabel.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../widgets/signup_widgets/buildHeaderForSignUp.dart';
@@ -34,19 +35,21 @@ class _SignUpPage3State extends State<SignUpPage3> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            buildHeaderForSignUp(media, context, subTitle: "التحقق من الهوية"),
+            buildHeaderForSignUp(media, context, subTitle: context.tr('identity_verification')),
             Container(
               margin: EdgeInsets.only(top: media.height * 0.19, right: 10, left: 10),
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(40),
                   topRight: Radius.circular(40),
                 ),
@@ -58,36 +61,41 @@ class _SignUpPage3State extends State<SignUpPage3> {
                   child: Column(
                     children: [
                       Icon(Icons.badge_outlined, size: 100, color: AppColors.primaryColor.withOpacity(0.6)),
-                      const Text(
-                        "قم برفع صورة واحدة واضحة لأحد المستندات الآتية",
+                      Text(
+                        context.tr('upload_doc_instruction'),
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                        style: theme.textTheme.titleMedium?.copyWith(color: AppColors.greyColor, fontSize: 14),
                       ),
-                      const Text(
-                        "الهوية الشخصية - جواز السفر - رخصة القيادة",
-                        style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                      Text(
+                        context.tr('doc_types_list'),
+                        style: theme.textTheme.titleMedium?.copyWith(color: AppColors.greyColor, fontWeight: FontWeight.bold),
                       ),
 
                       const SizedBox(height: 30),
-                      buildLabel(context,"نوع الوثيقة"),
+                      buildLabel(context, context.tr('document_type')),
 
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                          border: Border.all(color: AppColors.greyColor.withOpacity(0.3)),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
                             iconEnabledColor: AppColors.primaryColor,
+                            dropdownColor: theme.cardColor,
                             value: selectedDocument,
-                            hint: const Text("اختر نوع الوثيقة",style: TextStyle(
+                            hint: Text(context.tr('select_document_type'), style: theme.textTheme.titleMedium?.copyWith(
                               color: AppColors.greyColor,
                               fontSize: 14,
-                            ),),
-                            style: TextStyle(color: AppColors.greyColor),
+                            )),
+                            style: theme.textTheme.titleMedium?.copyWith(color: AppColors.greyColor),
                             isExpanded: true,
-                            items: ["هوية شخصية", "جواز سفر", "رخصة قيادة"].map((String value) {
+                            items: [
+                              context.tr('id_card'),
+                              context.tr('passport'),
+                              context.tr('driver_license')
+                            ].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -104,23 +112,25 @@ class _SignUpPage3State extends State<SignUpPage3> {
                         onTap: _pickImage,
                         child: DottedBorder(
                           options: RoundedRectDottedBorderOptions(
-                            radius: const Radius.circular(15),
                             color: AppColors.primaryColor.withOpacity(0.5),
                             strokeWidth: 2,
                             dashPattern: const [8, 4],
+                            radius: const Radius.circular(15),
                           ),
                           child: Container(
                             width: double.infinity,
                             height: 150,
-                            color: Colors.grey[50],
+                            color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.grey[50],
                             child: documentImage != null
                                 ? Image.file(documentImage!, fit: BoxFit.cover)
                                 : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.camera_alt, color: AppColors.primaryColor, size: 40),
-                                const Text("اضغط لرفع صورة الوثيقة",
-                                    style: TextStyle(color: AppColors.primaryColor)),
+                                const Icon(Icons.camera_alt, color: AppColors.primaryColor, size: 40),
+                                Text(
+                                  context.tr('click_to_upload_doc'),
+                                  style: theme.textTheme.titleMedium?.copyWith(color: AppColors.primaryColor),
+                                ),
                               ],
                             ),
                           ),
@@ -129,12 +139,12 @@ class _SignUpPage3State extends State<SignUpPage3> {
 
                       const SizedBox(height: 20),
 
-                      buildNote("تأكد أن الصورة واضحة"),
-                      buildNote("يجب أن تكون جميع المعلومات ظاهرة"),
+                      buildNote(context.tr('ensure_image_clear')),
+                      buildNote(context.tr('all_info_visible')),
 
                       const SizedBox(height: 30),
                       CustomButton(
-                        text: "إرسال للتحقق",
+                        text: context.tr('send_for_verification'),
                         width: media.width * 0.7,
                         onPressed: () {
                           Navigator.pushNamed(context, "/homeScreen");
@@ -151,6 +161,4 @@ class _SignUpPage3State extends State<SignUpPage3> {
       ),
     );
   }
-
-
 }

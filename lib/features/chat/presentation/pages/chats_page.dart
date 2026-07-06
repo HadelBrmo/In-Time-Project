@@ -3,7 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:in_time/core/constants/app_routes.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/utils/auth_utils.dart';
 import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../domain/entities/chatEntity.dart';
 import '../bloc/chatBloc/blocState.dart';
@@ -22,7 +26,9 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ChatBloc>().startChatsPulling();
+    if (AuthUtils.isLoggedIn()) {
+      context.read<ChatBloc>().startChatsPulling();
+    }
   }
 
   @override
@@ -30,11 +36,34 @@ class _ChatsPageState extends State<ChatsPage> {
     final theme = Theme.of(context);
     final isMobile = MediaQuery.sizeOf(context).width < 600;
 
+    if (!AuthUtils.isLoggedIn()) {
+      return Scaffold(
+        appBar: CustomAppBar(title: Text(context.tr('chats'))),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.lock_outline, size: 64, color: AppColors.greyColor),
+              const SizedBox(height: 16),
+              Text(
+                context.tr('login_required_chats'),
+                style: theme.textTheme.titleMedium,
+              ),
+              const SizedBox(height: 16),
+              CustomButton(
+                text: context.tr('login'),
+                color: AppColors.primaryColor,
+                onPressed: () => AuthUtils.showLoginPrompt(context),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: const Text('المحادثات'),
-      ),
+      appBar: CustomAppBar(title: Text(context.tr('chats'))),
       body: BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatsLoading) {
@@ -42,7 +71,12 @@ class _ChatsPageState extends State<ChatsPage> {
           } else if (state is ChatsLoaded) {
             final chats = state.chats;
             if (chats.isEmpty) {
-              return const Center(child: Text('لا توجد محادثات نشطة بعد.'));
+              return Center(
+                child: Text(
+                  context.tr('no_chats'),
+                  style: theme.textTheme.titleMedium,
+                ),
+              );
             }
             return Center(
               child: Container(
@@ -72,14 +106,13 @@ class _ChatsPageState extends State<ChatsPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-
            Navigator.pushNamed(context, AppRoutes.createGroupScreen);
         },
-        backgroundColor: theme.primaryColor,
-        tooltip: 'إنشاء مجموعة جديدة',
+        backgroundColor: AppColors.primaryColor,
+        tooltip: context.tr('create_group'),
         child: const Icon(
           Icons.group_add_rounded,
-          color: Colors.white,
+          color: AppColors.whiteColor,
           size: 28,
         ),
       )

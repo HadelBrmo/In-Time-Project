@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'core/localization/app_localizations.dart';
 import 'firebase_options.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
@@ -12,6 +13,10 @@ import 'core/widgets/global_particles_wrapper.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
 import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
+// 🚀 استيراد البلوك الخاص باللغة (تأكدي من صحة المسار حسب مجلد الـ localization لديكِ)
+import 'features/localization/presentation/bloc/locale_bloc.dart';
+import 'features/localization/presentation/bloc/locale_event.dart';
+import 'features/localization/presentation/bloc/locale_state.dart';
 import 'package:in_time/features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/loginBloc/login_bloc.dart';
 import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
@@ -67,46 +72,55 @@ class _MyAppState extends State<MyApp> {
             BlocProvider<ChatBloc>(
               create: (context) => sl<ChatBloc>(),
             ),
+            BlocProvider<LocaleBloc>(
+              create: (context) => sl<LocaleBloc>()..add(const GetSavedLocaleEvent()),
+            ),
           ],
-          child: MaterialApp(
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('ar', 'SA'),
-              Locale('en', 'US'),
-            ],
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightMode,
-            darkTheme: AppTheme.darkMode,
-            themeMode: ThemeMode.system,
-            builder: (context, child) {
-              final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
-              final backgroundColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
+          child: BlocBuilder<LocaleBloc, LocaleState>(
+            builder: (context, localeState) {
+              return MaterialApp(
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                locale: localeState.locale,
+                supportedLocales: const [
+                  Locale('ar', 'SA'),
+                  Locale('en', 'US'),
+                ],
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme.lightMode,
+                darkTheme: AppTheme.darkMode,
+                themeMode: ThemeMode.system,
+                builder: (context, child) {
+                  final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+                  final backgroundColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
 
-              return Scaffold(
-                backgroundColor: backgroundColor,
-                body: Stack(
-                  children: [
-                    const Positioned.fill(
-                      child: GlobalParticlesWrapper(
-                        child: SizedBox.shrink(),
-                      ),
+                  return Scaffold(
+                    backgroundColor: backgroundColor,
+                    body: Stack(
+                      children: [
+                        const Positioned.fill(
+                          child: GlobalParticlesWrapper(
+                            child: SizedBox.shrink(),
+                          ),
+                        ),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            scaffoldBackgroundColor: Colors.transparent,
+                          ),
+                          child: child ?? const SizedBox.shrink(),
+                        ),
+                      ],
                     ),
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        scaffoldBackgroundColor: Colors.transparent,
-                      ),
-                      child: child ?? const SizedBox.shrink(),
-                    ),
-                  ],
-                ),
+                  );
+                },
+                initialRoute: '/',
+                onGenerateRoute: AppRoutes.generateRoute,
               );
             },
-            initialRoute: '/',
-            onGenerateRoute: AppRoutes.generateRoute,
           ),
         );
       },

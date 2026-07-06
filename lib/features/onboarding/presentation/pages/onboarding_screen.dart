@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/widgets/custom_button.dart';
 import 'package:in_time/features/onboarding/presentation/pages/page1.dart';
 import 'package:in_time/features/onboarding/presentation/pages/page2.dart';
@@ -25,7 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final media = MediaQueryHelper(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           Expanded(
@@ -51,7 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Column(
               children: [
                 CustomButton(
-                  text: onlastPage ? "ابدأ الآن" : "التالي",
+                  text: onlastPage ? context.tr('start_now') : context.tr('next'),
                   onPressed: () {
                     if (onlastPage) {
                       Navigator.pushNamed(context, AppRoutes.login);
@@ -61,16 +62,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         curve: Curves.easeInOut,
                       );
                     }
-                  }, color: AppColors.primaryColor,
+                  }, 
+                  color: AppColors.primaryColor,
                 ),
                 SizedBox(height: media.height * 0.08),
 
                 SmoothPageIndicator(
                   controller: pageController,
                   count: 3,
-                  effect: WormEffect(
+                  effect: const WormEffect(
                     activeDotColor: AppColors.primaryColor,
-                    dotColor: Colors.grey,
+                    dotColor: AppColors.greyColor,
                     dotHeight: 10,
                     dotWidth: 10,
                     spacing: 20,

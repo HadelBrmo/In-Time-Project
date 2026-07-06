@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_routes.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/customDrawer.dart';
 import '../../../../core/widgets/customErrorView.dart';
@@ -123,14 +124,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final mediaQuery = MediaQuery.of(context);
     final double screenHeight = mediaQuery.size.height;
     final double screenWidth = mediaQuery.size.width;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
-          title: const Text("الخدمات المتاحة"),
+          title: Text(
+            context.tr('available_services'),
+            style: theme.textTheme.titleSmall,
+          ),
           actions: [
             IconButton(
               icon: const Icon(
@@ -159,7 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   final String address = result['address'];
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("جاري البحث بالقرب من: $address"), backgroundColor: AppColors.primaryColor),
+                    SnackBar(
+                      content: Text("${context.tr('searching_near')} $address"),
+                      backgroundColor: AppColors.primaryColor,
+                    ),
                   );
 
                   context.read<HomeBloc>().add(
@@ -193,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (_selectedTypeName != null)
                         Chip(
                           backgroundColor: AppColors.primaryColor.withOpacity(0.08),
-                          label: Text("النوع: $_selectedTypeName", style: const TextStyle(fontSize: 12)),
+                          label: Text("${context.tr('type_with_value')} $_selectedTypeName", style: const TextStyle(fontSize: 12)),
                           onDeleted: () {
                             setState(() {
                               _selectedServingTypeId = null;
@@ -205,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (_selectedUnitName != null)
                         Chip(
                           backgroundColor: AppColors.primaryColor.withOpacity(0.08),
-                          label: Text("الواحدة: $_selectedUnitName", style: const TextStyle(fontSize: 12)),
+                          label: Text("${context.tr('unit_with_value')} $_selectedUnitName", style: const TextStyle(fontSize: 12)),
                           onDeleted: () {
                             setState(() {
                               _selectedPaymentUnitId = null;
@@ -241,10 +249,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: TextField(
                         controller: _searchController,
                         onChanged: (query) => _triggerFetch(isRefresh: true),
-                        style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                        ),
                         decoration: InputDecoration(
-                          hintText: "ابحث عن خدمة...",
-                          hintStyle: TextStyle(
+                          hintText: context.tr('search_for_service'),
+                          hintStyle: theme.textTheme.titleMedium?.copyWith(
                             color: isDarkMode ? AppColors.whiteColor.withOpacity(0.6) : AppColors.darkGreyColor,
                           ),
                           prefixIcon: const Icon(
@@ -325,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: BlocBuilder<HomeBloc, HomeState>(
                 builder: (context, state) {
                   if (state is HomeLoadingState) {
-                    return Center(child: LoadingWidget());
+                    return const Center(child: LoadingWidget());
                   } else if (state is HomeErrorState) {
                     return Center(
                       child: CustomErrorView(
@@ -337,8 +347,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (state.servings.isEmpty) {
                       return Center(
                         child: Text(
-                          "لا توجد خدمات متاحة حالياً.",
-                          style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                          context.tr('no_services_available'),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                          ),
                         ),
                       );
                     }
@@ -357,9 +369,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: TextButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                                   ),
-                                  child: const Text(
-                                    "عرض المزيد",
-                                    style: TextStyle(
+                                  child: Text(
+                                    context.tr('view_more'),
+                                    style: theme.textTheme.titleMedium?.copyWith(
                                       color: AppColors.primaryColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -374,8 +386,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                                   ),
                                   child: Text(
-                                    "عرض الكل",
-                                    style: TextStyle(
+                                    context.tr('view_all'),
+                                    style: theme.textTheme.titleMedium?.copyWith(
                                       color: isDarkMode ? Colors.white70 : Colors.black54,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 13,

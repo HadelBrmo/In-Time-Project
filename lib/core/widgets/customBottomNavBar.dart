@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_time/core/localization/app_localizations.dart';
+import 'package:in_time/core/utils/auth_utils.dart';
 import 'package:in_time/core/constants/app_colors.dart';
-import 'package:in_time/injection_container.dart';
 
 import '../../features/chat/presentation/pages/chats_page.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
-import '../../features/home/presentation/bloc/home_bloc.dart';
-import '../../features/home/presentation/bloc/home_event.dart';
-import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/wallet/presentation/pages/hours_balance_page.dart';
-import '../constants/app_routes.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -27,15 +23,19 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     required String label,
     required int index,
     required bool isDarkMode,
+    required ThemeData theme,
   }) {
     final bool isSelected = _currentIndex == index;
 
     final Color itemColor = isSelected
-        ? Colors.white
-        : (isDarkMode ? Colors.white.withOpacity(0.55) : Colors.white.withOpacity(0.75));
+        ? AppColors.whiteColor
+        : (isDarkMode ? AppColors.whiteColor.withOpacity(0.55) : AppColors.whiteColor.withOpacity(0.75));
 
     return InkWell(
       onTap: () {
+        if (index == 0 || index == 1 || index == 2) {
+          if (!AuthUtils.checkAuth(context)) return;
+        }
         setState(() {
           _currentIndex = index;
         });
@@ -54,7 +54,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           SizedBox(height: 4.h),
           Text(
             label,
-            style: TextStyle(
+            style: theme.textTheme.titleMedium?.copyWith(
               color: itemColor,
               fontSize: 12.sp,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -67,13 +67,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     final List<Widget> screens = [
-      //ProfilePage(),
-      ChatsPage(),
-      const Center(child: Text("صفحة لوحة الشرف")),
-      HoursBalancePage(),
+      const ChatsPage(),
+      Center(child: Text(context.tr('leaderboard_page_title'), style: theme.textTheme.titleMedium)),
+      const HoursBalancePage(),
       const HomeScreen(),
     ];
 
@@ -87,12 +87,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, "/paidStrategyPage");
+          if (AuthUtils.checkAuth(context)) {
+            Navigator.pushNamed(context, "/paidStrategyPage");
+          }
         },
         backgroundColor: AppColors.primaryColor,
         elevation: 4,
         shape: const CircleBorder(),
-        child: Icon(Icons.add, color: Colors.white, size: 35.sp),
+        child: Icon(Icons.add, color: AppColors.whiteColor, size: 35.sp),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
@@ -109,17 +111,17 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             children: [
               Row(
                 children: [
-                  _buildNavItem(icon: Icons.chat, label: "المحادثة", index: 0, isDarkMode: isDarkMode),
+                  _buildNavItem(theme: theme, icon: Icons.chat, label: context.tr('chat_nav'), index: 0, isDarkMode: isDarkMode),
                   SizedBox(width: 35.w),
-                  _buildNavItem(icon: Icons.emoji_events_outlined, label: "لوحة الشرف", index: 1, isDarkMode: isDarkMode),
+                  _buildNavItem(theme: theme, icon: Icons.emoji_events_outlined, label: context.tr('leaderboard_nav'), index: 1, isDarkMode: isDarkMode),
                 ],
               ),
               SizedBox(width: 40.w),
               Row(
                 children: [
-                  _buildNavItem(icon: Icons.access_time, label: "ساعاتي", index: 2, isDarkMode: isDarkMode),
+                  _buildNavItem(theme: theme, icon: Icons.access_time, label: context.tr('my_hours_nav'), index: 2, isDarkMode: isDarkMode),
                   SizedBox(width: 35.w),
-                  _buildNavItem(icon: Icons.home_outlined, label: "الرئيسية", index: 3, isDarkMode: isDarkMode),
+                  _buildNavItem(theme: theme, icon: Icons.home_outlined, label: context.tr('home_nav'), index: 3, isDarkMode: isDarkMode),
                 ],
               ),
             ],

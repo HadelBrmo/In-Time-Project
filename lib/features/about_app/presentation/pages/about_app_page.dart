@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
-
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../widgets/buildFeatureCard.dart';
 import '../widgets/buildSectionTitle.dart';
@@ -28,12 +28,9 @@ class AboutAppPage extends StatelessWidget {
             ),
           ),
           child: CustomAppBar(
-            title: Text(
-              'حول التطبيق',
-
-            ),
+            title: Text(context.tr('about_app')),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.whiteColor),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -55,10 +52,8 @@ class AboutAppPage extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Text(
                     'In Time',
-                    style: TextStyle(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      color: theme.textTheme.bodyLarge?.color,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -66,11 +61,11 @@ class AboutAppPage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text(
-                      'منصتكم الرائدة لتبادل الخدمات واستثمار الوقت في مجتمع تفاعلي ذكي.',
+                      context.tr('about_app_desc'),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontSize: 13.sp,
-                        color: isDarkMode ? Colors.white70 : Colors.grey[700],
+                        color: isDarkMode ? AppColors.whiteColor.withOpacity(0.7) : AppColors.darkGreyColor,
                         height: 1.5,
                       ),
                     ),
@@ -80,80 +75,80 @@ class AboutAppPage extends StatelessWidget {
             ),
             SizedBox(height: 32.h),
 
-            buildSectionTitle(context, 'مميزات تجعل تجربتك فريدة'),
+            buildSectionTitle(context, context.tr('features_title')),
             SizedBox(height: 12.h),
 
             buildFeatureCard(
               context: context,
-              title: 'إدارة وحجز المواعيد',
-              description: 'نظم جدولك بسهولة، استعرض مواعيدك القادمة، واحصل على تنبيهات دقيقة لضمان عدم ضياع أي فرصة.',
+              title: context.tr('feature_1_title'),
+              description: context.tr('feature_1_desc'),
               icon: Icons.calendar_month_rounded,
             ),
             buildFeatureCard(
               context: context,
-              title: 'التواصل المرئي المباشر',
-              description: 'قدم استشاراتك أو تلقَّ خدماتك وجهاً لوجه عبر اتصال مرئي وصوتي عالي الجودة وبكل خصوصية.',
+              title: context.tr('feature_2_title'),
+              description: context.tr('feature_2_desc'),
               icon: Icons.video_call_rounded,
             ),
             buildFeatureCard(
               context: context,
-              title: 'نظام التقييم والمصداقية',
-              description: 'مجتمعنا مبني على الثقة؛ يمكنك تقييم جودة الخدمات لضمان أفضل تجربة لجميع المستخدمين.',
+              title: context.tr('feature_3_title'),
+              description: context.tr('feature_3_desc'),
               icon: Icons.star_rate_rounded,
             ),
             buildFeatureCard(
               context: context,
-              title: 'لوحة الشرف والمكافآت',
-              description: 'تميزك لا يضيع سدى؛ اجمع النقاط والأوسمة ونافس للوصول إلى لوحة الصدارة للمستخدمين الأكثر إنتاجية.',
+              title: context.tr('feature_4_title'),
+              description: context.tr('feature_4_desc'),
               icon: Icons.emoji_events_rounded,
             ),
             buildFeatureCard(
               context: context,
-              title: 'محادثات فورية ذكية',
-              description: 'تواصل مع الآخرين بسرعة وسهولة لمناقشة تفاصيل الخدمات في بيئة آمنة ومنظمة.',
+              title: context.tr('feature_5_title'),
+              description: context.tr('feature_5_desc'),
               icon: Icons.chat_bubble_rounded,
             ),
             buildFeatureCard(
               context: context,
-              title: 'العمل في أصعب الظروف',
-              description: 'تصفح خدماتك ومحادثاتك في أي وقت، حتى عند انقطاع الاتصال بالإنترنت، بفضل نظام المزامنة التلقائي.',
+              title: context.tr('feature_6_title'),
+              description: context.tr('feature_6_desc'),
               icon: Icons.cloud_done_rounded,
             ),
             buildFeatureCard(
               context: context,
-              title: 'دعم عالمي وتنبيهات ذكية',
-              description: 'واجهة تدعم اللغتين العربية والإنجليزية، مع نظام إشعارات ذكي يبقيك على اطلاع دائم بكل جديد.',
+              title: context.tr('feature_7_title'),
+              description: context.tr('feature_7_desc'),
               icon: Icons.notifications_active_rounded,
             ),
 
             SizedBox(height: 24.h),
 
-            buildSectionTitle(context, 'الدعم والخصوصية'),
+            buildSectionTitle(context, context.tr('support_and_privacy')),
             SizedBox(height: 12.h),
 
             Container(
               decoration: BoxDecoration(
-                color: isDarkMode ? theme.cardColor : Colors.white,
+                color: isDarkMode ? theme.cardColor : AppColors.whiteColor,
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.grey[200]!,
+                  color: isDarkMode ? AppColors.whiteColor.withOpacity(0.08) : AppColors.greyColor.withOpacity(0.2),
                   width: 1.w,
                 ),
               ),
               child: Column(
                 children: [
-                  _buildLinkRow(context: context, title: 'سياسة الخصوصية وشروط الاستخدام', icon: Icons.privacy_tip_outlined),
+                  _buildLinkRow(context: context, title: context.tr('privacy_policy'), icon: Icons.privacy_tip_outlined),
                   const Divider(height: 1),
-                  _buildLinkRow(context: context, title: 'مركز المساعدة والدعم الفني', icon: Icons.help_outline_rounded),
+                  _buildLinkRow(context: context, title: context.tr('help_center'), icon: Icons.help_outline_rounded),
                 ],
               ),
             ),
             SizedBox(height: 20.h),
             Text(
-              'الإصدار 1.0.0',
-              style: TextStyle(
+              '${context.tr('version')} 1.0.0',
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontSize: 11.sp,
-                color: Colors.grey,
+                color: AppColors.greyColor,
               ),
             ),
             SizedBox(height: 30.h),
@@ -162,8 +157,6 @@ class AboutAppPage extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget _buildLinkRow({required BuildContext context, required String title, required IconData icon}) {
     final theme = Theme.of(context);
@@ -175,21 +168,20 @@ class AboutAppPage extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         child: Row(
           children: [
-            Icon(icon, color: isDarkMode ? Colors.white54 : Colors.grey[600], size: 20.sp),
+            Icon(icon, color: isDarkMode ? AppColors.whiteColor.withOpacity(0.54) : AppColors.darkGreyColor, size: 20.sp),
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
-                  color: theme.textTheme.bodyLarge?.color,
                 ),
               ),
             ),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              color: isDarkMode ? Colors.white38 : Colors.grey[400],
+              color: isDarkMode ? AppColors.whiteColor.withOpacity(0.38) : AppColors.greyColor.withOpacity(0.4),
               size: 14.sp,
             ),
           ],

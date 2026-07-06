@@ -53,6 +53,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void stopMessagesPulling() => _messagesTimer?.cancel();
 
+  void clearAllPulling() {
+    _chatsTimer?.cancel();
+    _messagesTimer?.cancel();
+  }
+
   Future<void> _onGetChats(GetChatsEvent event, Emitter<ChatState> emit) async {
     if (!event.isSilent) emit(ChatsLoading());
     final failureOrChats = await getChatsUseCase();

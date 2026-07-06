@@ -1,3 +1,5 @@
+import 'package:in_time/core/constants/app_strings.dart';
+import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/auth_utils.dart';
 import 'package:in_time/core/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -57,12 +59,8 @@ class _PaidServicePageState extends State<PaidServicePage> {
   String? selectedPaymentUnit;
   List<PaymentUnitEntity> paymentUnitsFromServer = [];
   final List<String> meetingOptions = ["online", "direct"];
-  final List<Map<String, dynamic>> categoryOptions = [
-    {"id": "1", "name": "تعليمية"},
-    {"id": "2", "name": "طبية"},
-    {"id": "3", "name": "فنية"},
-    {"id": "4", "name": "هندسية"}
-  ];
+  
+  late List<Map<String, dynamic>> categoryOptions;
   double? locationLat;
   double? locationLng;
 
@@ -83,6 +81,17 @@ class _PaidServicePageState extends State<PaidServicePage> {
       }
       bloc.add(GetPaymentUnitsEvent());
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    categoryOptions = [
+      {"id": "1", "name": context.tr('educational')},
+      {"id": "2", "name": context.tr('medical')},
+      {"id": "3", "name": context.tr('artistic')},
+      {"id": "4", "name": context.tr('engineering')}
+    ];
   }
 
   @override
@@ -113,11 +122,11 @@ class _PaidServicePageState extends State<PaidServicePage> {
         meetingType: selectedMeetingType ?? 'direct',
       );
 
-      String currentEndpoint = '/servings/add-paid';
+      String currentEndpoint = ApiStringConstants.addPaidServiceUrl;
       if (widget.isBarter) {
-        currentEndpoint = '/servings/add-paid';
+        currentEndpoint = ApiStringConstants.addBarterServiceUrl;
       } else if (widget.isVoluntary) {
-        currentEndpoint = '/servings/add-paid';
+        currentEndpoint = ApiStringConstants.addVoluntaryServiceUrl;
       }
 
       context.read<ServicesBloc>().add(
@@ -131,17 +140,11 @@ class _PaidServicePageState extends State<PaidServicePage> {
   }
 
   Widget _buildCategoryGrid(bool isDarkMode) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Theme(
-          data: Theme.of(context).copyWith(
-            textTheme: const TextTheme(
-              bodyMedium: TextStyle(color: Colors.white),
-            ),
-          ),
-          child: buildLabel(context,"تصنيف الخدمة"),
-        ),
+        buildLabel(context, context.tr('service_category')),
         SizedBox(height: 8.h),
         SizedBox(
           height: 85.h,
@@ -170,10 +173,10 @@ class _PaidServicePageState extends State<PaidServicePage> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppColors.primaryColor
-                        : (isDarkMode ? const Color(0xFF2C2C2C) : Colors.white.withOpacity(0.1)),
+                        : (isDarkMode ? const Color(0xFF2C2C2C) : AppColors.whiteColor.withOpacity(0.1)),
                     borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(
-                      color: isSelected ? AppColors.yellowColor : Colors.grey.withOpacity(0.2),
+                      color: isSelected ? AppColors.yellowColor : AppColors.greyColor.withOpacity(0.2),
                       width: isSelected ? 2 : 1,
                     ),
                     boxShadow: isSelected ? [
@@ -189,18 +192,18 @@ class _PaidServicePageState extends State<PaidServicePage> {
                     children: [
                       Icon(
                         icons[cat['id']] ?? Icons.category_outlined,
-                        color: isSelected ? Colors.white : AppColors.primaryColor,
+                        color: isSelected ? AppColors.whiteColor : AppColors.primaryColor,
                         size: 24.sp,
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         cat['name'],
-                        style: TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: 12.sp,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           color: isSelected
-                              ? Colors.white
-                              : (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                              ? AppColors.whiteColor
+                              : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
                         ),
                       ),
                     ],
@@ -217,21 +220,22 @@ class _PaidServicePageState extends State<PaidServicePage> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Theme(
-      data: Theme.of(context).copyWith(
-        hintColor: Colors.white60,
-        textTheme: Theme.of(context).textTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
+      data: theme.copyWith(
+        hintColor: AppColors.whiteColor.withOpacity(0.6),
+        textTheme: theme.textTheme.apply(
+          bodyColor: AppColors.whiteColor,
+          displayColor: AppColors.whiteColor,
         ),
         inputDecorationTheme: InputDecorationTheme(
-          labelStyle: const TextStyle(color: Colors.white),
-          hintStyle: const TextStyle(color: Colors.white60),
-          suffixStyle: const TextStyle(color: Colors.white),
-          prefixStyle: const TextStyle(color: Colors.white),
-          counterStyle: const TextStyle(color: Colors.white60),
+          labelStyle: const TextStyle(color: AppColors.whiteColor),
+          hintStyle: TextStyle(color: AppColors.whiteColor.withOpacity(0.6)),
+          suffixStyle: const TextStyle(color: AppColors.whiteColor),
+          prefixStyle: const TextStyle(color: AppColors.whiteColor),
+          counterStyle: TextStyle(color: AppColors.whiteColor.withOpacity(0.6)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: Colors.white38),
@@ -247,11 +251,11 @@ class _PaidServicePageState extends State<PaidServicePage> {
         appBar: CustomAppBar(
             title: Text(
                 widget.isVoluntary
-                    ? "انضم لنظام الخدمات التطوعية"
+                    ? context.tr('join_voluntary_services')
                     : widget.isBarter
-                    ? "انضم لنظام الخدمات التبادلية"
-                    : "انضم لنظام الخدمات المدفوعة",
-                style: TextStyle(fontSize: 18.sp, color: Colors.white)
+                    ? context.tr('join_barter_services')
+                    : context.tr('join_paid_services'),
+                style: theme.textTheme.titleSmall?.copyWith(fontSize: 18.sp, color: AppColors.whiteColor)
             )
         ),
         drawer: const CustomDrawer(),
@@ -259,7 +263,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
           listener: (context, state) {
             if (state is AddServiceSuccessState) {
               _confettiController.play();
-              SnackBarUtils.showSuccess(context, "تمت إضافة الخدمة بنجاح!");
+              SnackBarUtils.showSuccess(context, context.tr('service_add_success'));
               Future.delayed(const Duration(seconds: 1), () {
                 if (mounted) Navigator.pop(context);
               });
@@ -271,8 +275,8 @@ class _PaidServicePageState extends State<PaidServicePage> {
                 state.errorMessage,
                 duration: const Duration(seconds: 2),
                 action: SnackBarAction(
-                  label: "إعادة المحاولة",
-                  textColor: Colors.white,
+                  label: context.tr('retry'),
+                  textColor: AppColors.whiteColor,
                   onPressed: () {
                     _submitServiceForm();
                   },
@@ -327,7 +331,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                             },
                           ),
                           SizedBox(height: media.height * 0.025),
-                          buildLabel(context,"اختر صورة للخدمة (اختياري)"),
+                          buildLabel(context, context.tr('service_image_optional')),
                           buildImagePickerPlaceholder(
                             media: media,
                             selectedImage: _selectedImage,
@@ -339,13 +343,13 @@ class _PaidServicePageState extends State<PaidServicePage> {
                             children: [
                               Expanded(
                                 child: buildFieldColumn(
-                                  "اسم الخدمة",
-                                  "ادخل اسم الخدمة",
+                                  context.tr('service_name'),
+                                  context.tr('enter_service_name'),
                                   controller: _titleController,
                                   context: context,
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
-                                      return "اسم الخدمة مطلوب";
+                                      return context.tr('service_name_required');
                                     }
                                     return null;
                                   },
@@ -355,11 +359,15 @@ class _PaidServicePageState extends State<PaidServicePage> {
                               Expanded(
                                 child: buildDropdownColumn(
                                   context: context,
-                                  label: "نوع الخدمة",
-                                  hint: "اختر نوع الخدمة",
+                                  label: context.tr('service_type'),
+                                  hint: context.tr('select_service_type'),
                                   selectedValue: selectedMeetingType,
-                                  items: meetingOptions,
-                                  onChanged: (val) => setState(() => selectedMeetingType = val),
+                                  items: meetingOptions.map((e) => e == 'online' ? context.tr('online') : context.tr('direct')).toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                       selectedMeetingType = (val == context.tr('online')) ? 'online' : 'direct';
+                                    });
+                                  },
                                 ),
                               ),
                             ],
@@ -370,14 +378,14 @@ class _PaidServicePageState extends State<PaidServicePage> {
                             children: [
                               Expanded(
                                 child: buildFieldColumn(
-                                  "الساعات اللازمة للخدمة",
-                                  "ادخل عدد الساعات",
+                                  context.tr('hours_needed'),
+                                  context.tr('enter_hours'),
                                   controller: _hoursController,
                                   keyboardType: TextInputType.number,
                                   context: context,
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
-                                      return "عدد الساعات مطلوب";
+                                      return context.tr('hours_required');
                                     }
                                     return null;
                                   },
@@ -395,14 +403,14 @@ class _PaidServicePageState extends State<PaidServicePage> {
                               children: [
                                 Expanded(
                                   child: buildFieldColumn(
-                                    "سعر الخدمة",
-                                    "حدد السعر",
+                                    context.tr('service_price'),
+                                    context.tr('set_price'),
                                     controller: _priceController,
                                     keyboardType: TextInputType.number,
                                     context: context,
                                     validator: (value) {
                                       if (value == null || value.trim().isEmpty) {
-                                        return "السعر مطلوب";
+                                        return context.tr('price_required');
                                       }
                                       return null;
                                     },
@@ -412,10 +420,10 @@ class _PaidServicePageState extends State<PaidServicePage> {
                                 Expanded(
                                   child: buildDropdownColumn(
                                     context: context,
-                                    label: "وحدة الدفع (العملة)",
+                                    label: context.tr('payment_unit'),
                                     hint: state is GetPaymentUnitsLoadingState
-                                        ? "جاري التحميل..."
-                                        : "اختر العملة",
+                                        ? context.tr('loading')
+                                        : context.tr('select_currency'),
                                     selectedValue: selectedPaymentUnit != null && paymentUnitsFromServer.isNotEmpty
                                         ? paymentUnitsFromServer
                                         .any((e) => e.id.toString() == selectedPaymentUnit)
@@ -434,10 +442,10 @@ class _PaidServicePageState extends State<PaidServicePage> {
                             SizedBox(height: media.height * 0.02),
                           ],
 
-                          buildLabel(context,"مكان الخدمة"),
+                          buildLabel(context, context.tr('service_location')),
                           CustomTextFormField(
                             controller: _locationController,
-                            hintText: "حدد مكان الخدمة من الخريطة",
+                            hintText: context.tr('select_location_map'),
                             readOnly: true,
                             onTap: () async {
                               final result = await Navigator.push(
@@ -455,7 +463,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                             },
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "يرجى تحديد موقع الخدمة";
+                                return context.tr('location_required');
                               }
                               return null;
                             },
@@ -463,17 +471,17 @@ class _PaidServicePageState extends State<PaidServicePage> {
                           ),
                           SizedBox(height: media.height * 0.02),
 
-                          buildLabel(context,"وصف الخدمة"),
+                          buildLabel(context, context.tr('service_description')),
                           CustomTextFormField(
                             controller: _descController,
-                            hintText: "اكتب وصفاً دقيقاً للخدمة هنا...",
+                            hintText: context.tr('enter_description'),
                             maxLines: 4,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "وصف الخدمة مطلوب";
+                                return context.tr('desc_required');
                               }
                               if (value.trim().length < 10) {
-                                return "يجب أن يكون الوصف 10 أحرف على الأقل";
+                                return context.tr('desc_min_length');
                               }
                               return null;
                             },
@@ -485,7 +493,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                             children: [
                               Expanded(
                                   child: CustomButton(
-                                    text: "إرسال الخدمة",
+                                    text: context.tr('submit_service'),
                                     onPressed: state is AddServiceLoadingState ? () {} : _submitServiceForm,
                                     color: AppColors.primaryColor,
                                   )
@@ -493,7 +501,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                               SizedBox(width: media.width * 0.04),
                               Expanded(
                                 child: CustomButton(
-                                  text: "إلغاء",
+                                  text: context.tr('cancel'),
                                   onPressed: () => Navigator.pop(context),
                                   color: isDarkMode ? const Color(0xFF3A3A3A) : AppColors.greyColor,
                                 ),
@@ -512,7 +520,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                     confettiController: _confettiController,
                     blastDirectionality: BlastDirectionality.explosive,
                     shouldLoop: false,
-                    colors: const [AppColors.primaryColor, AppColors.yellowColor, Colors.white, Colors.green],
+                    colors: const [AppColors.primaryColor, AppColors.yellowColor, AppColors.whiteColor, Colors.green],
                     gravity: 0.25,
                   ),
                 ),

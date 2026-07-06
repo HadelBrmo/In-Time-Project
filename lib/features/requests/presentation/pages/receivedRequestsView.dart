@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/customErrorView.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/utils/snackbar_utils.dart';
@@ -29,14 +30,15 @@ class _ReceivedRequestsViewState extends State<ReceivedRequestsView> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
+    final theme = Theme.of(context);
 
     return BlocConsumer<ReceivedRequestsBloc, ReceivedRequestsState>(
       listener: (context, state) {
         if (state is AcceptRequestSuccessState) {
-          SnackBarUtils.showSuccess(context, 'تم قبول الطلب بنجاح');
+          SnackBarUtils.showSuccess(context, context.tr('request_accepted_success'));
           context.read<ReceivedRequestsBloc>().add(FetchReceivedRequestsEvent());
         } else if (state is RejectRequestSuccessState) {
-          SnackBarUtils.showSuccess(context, 'تم رفض الطلب');
+          SnackBarUtils.showSuccess(context, context.tr('request_rejected_success'));
           context.read<ReceivedRequestsBloc>().add(FetchReceivedRequestsEvent());
         } else if (state is AcceptRequestErrorState) {
           SnackBarUtils.showError(context, state.message);
@@ -52,8 +54,9 @@ class _ReceivedRequestsViewState extends State<ReceivedRequestsView> {
         }
 
         if (state is ReceivedRequestsLoadedState || isProcessing) {
-          final currentGroups = context.read<ReceivedRequestsBloc>().state is ReceivedRequestsLoadedState
-              ? (context.read<ReceivedRequestsBloc>().state as ReceivedRequestsLoadedState).requestGroups
+          final currentState = context.read<ReceivedRequestsBloc>().state;
+          final currentGroups = currentState is ReceivedRequestsLoadedState
+              ? currentState.requestGroups
               : [];
 
           final allRequests = <Map<String, dynamic>>[];
@@ -76,8 +79,8 @@ class _ReceivedRequestsViewState extends State<ReceivedRequestsView> {
           if (filteredReceived.isEmpty) {
             return Center(
               child: Text(
-                widget.searchQuery.isEmpty ? "لا توجد طلبات واردة بعد." : "لا توجد نتائج تطابق بحثك.",
-                style: TextStyle(color: AppColors.greyColor, fontSize: media.width * 0.04),
+                widget.searchQuery.isEmpty ? context.tr('no_received_requests') : context.tr('no_search_results'),
+                style: theme.textTheme.titleMedium?.copyWith(color: AppColors.greyColor, fontSize: media.width * 0.04),
               ),
             );
           }

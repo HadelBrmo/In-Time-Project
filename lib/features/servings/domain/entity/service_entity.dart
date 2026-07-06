@@ -49,6 +49,54 @@ class ServiceEntity extends Equatable {
     this.createdAt,
   });
 
+  ServiceEntity copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? categoryId,
+    String? costAmount,
+    String? unitId,
+    String? locationAddress,
+    double? locationLat,
+    double? locationLng,
+    String? meetingType,
+    String? imageUrl,
+    int? userId,
+    String? userFullName,
+    String? userEmail,
+    String? categoryName,
+    String? unitName,
+    String? servingTypeName,
+    bool? isRequested,
+    bool? isOwner,
+    List<dynamic>? availabilitySlots,
+    String? createdAt,
+  }) {
+    return ServiceEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      categoryId: categoryId ?? this.categoryId,
+      costAmount: costAmount ?? this.costAmount,
+      unitId: unitId ?? this.unitId,
+      locationAddress: locationAddress ?? this.locationAddress,
+      locationLat: locationLat ?? this.locationLat,
+      locationLng: locationLng ?? this.locationLng,
+      meetingType: meetingType ?? this.meetingType,
+      imageUrl: imageUrl ?? this.imageUrl,
+      userId: userId ?? this.userId,
+      userFullName: userFullName ?? this.userFullName,
+      userEmail: userEmail ?? this.userEmail,
+      categoryName: categoryName ?? this.categoryName,
+      unitName: unitName ?? this.unitName,
+      servingTypeName: servingTypeName ?? this.servingTypeName,
+      isRequested: isRequested ?? this.isRequested,
+      isOwner: isOwner ?? this.isOwner,
+      availabilitySlots: availabilitySlots ?? this.availabilitySlots,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,

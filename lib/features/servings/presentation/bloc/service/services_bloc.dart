@@ -84,29 +84,9 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
         final slotsResult = await getAvailabilitySlotsUseCase.call(event.serviceId);
         
         slotsResult.fold(
-          (failure) => emit(ServiceDetailsLoaded(service)), // Emit with existing slots (probably empty) if slots fetch fails
+          (failure) => emit(ServiceDetailsLoaded(service)),
           (slots) {
-            final updatedService = ServiceEntity(
-              id: service.id,
-              title: service.title,
-              description: service.description,
-              categoryId: service.categoryId,
-              costAmount: service.costAmount,
-              unitId: service.unitId,
-              locationAddress: service.locationAddress,
-              locationLat: service.locationLat,
-              locationLng: service.locationLng,
-              meetingType: service.meetingType,
-              imageUrl: service.imageUrl,
-              userFullName: service.userFullName,
-              userEmail: service.userEmail,
-              categoryName: service.categoryName,
-              unitName: service.unitName,
-              servingTypeName: service.servingTypeName,
-              isRequested: service.isRequested,
-              isOwner: service.isOwner,
-              availabilitySlots: slots,
-            );
+            final updatedService = service.copyWith(availabilitySlots: slots);
             emit(ServiceDetailsLoaded(updatedService));
           },
         );
@@ -124,27 +104,7 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       result.fold(
         (failure) => null,
         (slots) {
-          final updatedService = ServiceEntity(
-            id: currentService.id,
-            title: currentService.title,
-            description: currentService.description,
-            categoryId: currentService.categoryId,
-            costAmount: currentService.costAmount,
-            unitId: currentService.unitId,
-            locationAddress: currentService.locationAddress,
-            locationLat: currentService.locationLat,
-            locationLng: currentService.locationLng,
-            meetingType: currentService.meetingType,
-            imageUrl: currentService.imageUrl,
-            userFullName: currentService.userFullName,
-            userEmail: currentService.userEmail,
-            categoryName: currentService.categoryName,
-            unitName: currentService.unitName,
-            servingTypeName: currentService.servingTypeName,
-            isRequested: currentService.isRequested,
-            isOwner: currentService.isOwner,
-            availabilitySlots: slots,
-          );
+          final updatedService = currentService.copyWith(availabilitySlots: slots);
           emit(ServiceDetailsLoaded(updatedService));
         },
       );

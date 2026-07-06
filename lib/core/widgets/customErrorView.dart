@@ -1,8 +1,6 @@
-// core/widgets/custom_error_widget.dart
-
 import 'package:flutter/material.dart';
-
 import '../constants/app_colors.dart';
+import '../localization/app_localizations.dart';
 
 class CustomErrorView extends StatelessWidget {
   final String message;
@@ -19,11 +17,12 @@ class CustomErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
 
-    String guidanceMessage = "يرجى التحقق من المدخلات وإعادة المحاولة.";
-    if (statusCode == 401) guidanceMessage = "انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً.";
-    if (statusCode == 500) guidanceMessage = "هناك مشكلة في السيرفر حالياً، يعمل فريقنا على حلها.";
-    if (statusCode == 404) guidanceMessage = "الرابط المطلوب غير موجود.";
+    String guidanceMessage = context.tr('error_check_inputs');
+    if (statusCode == 401) guidanceMessage = context.tr('error_session_expired');
+    if (statusCode == 500) guidanceMessage = context.tr('error_server');
+    if (statusCode == 404) guidanceMessage = context.tr('error_not_found');
 
     return Center(
       child: Padding(
@@ -38,28 +37,28 @@ class CustomErrorView extends StatelessWidget {
             SizedBox(height: media.height * 0.03),
 
             Text(
-              statusCode != null ? "خطأ رقم ($statusCode)" : "عذراً، حدث خطأ ما",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),
+              statusCode != null ? "${context.tr('error_code')} ($statusCode)" : context.tr('error_occured'),
+              style: theme.textTheme.titleSmall?.copyWith(fontSize: 20, color: Colors.redAccent),
             ),
             SizedBox(height: media.height * 0.015),
 
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey[800], fontWeight: FontWeight.w500),
+              style: theme.textTheme.titleMedium?.copyWith(fontSize: 16, color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.w500),
             ),
             SizedBox(height: media.height * 0.01),
 
             Text(
               guidanceMessage,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+              style: theme.textTheme.titleMedium?.copyWith(fontSize: 14, color: AppColors.greyColor),
             ),
             SizedBox(height: media.height * 0.04),
             ElevatedButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh, color: Colors.white),
-              label: const Text("إعادة المحاولة", style: TextStyle(color: Colors.white, fontSize: 16)),
+              icon: const Icon(Icons.refresh, color: AppColors.whiteColor),
+              label: Text(context.tr('retry'), style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),

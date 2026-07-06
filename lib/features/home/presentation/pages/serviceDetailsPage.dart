@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../injection_container.dart';
@@ -23,6 +24,7 @@ class ServiceDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -34,7 +36,7 @@ class ServiceDetailsPage extends StatelessWidget {
       ],
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: const CustomAppBar(title: Text('تفاصيل الخدمة')),
+        appBar: CustomAppBar(title: Text(context.tr('service_details'))),
         body: BlocBuilder<ServicesBloc, ServicesState>(
           builder: (context, state) {
             if (state is ServiceDetailsLoading) {
@@ -54,7 +56,12 @@ class ServiceDetailsPage extends StatelessWidget {
                 isOwner,
               );
             }
-            return const Center(child: Text("جاري تحضير البيانات..."));
+            return Center(
+              child: Text(
+                context.tr('preparing_data'),
+                style: theme.textTheme.titleMedium,
+              ),
+            );
           },
         ),
       ),

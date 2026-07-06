@@ -8,9 +8,10 @@ import 'package:in_time/core/constants/app_routes.dart';
 import '../../features/about_app/presentation/pages/about_app_page.dart';
 import '../../features/home/presentation/widgets/home_widget/drawItem.dart';
 import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
-import '../../features/servings/presentation/pages/my_servings_view.dart';
+import '../../features/servings/presentation/pages/my_servings/my_servings_view.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../injection_container.dart';
+import '../localization/app_localizations.dart';
 import '../utils/auth_utils.dart';
 import '../widgets/global_particles_wrapper.dart';
 
@@ -19,11 +20,12 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final drawerBgColor = isDarkMode ? AppColors.blackColor : Colors.white;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    final drawerBgColor = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
 
     final prefs = sl<SharedPreferences>();
-    final String fullName = prefs.getString('full_name') ?? "زائر";
+    final String fullName = prefs.getString('full_name') ?? context.tr('guest');
     final String email = prefs.getString('email') ?? "guest@in-time.com";
     final String? profilePic = prefs.getString('profile_picture');
 
@@ -53,7 +55,7 @@ class CustomDrawer extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 48.r,
-                      backgroundColor: Colors.white,
+                      backgroundColor: AppColors.whiteColor,
                       child: CircleAvatar(
                         radius: 47.r,
                         backgroundImage: fullImageUrl != null
@@ -64,15 +66,14 @@ class CustomDrawer extends StatelessWidget {
                     SizedBox(height: 10.h),
                     Text(
                       fullName,
-                      style: TextStyle(
-                        color: Colors.white,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: AppColors.whiteColor,
                         fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       email,
-                      style: TextStyle(
+                      style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white70,
                         fontSize: 15.sp,
                       ),
@@ -96,7 +97,7 @@ class CustomDrawer extends StatelessWidget {
                 children: [
                   drawerItem(
                     icon: Icons.settings_outlined,
-                    text: "الإعدادات",
+                    text: context.tr('settings'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -104,19 +105,19 @@ class CustomDrawer extends StatelessWidget {
                       );
                     },
                   ),
-                  drawerItem(icon: Icons.brightness_6_outlined, text: "المظهر"),
+                  drawerItem(icon: Icons.brightness_6_outlined, text: context.tr('appearance')),
                   drawerItem(
                     icon: Icons.chat_bubble_outline,
-                    text: "شكوى",
+                    text: context.tr('complaint'),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, AppRoutes.submitComplaintPage);
                     },
                   ),
-                  drawerItem(icon: Icons.bookmark_border, text: "المحفوظة"),
+                  drawerItem(icon: Icons.bookmark_border, text: context.tr('saved')),
                   drawerItem(
                     icon: Icons.history,
-                    text: "سجل الانشطة",
+                    text: context.tr('activity_history'),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, AppRoutes.myRequestsPage);
@@ -124,7 +125,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   drawerItem(
                     icon: Icons.business_center,
-                    text: "عرض خدماتي",
+                    text: context.tr('my_services'),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -138,10 +139,10 @@ class CustomDrawer extends StatelessWidget {
                       );
                     },
                   ),
-                  drawerItem(icon: Icons.update, text: "تحديث التطبيق"),
+                  drawerItem(icon: Icons.update, text: context.tr('update_app')),
                   drawerItem(
                     icon: Icons.info_outline,
-                    text: "حول التطبيق",
+                    text: context.tr('about_app'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -151,7 +152,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   drawerItem(
                     icon: Icons.logout,
-                    text: "تسجيل الخروج",
+                    text: context.tr('logout'),
                     isExit: true,
                     onTap: () => AuthUtils.logout(context),
                   ),

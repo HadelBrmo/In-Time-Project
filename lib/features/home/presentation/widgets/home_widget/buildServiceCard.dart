@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/assets_image.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/theme/glowingBorder.dart';
 import '../../../../servings/domain/entity/service_entity.dart';
 import '../../pages/serviceDetailsPage.dart';
 
 Widget buildServiceCard(BuildContext context, ServiceEntity serving, double width, double height) {
-  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  final theme = Theme.of(context);
+  final isDarkMode = theme.brightness == Brightness.dark;
 
   final address = serving.locationAddress;
   final displayAddress = (address != null && address.isNotEmpty)
       ? address.split(',').take(2).join(' - ')
-      : "موقع غير محدد";
+      : context.tr('unspecified_location');
 
   Color typeColor;
   String typeText;
@@ -19,51 +21,19 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
 
   if (typeName.contains('paid') || typeName.contains('مدفوع')) {
     typeColor = const Color(0xFFE57373);
-    typeText = "مدفوعة";
+    typeText = context.tr('paid');
   } else if (typeName.contains('exchange') || typeName.contains('تبادل')) {
     typeColor = const Color(0xFF81C784);
-    typeText = "تبادلية";
+    typeText = context.tr('exchange');
   } else {
     typeColor = const Color(0xFF4FC3F7);
-    typeText = "تطوعية";
-  }
-
-  Color categoryBgColor;
-  Color categoryTextColor;
-  String categoryLabel;
-  final categoryIdStr = serving.categoryId?.toString() ?? '';
-
-  switch (categoryIdStr) {
-    case "1":
-      categoryBgColor = Colors.orange.withOpacity(0.15);
-      categoryTextColor = isDarkMode ? Colors.orangeAccent : Colors.orange.shade900;
-      categoryLabel = "تعليمية";
-      break;
-    case "2":
-      categoryBgColor = Colors.teal.withOpacity(0.15);
-      categoryTextColor = isDarkMode ? Colors.tealAccent : Colors.teal.shade900;
-      categoryLabel = "طبية";
-      break;
-    case "3":
-      categoryBgColor = Colors.purple.withOpacity(0.15);
-      categoryTextColor = isDarkMode ? Colors.purpleAccent : Colors.purple.shade900;
-      categoryLabel = "فنية";
-      break;
-    case "4":
-      categoryBgColor = Colors.blueGrey.withOpacity(0.15);
-      categoryTextColor = isDarkMode ? Colors.blueGrey.shade300 : Colors.blueGrey.shade900;
-      categoryLabel = "هندسية";
-      break;
-    default:
-      categoryBgColor = Colors.grey.withOpacity(0.15);
-      categoryTextColor = isDarkMode ? Colors.grey.shade300 : Colors.grey.shade700;
-      categoryLabel = serving.categoryName ?? "أخرى";
+    typeText = context.tr('voluntary');
   }
 
   return Padding(
     padding: EdgeInsets.only(bottom: height * 0.03),
     child: GlowingBorder(
-      glowColors: [
+      glowColors: const [
         AppColors.primaryColor,
         AppColors.secondaryColor,
         AppColors.primaryColor,
@@ -135,8 +105,8 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                       ),
                       child: Text(
                         typeText,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: AppColors.whiteColor,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
@@ -156,8 +126,8 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                       children: [
                         Expanded(
                           child: Text(
-                            serving.userFullName ?? "مستخدم النظام",
-                            style: TextStyle(
+                            serving.userFullName ?? context.tr('system_user'),
+                            style: theme.textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: width * 0.044,
                               color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
@@ -175,8 +145,8 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            serving.meetingType == 'online' ? "أونلاين" : "مباشر",
-                            style: TextStyle(
+                            serving.meetingType == 'online' ? context.tr('online') : context.tr('direct'),
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontSize: width * 0.032,
                               color: serving.meetingType == 'online'
                                   ? (isDarkMode ? const Color(0xFF64FFDA) : AppColors.accentColor)
@@ -195,7 +165,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                         Expanded(
                           child: Text(
                             serving.title,
-                            style: TextStyle(
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontSize: width * 0.038,
                               color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
                               fontWeight: FontWeight.w500,
@@ -218,7 +188,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                             SizedBox(width: width * 0.02),
                             Text(
                               "${serving.costAmount} ${serving.unitName ?? ''}",
-                              style: TextStyle(
+                              style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor,
                                 fontSize: width * 0.038,
@@ -234,7 +204,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                               Flexible(
                                 child: Text(
                                   displayAddress,
-                                  style: TextStyle(
+                                  style: theme.textTheme.titleMedium?.copyWith(
                                     fontSize: width * 0.035,
                                     color: AppColors.greyColor,
                                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../domain/entities/message_entity.dart';
 import '../bloc/chatBloc/blocEvent.dart';
@@ -91,11 +93,16 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         },
                       );
                     }
-                    return const Center(child: Text('ابدأ المحادثة الآن...'));
+                    return Center(
+                      child: Text(
+                        context.tr('start_chat_now'),
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    );
                   },
                 ),
               ),
-              _buildMessageInputField(theme),
+              _buildMessageInputField(theme, context),
             ],
           ),
         ),
@@ -111,7 +118,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.75),
         decoration: BoxDecoration(
-          color: isMe ? theme.colorScheme.primary : theme.colorScheme.surfaceContainerHighest,
+          color: isMe ? AppColors.primaryColor : theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
@@ -121,8 +128,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         ),
         child: Text(
           message.content,
-          style: TextStyle(
-            color: isMe ? Colors.white : theme.textTheme.bodyLarge?.color,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: isMe ? AppColors.whiteColor : theme.textTheme.bodyLarge?.color,
             fontSize: 15,
           ),
         ),
@@ -130,7 +137,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  Widget _buildMessageInputField(ThemeData theme) {
+  Widget _buildMessageInputField(ThemeData theme, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       color: theme.cardColor,
@@ -142,14 +149,14 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 controller: _messageController,
                 style: theme.textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  hintText: 'اكتب رسالتك هنا...',
-                  hintStyle: TextStyle(color: theme.hintColor),
+                  hintText: context.tr('type_message_here'),
+                  hintStyle: theme.textTheme.titleMedium?.copyWith(color: theme.hintColor),
                   border: InputBorder.none,
                 ),
               ),
             ),
             IconButton(
-              icon: Icon(Icons.send_rounded, color: theme.colorScheme.primary),
+              icon: const Icon(Icons.send_rounded, color: AppColors.primaryColor),
               onPressed: _sendMessage,
             ).animate(onPlay: (controller) => controller.repeat(reverse: true))
                 .shimmer(delay: 3.seconds, duration: 1.5.seconds, color: theme.colorScheme.primaryContainer),

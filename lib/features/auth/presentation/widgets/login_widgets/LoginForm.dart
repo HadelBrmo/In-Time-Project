@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/loading_widget.dart';
@@ -35,16 +36,15 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    final labelColor = isDarkMode ? Colors.white : AppColors.blackColor;
-    final inputFillColor = isDarkMode ? const Color(0xFF2E2E2E) : AppColors.whiteColor;
+    final labelColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
 
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          SnackBarUtils.showSuccess(context, "تم تسجيل الدخول بنجاح!");
+          SnackBarUtils.showSuccess(context, context.tr('login_success'));
           Navigator.pushReplacementNamed(context, '/homeScreen');
         }
 
@@ -59,34 +59,34 @@ class _LoginFormState extends State<LoginForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "البريد الإلكتروني",
-                style: TextStyle(color: labelColor, fontSize: 15, fontWeight: FontWeight.bold),
+                context.tr('email'),
+                style: theme.textTheme.headlineSmall?.copyWith(color: labelColor),
               ),
               SizedBox(height: media.height * 0.01),
               CustomTextFormField(
                 controller: _emailController,
-                hintText: "ادخل بريدك الإلكتروني",
+                hintText: context.tr('enter_email'),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) => value == null || value.trim().isEmpty ? "يرجى إدخال البريد" : null,
+                validator: (value) => value == null || value.trim().isEmpty ? context.tr('please_enter_email') : null,
               ),
 
               SizedBox(height: media.height * 0.02),
 
               Text(
-                "كلمة المرور",
-                style: TextStyle(color: labelColor, fontSize: 15, fontWeight: FontWeight.bold),
+                context.tr('password'),
+                style: theme.textTheme.headlineSmall?.copyWith(color: labelColor),
               ),
               SizedBox(height: media.height * 0.01),
               CustomTextFormField(
                 controller: _passwordController,
-                hintText: "ادخل كلمة المرور",
+                hintText: context.tr('enter_password'),
                 isPassword: true,
-                validator: (value) => value == null || value.length < 6 ? "كلمة المرور ضعيفة" : null,
+                validator: (value) => value == null || value.length < 6 ? context.tr('weak_password') : null,
               ),
 
               SizedBox(height: media.height * 0.02),
 
-              _buildRememberMeRow(isDarkMode),
+              _buildRememberMeRow(context, isDarkMode),
 
               SizedBox(height: media.height * 0.04),
 
@@ -96,7 +96,7 @@ class _LoginFormState extends State<LoginForm> {
                     : CustomButton(
                   width: media.width * 0.7,
                   height: media.height * 0.07,
-                  text: "تسجيل الدخول",
+                  text: context.tr('login'),
                   color: AppColors.primaryColor,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
@@ -117,13 +117,17 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _buildRememberMeRow(bool isDarkMode) {
+  Widget _buildRememberMeRow(BuildContext context, bool isDarkMode) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         TextButton(
           onPressed: () {},
-          child: const Text("نسيت كلمة المرور؟", style: TextStyle(color: AppColors.primaryColor)),
+          child: Text(
+            context.tr('forgot_password'),
+            style: theme.textTheme.titleMedium?.copyWith(color: AppColors.primaryColor),
+          ),
         ),
         Row(
           children: [
@@ -135,7 +139,7 @@ class _LoginFormState extends State<LoginForm> {
                 if (states.contains(WidgetState.selected)) {
                   return AppColors.primaryColor;
                 }
-                return isDarkMode ? const Color(0xFF2E2E2E) : Colors.white;
+                return isDarkMode ? const Color(0xFF2E2E2E) : AppColors.whiteColor;
               }),
               side: BorderSide(
                 color: isDarkMode ? Colors.white54 : AppColors.greyColor.withOpacity(0.5),
@@ -143,9 +147,12 @@ class _LoginFormState extends State<LoginForm> {
               ),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
             ),
-            const Text(
-              "تذكرني",
-              style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold),
+            Text(
+              context.tr('remember_me'),
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: AppColors.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),

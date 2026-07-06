@@ -143,7 +143,6 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   @override
   Future<List<ServiceModel>> getMyServings() async {
     try {
-      // Sending request to /servings/my as seen in Postman
       final response = await dio.post(
         '/servings/my',
         data: {

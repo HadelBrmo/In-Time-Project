@@ -24,6 +24,9 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     print("❌ [API Error] <-- STATUS: ${err.response?.statusCode}");
     print("⚠️ Message: ${err.message}");
+    if (err.response?.data != null) {
+      print("📦 Error Body: ${err.response?.data}");
+    }
 
     if (err.response?.statusCode == 401) {
       final prefs = sl<SharedPreferences>();

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -30,6 +31,8 @@ import 'features/home/domain/usecases/get_nearby_servings_useCase.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/domain/usecases/update_availability_useCase.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/localization/data/datasource/locale_local_data_source.dart';
+import 'features/localization/presentation/bloc/locale_bloc.dart';
 import 'features/servings/domain/usecases/service/get_my_servings_usecase.dart';
 import 'features/servings/domain/usecases/service/update_serving_usecase.dart';
 import 'features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
@@ -97,83 +100,13 @@ import 'features/profile/presentation/bloc/profile_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-
-  // ==================== 1. Blocs (Factory) ====================
-  sl.registerFactory(() => ChatBloc(
-    getChatsUseCase: sl(),
-    getMessagesUseCase: sl(),
-    sendMessageUseCase: sl(),
-    createPersonalChatUseCase: sl(), createGroupChatUseCase: sl(),
-  ));
-  sl.registerFactory(() => OtpBloc(sendOtpUseCase: sl()));
-  sl.registerFactory(
-    () => ServicesBloc(
-      addServiceUseCase: sl(),
-      getPaymentUnitsUseCase: sl(),
-      getServiceDetailsUseCase: sl(),
-      getAvailabilitySlotsUseCase: sl(),
-    ),
-  );
-  sl.registerFactory(() => LoginBloc(loginUseCase: sl()));
-  sl.registerFactory(() => SignUpBloc(registerUseCase: sl()));
-  sl.registerFactory(() => HomeBloc(
-    searchServingsUseCase: sl(),
-    getNearbyServingsUseCase: sl(), updateAvailabilityUseCase: sl(),
-  ));
-
-  // ==================== 2. Use Cases (LazySingleton) ====================
-  sl.registerLazySingleton(() => GetChatsUseCase(sl()));
-  sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
-  sl.registerLazySingleton(() => SendMessageUseCase(sl()));
-  sl.registerLazySingleton(() => CreatePersonalChatUseCase(sl()));
-  sl.registerLazySingleton(() => CreateGroupChatUseCase(sl()));
-
-  sl.registerLazySingleton(() => AddServiceUseCase(sl()));
-  sl.registerLazySingleton(() => SendOtpUseCase(repository: sl()));
-  sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
-  sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
-  sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
-  sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
-  sl.registerLazySingleton(() => GetAvailabilitySlotsUseCase(sl()));
-  sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
-  sl.registerLazySingleton(() => GetNearbyServingsUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateAvailabilityUseCase(sl()));
-
-  // ==================== 3. Repositories (LazySingleton) ====================
-  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(
-    remoteDataSource: sl(),
-    localDataSource: sl(),
-  ));
-  sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(
-    remoteDataSource: sl(),
-    localDataSource: sl(),
-  ));
-
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(
-    remoteDataSource: sl(),
-    localDataSource: sl(),
-    sharedPreferences: sl(),
-  ));
-
-  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(
-    remoteDataSource: sl(),
-    localDataSource: sl(),
-  ));
-
-  // ==================== 4. Data Sources (LazySingleton) ====================
-  sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
-  sl.registerLazySingleton<ChatLocalDataSource>(() => ChatLocalDataSourceImpl());
-  sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
-  sl.registerLazySingleton<ServicesLocalDataSource>(() => ServicesLocalDataSourceImpl());
-  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
-  sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
-  sl.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl());
-  sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl()));
-
-  // ==================== 5. External Libraries ====================
+  // ==================== 0. External Libraries & Hive Setup 🚀 ====================
   final sharedPrefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPrefs);
   sl.registerLazySingleton<FlutterSecureStorage>(() => const FlutterSecureStorage());
+
+  final localeBox = await Hive.openBox('locale_box');
+  sl.registerLazySingleton<Box>(() => localeBox);
 
   if (!sl.isRegistered<Dio>()) {
     final dio = Dio(
@@ -191,29 +124,47 @@ Future<void> init() async {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // استخدام AuthLocalDataSource لجلب التوكن
           final authLocal = sl<AuthLocalDataSource>();
           final String? token = await authLocal.getToken();
 
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-
           return handler.next(options);
         },
       ),
     );
 
     dio.interceptors.add(LoggingInterceptor());
-
     sl.registerLazySingleton(() => dio);
   }
+
   if (!sl.isRegistered<ImagePicker>()) {
     sl.registerLazySingleton(() => ImagePicker());
   }
 
-
   // ==================== 1. Blocs (Factory) ====================
+  sl.registerFactory(() => ChatBloc(
+    getChatsUseCase: sl(),
+    getMessagesUseCase: sl(),
+    sendMessageUseCase: sl(),
+    createPersonalChatUseCase: sl(), createGroupChatUseCase: sl(),
+  ));
+  sl.registerFactory(() => OtpBloc(sendOtpUseCase: sl()));
+  sl.registerFactory(
+        () => ServicesBloc(
+      addServiceUseCase: sl(),
+      getPaymentUnitsUseCase: sl(),
+      getServiceDetailsUseCase: sl(),
+      getAvailabilitySlotsUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(() => LoginBloc(loginUseCase: sl()));
+  sl.registerFactory(() => SignUpBloc(registerUseCase: sl()));
+  sl.registerFactory(() => HomeBloc(
+    searchServingsUseCase: sl(),
+    getNearbyServingsUseCase: sl(), updateAvailabilityUseCase: sl(),
+  ));
   sl.registerFactory(() => CommentBloc(
     getCommentsUseCase: sl(),
     addCommentUseCase: sl(),
@@ -221,83 +172,89 @@ Future<void> init() async {
     reactLikeUseCase: sl(),
     reactDislikeUseCase: sl(),
   ));
-
-  // ==================== 2. Use Cases (LazySingleton) ====================
-  sl.registerLazySingleton(() => GetCommentsForServingUseCase(sl()));
-  sl.registerLazySingleton(() => AddCommentOnServingUseCase(sl()));
-  sl.registerLazySingleton(() => ReplyToCommentUseCase(sl()));
-  sl.registerLazySingleton(() => ReactLikeUseCase(sl()));
-  sl.registerLazySingleton(() => ReactDislikeUseCase(sl()));
-
-  // ==================== 3. Repositories (LazySingleton) ====================
-  sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
-
-  // ==================== 4. Data Sources (LazySingleton) ====================
-  sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));
-
-// ==================== Feature: Requests (Unified) 🚀 ====================
-  // 1. Blocs
   sl.registerFactory(() => RequestsBloc(
     getMyRequestsUseCase: sl(),
     createServingRequestUseCase: sl(),
     deleteRequestUseCase: sl(),
   ));
-
   sl.registerFactory(() => ReceivedRequestsBloc(
     getReceivedRequestsUseCase: sl(),
     acceptRequestUseCase: sl(),
     rejectRequestUseCase: sl(),
   ));
+  sl.registerFactory(() => WalletBloc(getMyWalletsUseCase: sl()));
+  sl.registerFactory(() => MyServingsBloc(
+    getMyServingsUseCase: sl(),
+    updateServingUseCase: sl(),
+  ));
+  sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));
+  sl.registerFactory(() => ProfileBloc(
+    getUserProfileUseCase: sl(),
+    updateProfileUseCase: sl(),
+  ));
 
-  // 2. Use Cases
+  // 🌟 حقن البلوك الخاص باللغة
+  sl.registerFactory(() => LocaleBloc(localDataSource: sl()));
+
+  // ==================== 2. Use Cases (LazySingleton) ====================
+  sl.registerLazySingleton(() => GetChatsUseCase(sl()));
+  sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
+  sl.registerLazySingleton(() => SendMessageUseCase(sl()));
+  sl.registerLazySingleton(() => CreatePersonalChatUseCase(sl()));
+  sl.registerLazySingleton(() => CreateGroupChatUseCase(sl()));
+  sl.registerLazySingleton(() => AddServiceUseCase(sl()));
+  sl.registerLazySingleton(() => SendOtpUseCase(repository: sl()));
+  sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
+  sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
+  sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => GetAvailabilitySlotsUseCase(sl()));
+  sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
+  sl.registerLazySingleton(() => GetNearbyServingsUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateAvailabilityUseCase(sl()));
+  sl.registerLazySingleton(() => GetCommentsForServingUseCase(sl()));
+  sl.registerLazySingleton(() => AddCommentOnServingUseCase(sl()));
+  sl.registerLazySingleton(() => ReplyToCommentUseCase(sl()));
+  sl.registerLazySingleton(() => ReactLikeUseCase(sl()));
+  sl.registerLazySingleton(() => ReactDislikeUseCase(sl()));
   sl.registerLazySingleton(() => GetMyRequestsUseCase(repository: sl()));
   sl.registerLazySingleton(() => CreateServingRequestUseCase(repository: sl()));
   sl.registerLazySingleton(() => DeleteRequestUseCase(sl()));
   sl.registerLazySingleton(() => GetReceivedRequestsUseCase(sl()));
   sl.registerLazySingleton(() => AcceptRequestUseCase(sl()));
   sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
-
-  // 3. Repository
-  sl.registerLazySingleton<RequestRepository>(
-        () => RequestRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // 4. Data Sources
-  sl.registerLazySingleton<RequestRemoteDataSource>(
-        () => RequestRemoteDataSourceImpl(dio: sl()),
-  );
-
-  // ==================== Feature: Wallet 💰 ====================
-  sl.registerFactory(() => WalletBloc(getMyWalletsUseCase: sl()));
   sl.registerLazySingleton(() => GetMyWalletsUseCase(sl()));
-  sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(remoteDataSource: sl()));
-  sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
-
-  // ==================== Feature: My Servings (Consolidated) 💼 ====================
-  // 1. Bloc
-  sl.registerFactory(() => MyServingsBloc(
-    getMyServingsUseCase: sl(),
-    updateServingUseCase: sl(),
-  ));
-
-  // 2. Use Cases
   sl.registerLazySingleton(() => GetMyServingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateServingUseCase(sl()));
-
-  // ==================== Feature: Complaints 📢 ====================
-  sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));
   sl.registerLazySingleton(() => SubmitComplaintUseCase(sl()));
-  sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
-  sl.registerLazySingleton<ComplaintRemoteDataSource>(() => ComplaintRemoteDataSourceImpl(dio: sl()));
-
-  // ==================== Feature: Profile 👤 ====================
-  sl.registerFactory(() => ProfileBloc(
-    getUserProfileUseCase: sl(),
-    updateProfileUseCase: sl(),
-  ));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+
+  // ==================== 3. Repositories (LazySingleton) ====================
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
+  sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl(), sharedPreferences: sl()));
+  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
+  sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<RequestRepository>(() => RequestRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()));
+
+  // ==================== 4. Data Sources (LazySingleton) ====================
+  sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ChatLocalDataSource>(() => ChatLocalDataSourceImpl());
+  sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ServicesLocalDataSource>(() => ServicesLocalDataSourceImpl());
+  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl());
+  sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl()));
+  sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<RequestRemoteDataSource>(() => RequestRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ComplaintRemoteDataSource>(() => ComplaintRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(dio: sl()));
 
+  sl.registerLazySingleton<LocaleLocalDataSource>(() => LocaleLocalDataSourceImpl(box: sl<Box>()));
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_routes.dart';
+import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/snackbar_utils.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
@@ -43,8 +44,8 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = AppColors.primaryColor;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -58,10 +59,10 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                 ? TextField(
               controller: _searchController,
               autofocus: true,
-              style: TextStyle(color: AppColors.whiteColor, fontSize: 16.sp),
-              decoration: const InputDecoration(
-                hintText: "ابحث عن الخدمة...",
-                hintStyle: TextStyle(color: Colors.white70),
+              style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 16.sp),
+              decoration: InputDecoration(
+                hintText: context.tr('search_for_service'),
+                hintStyle: const TextStyle(color: Colors.white70),
                 border: InputBorder.none,
               ),
               onChanged: (value) {
@@ -70,7 +71,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                 });
               },
             )
-                : const Text('سجل الأنشطة'),
+                : Text(context.tr('activity_history')),
             actions: [
               IconButton(
                 icon: Icon(isSearching ? Icons.close : Icons.search, color: AppColors.whiteColor),
@@ -102,11 +103,11 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                   ),
                   child: TabBar(
                     dividerColor: Colors.transparent,
-                    unselectedLabelColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    unselectedLabelColor: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
                     labelColor: AppColors.whiteColor,
                     indicatorSize: TabBarIndicatorSize.tab,
                     indicator: BoxDecoration(
-                      color: cardBg,
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     tabs: [
@@ -116,7 +117,13 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                           children: [
                             const Icon(Icons.assignment_outlined, size: 18),
                             SizedBox(width: media.width * 0.02),
-                            const Text('طلباتي', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Flexible(
+                              child: Text(
+                                context.tr('my_requests'),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -126,7 +133,13 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                           children: [
                             const Icon(Icons.move_to_inbox_outlined, size: 18),
                             SizedBox(width: media.width * 0.02),
-                            const Text('الطلبات الواردة', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Flexible(
+                              child: Text(
+                                context.tr('received_requests'),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -140,7 +153,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                     BlocListener<RequestsBloc, RequestsState>(
                       listener: (context, state) {
                         if (state is RequestDeletedSuccessState) {
-                          SnackBarUtils.showSuccess(context, 'تم حذف الطلب بنجاح');
+                          SnackBarUtils.showSuccess(context, context.tr('request_deleted_success'));
                           context.read<RequestsBloc>().add(FetchMyRequestsEvent());
                         } else if (state is RequestDeleteErrorState) {
                           SnackBarUtils.showError(context, state.message);
@@ -167,11 +180,10 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                                     ),
                                     SizedBox(height: media.height * 0.015),
                                     Text(
-                                      searchQuery.isEmpty ? "لا توجد طلبات مقدمة بعد." : "لا توجد نتائج تطابق بحثك.",
-                                      style: TextStyle(
+                                      searchQuery.isEmpty ? context.tr('no_requests') : context.tr('no_search_results'),
+                                      style: theme.textTheme.titleMedium?.copyWith(
                                         color: AppColors.greyColor,
                                         fontSize: media.width * 0.04,
-                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ],

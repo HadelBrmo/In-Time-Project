@@ -31,22 +31,32 @@ class ServiceModel extends ServiceEntity {
     return {
       'title': title,
       'description': description,
-      'category_id': categoryId,
-      'cost_amount': costAmount,
-      if (unitId != null) 'unit_id': unitId!,
+      'category_id': int.tryParse(categoryId ?? '') ?? categoryId,
+      'cost_amount': double.tryParse(costAmount ?? '') ?? costAmount,
+      if (unitId != null) 'unit_id': int.tryParse(unitId!) ?? unitId,
       'location_address': locationAddress,
-      'location_lat': locationLat?.toString(),
-      'location_lng': locationLng?.toString(),
-      if (meetingType != null) 'meeting_type': meetingType!,
-      'user_email': userEmail,
-      'requested': isRequested,
-      'created_at': createdAt,
+      'location_lat': locationLat,
+      'location_lng': locationLng,
+      if (meetingType != null) 'meeting_type': meetingType,
     };
   }
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
+    // التحقق من وجود المعرف في مفاتيح مختلفة
+    final idValue = json['id'] ?? json['serving_id'];
+    
+    // التحقق من نوع الخدمة سواء كان نصاً مباشراً أو ضمن كائن
+    String? typeName;
+    if (json['serving_type_name'] != null) {
+      typeName = json['serving_type_name'].toString();
+    } else if (json['serving_type'] is Map) {
+      typeName = json['serving_type']['name']?.toString();
+    } else if (json['servingTypeName'] != null) {
+      typeName = json['servingTypeName'].toString();
+    }
+
     return ServiceModel(
-      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? ''),
+      id: idValue is int ? idValue : int.tryParse(idValue?.toString() ?? ''),
       title: json['title']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       categoryId: json['category_id']?.toString() ?? json['category_name']?.toString() ?? '',
@@ -66,7 +76,7 @@ class ServiceModel extends ServiceEntity {
       userEmail: json['user_email']?.toString() ?? json['userEmail'],
       categoryName: json['category_name']?.toString() ?? json['categoryName'],
       unitName: json['unit_name']?.toString() ?? json['unitName'],
-      servingTypeName: json['serving_type_name']?.toString() ?? json['servingTypeName'],
+      servingTypeName: typeName,
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1),
       isOwner: json['isOwner'] ?? json['is_owner'] ?? false,
       availabilitySlots: json['availability_slots'] ?? json['availabilitySlots'] ?? [],

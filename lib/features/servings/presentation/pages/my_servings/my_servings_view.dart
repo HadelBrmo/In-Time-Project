@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/utils/snackbar_utils.dart';
-import '../../../../core/widgets/customAppBar.dart';
-import '../../../../core/widgets/loading_widget.dart';
-import '../bloc/my_servings/my_servings_bloc.dart';
-import '../bloc/my_servings/my_servings_event.dart';
-import '../bloc/my_servings/my_servings_state.dart';
-import '../widgets/edit_serving_sheet.dart';
-import '../widgets/my_serving_card.dart';
+import '../../../../../core/localization/app_localizations.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
+import '../../../../../core/widgets/customAppBar.dart';
+import '../../../../../core/widgets/loading_widget.dart';
+import '../../bloc/my_servings/my_servings_bloc.dart';
+import '../../bloc/my_servings/my_servings_event.dart';
+import '../../bloc/my_servings/my_servings_state.dart';
+import '../../widgets/edit_serving_sheet.dart';
+import '../../widgets/my_serving_card.dart';
 
 class MyServingsView extends StatefulWidget {
   const MyServingsView({super.key});
@@ -27,11 +28,11 @@ class _MyServingsViewState extends State<MyServingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: CustomAppBar(title: const Text("خدماتي")),
+      appBar: CustomAppBar(title: Text(context.tr('my_services'))),
       body: BlocConsumer<MyServingsBloc, MyServingsState>(
         listener: (context, state) {
           if (state is UpdateServingSuccessState) {
-            SnackBarUtils.showSuccess(context, "تم التحديث بنجاح");
+            SnackBarUtils.showSuccess(context, context.tr('update_success'));
             context.read<MyServingsBloc>().add(FetchMyServingsEvent());
           }
         },
@@ -66,7 +67,12 @@ class _MyServingsViewState extends State<MyServingsView> {
               },
             );
           }
-          return const Center(child: Text("لا يوجد خدمات معروضة حالياً"));
+          return Center(
+            child: Text(
+              context.tr('no_services_displayed'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          );
         },
       ),
     );
