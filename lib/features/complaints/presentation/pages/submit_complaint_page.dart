@@ -18,7 +18,6 @@ import '../widgets/complaint_type_dropdown.dart';
 import '../widgets/evidence_upload_widget.dart';
 import 'complaint_status_list_page.dart';
 
-
 class SubmitComplaintPage extends StatefulWidget {
   final int servingId;
   final int accusedUserId;
@@ -38,14 +37,7 @@ class _SubmitComplaintPageState extends State<SubmitComplaintPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String? selectedComplaintType;
-  int? servingId;
   String? attachmentPath;
-
-  @override
-  void initState() {
-    super.initState();
-    servingId = widget.servingId;
-  }
 
   @override
   void dispose() {
@@ -62,12 +54,25 @@ class _SubmitComplaintPageState extends State<SubmitComplaintPage> {
         return;
       }
 
+      // تحويل القيمة العربية إلى المفتاح الإنجليزي المقبول في السيرفر
+      String reasonKey = 'others';
+      if (selectedComplaintType == context.tr('technical_problem') || selectedComplaintType == 'مشكلة تقنية') {
+        reasonKey = 'technical_problem';
+      } else if (selectedComplaintType == context.tr('service_delay') || selectedComplaintType == 'تأخير في الخدمة') {
+        reasonKey = 'service_not_delivered';
+      } else if (selectedComplaintType == context.tr('harassment') || selectedComplaintType == 'إزعاج') {
+        reasonKey = 'harassment';
+      } else if (selectedComplaintType == context.tr('others') || selectedComplaintType == 'أخرى') {
+        reasonKey = 'others';
+      }
+
+      // تجهيز الطلب (بأخذ الأرقام مباشرة من الـ widget)
       final request = ComplaintRequest(
-        servingId: servingId ?? 1,
-        accusedUserId: widget.accusedUserId,
-        reason: selectedComplaintType!,
+        servingId: widget.servingId, 
+        accusedUserId: widget.accusedUserId, 
+        reason: reasonKey,
         description: descriptionController.text.trim(),
-        attachmentPath: attachmentPath,
+        attachmentPath: attachmentPath, 
       );
 
       context.read<ComplaintBloc>().add(SubmitComplaintEvent(request));
@@ -78,7 +83,6 @@ class _SubmitComplaintPageState extends State<SubmitComplaintPage> {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final theme = Theme.of(context);
-
     final hintTextColor = isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor;
     final containerBorderColor = isDarkMode ? AppColors.greyColor.withOpacity(0.3) : AppColors.greyColor.withOpacity(0.2);
 
@@ -93,22 +97,6 @@ class _SubmitComplaintPageState extends State<SubmitComplaintPage> {
               context.tr('submit_complaint'),
               style: theme.textTheme.titleSmall,
             ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ComplaintStatusListPage(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.receipt_long_rounded, color: AppColors.whiteColor),
-                ),
-              ),
-            ],
           ),
           body: BlocConsumer<ComplaintBloc, ComplaintState>(
             listener: (context, state) {
@@ -163,17 +151,10 @@ class _SubmitComplaintPageState extends State<SubmitComplaintPage> {
                       buildLabel(context, context.tr('complaint_type')),
                       const SizedBox(height: 8),
                       ComplaintTypeDropdown(
-
                         selectedType: selectedComplaintType,
                         onChanged: (value) {
                           setState(() {
                             selectedComplaintType = value;
-                            if (servingId == null || servingId == 1) {
-                              if (value == context.tr('technical_problem')) servingId = 1;
-                              if (value == context.tr('service_delay')) servingId = 2;
-                              if (value == context.tr('harassment')) servingId = 3;
-                              if (value == context.tr('others')) servingId = 4;
-                            }
                           });
                         },
                       ).animate().fade(delay: 150.ms).slideY(begin: 0.1, end: 0),

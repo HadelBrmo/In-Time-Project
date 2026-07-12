@@ -14,6 +14,7 @@ import '../../injection_container.dart';
 import '../localization/app_localizations.dart';
 import '../utils/auth_utils.dart';
 import '../widgets/global_particles_wrapper.dart';
+import 'package:in_time/features/complaints/presentation/pages/complaint_status_list_page.dart'; 
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -106,12 +107,17 @@ class CustomDrawer extends StatelessWidget {
                     },
                   ),
                   drawerItem(icon: Icons.brightness_6_outlined, text: context.tr('appearance')),
-                  drawerItem(
-                    icon: Icons.chat_bubble_outline,
-                    text: context.tr('complaint'),
+             drawerItem(
+                    icon: Icons.receipt_long_rounded, // أيقونة تناسب السجل/القائمة
+                    text: context.tr('الشكاوى') ?? 'الشكاوى', 
                     onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, AppRoutes.submitComplaintPage);
+                      Navigator.pop(context); // لإغلاق القائمة الجانبية
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ComplaintStatusListPage(),
+                        ),
+                      );
                     },
                   ),
                   drawerItem(icon: Icons.bookmark_border, text: context.tr('saved')),
