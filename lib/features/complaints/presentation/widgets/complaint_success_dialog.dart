@@ -126,7 +126,9 @@ class ComplaintSuccessDialog {
                         height: 14),
 
                     const Text(
-                      'سيتم مراجعة شكوتك من قبل الإدارة',
+
+                      'رقم الشكوى المرجعي: 1234',
+
                       style: TextStyle(
                         color: AppColors.blackColor,
 

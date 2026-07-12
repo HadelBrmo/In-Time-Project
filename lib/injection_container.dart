@@ -53,7 +53,6 @@ import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
-
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
 
@@ -88,7 +87,6 @@ import 'features/complaints/data/datasources/complaint_remote_data_source.dart';
 import 'features/complaints/data/repositories/complaint_repository_impl.dart';
 import 'features/complaints/domain/repositories/i_complaint_repository.dart';
 import 'features/complaints/domain/usecases/submit_complaint_usecase.dart';
-import 'features/complaints/domain/usecases/get_complaint_status_usecase.dart';
 import 'features/complaints/presentation/bloc/complaint_bloc.dart';
 
 // Profile Feature 👤
@@ -189,17 +187,7 @@ Future<void> init() async {
     getMyServingsUseCase: sl(),
     updateServingUseCase: sl(),
   ));
-  // ✅ تسجيل الـ UseCase الجديد أولاً (إذا لم تكن قد سجلته)
-    // sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
-
-    // ✅ تحديث الـ Bloc ليأخذ كلا المتطلبين
-    sl.registerFactory(
-      () => ComplaintBloc(
-        submitComplaintUseCase: sl(),
-        getComplaintStatusUseCase: sl(), // 👈 السطر الذي كان ناقصاً
-      ),
-    );
-  // sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));
+  sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));
   sl.registerFactory(() => ProfileBloc(
     getUserProfileUseCase: sl(),
     updateProfileUseCase: sl(),
@@ -239,7 +227,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetMyServingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateServingUseCase(sl()));
   sl.registerLazySingleton(() => SubmitComplaintUseCase(sl()));
-  sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
 

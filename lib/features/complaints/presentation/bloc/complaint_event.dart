@@ -14,6 +14,3 @@ class SubmitComplaintEvent extends ComplaintEvent {
   @override
   List<Object?> get props => [request];
 }
-
-// ✅ الإضافة الجديدة التي كانت تسبب الخطأ
-class FetchMyComplaintsEvent extends ComplaintEvent {}

@@ -5,8 +5,6 @@ import '../models/complaint_model.dart';
 
 abstract class ComplaintRemoteDataSource {
   Future<ComplaintResponse> submitComplaint(ComplaintRequest request);
-  // ✅ تم إضافة الدالة هنا في المكان الصحيح
-  Future<List<dynamic>> getMyComplaints(); 
 }
 
 class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
@@ -14,22 +12,6 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
 
   ComplaintRemoteDataSourceImpl({required this.dio});
 
-  // ✅ الدالة الأولى: جلب الشكاوى
-  @override
-  Future<List<dynamic>> getMyComplaints() async {
-    try {
-      final response = await dio.get('/my-complaints');
-      if (response.statusCode == 200) {
-        return response.data['data'] as List<dynamic>;
-      } else {
-        throw ServerException();
-      }
-    } catch (e) {
-      throw ServerException();
-    }
-  }
-
-  // ✅ الدالة الثانية: تقديم شكوى
   @override
   Future<ComplaintResponse> submitComplaint(ComplaintRequest request) async {
     try {

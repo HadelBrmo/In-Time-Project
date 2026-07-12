@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
+
 import '../../data/models/complaint_model.dart';
+
 
 abstract class ComplaintState extends Equatable {
   const ComplaintState();
@@ -23,14 +25,4 @@ class ComplaintError extends ComplaintState {
   const ComplaintError(this.message);
   @override
   List<Object?> get props => [message];
-}
-
-// ✅ الإضافات الجديدة التي كانت تسبب الخطأ
-class MyComplaintsLoading extends ComplaintState {}
-
-class MyComplaintsLoaded extends ComplaintState {
-  final List<dynamic> complaints;
-  const MyComplaintsLoaded(this.complaints);
-  @override
-  List<Object?> get props => [complaints];
 }

@@ -97,31 +97,31 @@ class ComplaintDetailsPage extends StatelessWidget {
                     valueColor: valueTextColor,
                   ),
                   const SizedBox(height: 20),
-                  // Row(
-                  //   children: [
-                  //     // Text(
-                  //     //   context.tr('evidence'),
-                  //     //   style: theme.textTheme.titleMedium?.copyWith(
-                  //     //     fontWeight: FontWeight.bold,
-                  //     //     color: titleTextColor,
-                  //     //   ),
-                  //     // ),
-                  //     const SizedBox(width: 12),
-                  //     const Icon(
-                  //       Icons.picture_as_pdf_outlined,
-                  //       color: AppColors.primaryColor,
-                  //       size: 24,
-                  //     ),
-                  //     const SizedBox(width: 6),
-                  //     Text(
-                  //       context.tr('complaint_file_pdf'),
-                  //       style: theme.textTheme.titleMedium?.copyWith(
-                  //         color: valueTextColor,
-                  //         fontWeight: FontWeight.w500,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Row(
+                    children: [
+                      Text(
+                        context.tr('evidence'),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: titleTextColor,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(
+                        Icons.picture_as_pdf_outlined,
+                        color: AppColors.primaryColor,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        context.tr('complaint_file_pdf'),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: valueTextColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity,
