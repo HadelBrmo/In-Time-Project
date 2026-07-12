@@ -10,6 +10,9 @@ import '../../../servings/presentation/bloc/service/services_state.dart';
 import '../widgets/service_details/buildDetailsBody.dart';
 import '../bloc/home_bloc.dart';
 
+// ✅ 1. استيراد صفحة تقديم الشكوى (بمسار مطلق آمن)
+import 'package:in_time/features/complaints/presentation/pages/submit_complaint_page.dart';
+
 class ServiceDetailsPage extends StatelessWidget {
   final int serviceId;
   final bool isFromRequests;
@@ -36,7 +39,40 @@ class ServiceDetailsPage extends StatelessWidget {
       ],
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(title: Text(context.tr('service_details'))),
+        appBar: CustomAppBar(
+          title: Text(context.tr('service_details')),
+       
+          actions: [
+            BlocBuilder<ServicesBloc, ServicesState>(
+              builder: (context, state) {
+                if (state is ServiceDetailsLoaded) {
+                  final service = state.service;
+                  final bool isOwner = (isFromMyServings == true) ? true : (service.isOwner ?? false);
+
+                  if (!isOwner) {
+                    return IconButton(
+                     icon: const Icon(Icons.warning_amber_rounded, color: Colors.amber),
+                      tooltip: 'تقديم شكوى',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                       builder: (context) => SubmitComplaintPage(
+  servingId: service.id ?? 0, 
+  accusedUserId: service.userId ?? 0, 
+),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }
+             
+                return const SizedBox.shrink(); 
+              },
+            ),
+          ],
+        ),
         body: BlocBuilder<ServicesBloc, ServicesState>(
           builder: (context, state) {
             if (state is ServiceDetailsLoading) {
