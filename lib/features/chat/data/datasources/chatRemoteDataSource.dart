@@ -38,7 +38,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       'receiver_id': receiverId,
       'content': content,
     });
-    return ChatModel.fromJson(response.data['data']);
+    final data = response.data['data'];
+    if (data is Map<String, dynamic> && data.containsKey('chat')) {
+      return ChatModel.fromJson(data['chat']);
+    }
+    return ChatModel.fromJson(data);
   }
 
   @override

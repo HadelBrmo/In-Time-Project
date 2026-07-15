@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../../../../core/constants/app_colors.dart';
 
 class CustomDatePickerField extends StatelessWidget {
@@ -19,6 +18,8 @@ class CustomDatePickerField extends StatelessWidget {
   });
 
   Future<void> selectDate(BuildContext context) async {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
@@ -28,9 +29,17 @@ class CustomDatePickerField extends StatelessWidget {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: isDarkMode
+                ? ColorScheme.dark(
               primary: AppColors.primaryColor,
               onPrimary: Colors.white,
+              surface: Colors.grey[900]!,
+              onSurface: Colors.white,
+            )
+                : ColorScheme.light(
+              primary: AppColors.primaryColor,
+              onPrimary: Colors.white,
+              surface: Colors.white,
               onSurface: Colors.black,
             ),
             textTheme: const TextTheme(
@@ -55,32 +64,47 @@ class CustomDatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: AppColors.blackColor),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: theme.textTheme.bodyLarge?.color,
+          ),
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           readOnly: true,
           textAlign: TextAlign.right,
-          style: const TextStyle(color: Colors.black, fontSize: 16),
+          style: TextStyle(
+            color: theme.textTheme.bodyLarge?.color,
+            fontSize: 16,
+          ),
           validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.grey),
+            hintStyle: TextStyle(color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
             suffixIcon: Icon(Icons.calendar_month, color: AppColors.primaryColor),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+              borderSide: BorderSide(color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+              borderSide: BorderSide(color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5),
             ),
           ),
           onTap: () => selectDate(context),

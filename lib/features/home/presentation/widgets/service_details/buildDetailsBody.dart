@@ -25,7 +25,6 @@ import '../../../../requests/presentation/widgets/showRequestDialog.dart';
 import '../../bloc/home_bloc.dart';
 import '../../bloc/home_event.dart';
 
-
 Widget buildDetailsBody(
     BuildContext context,
     ServiceEntity service,
@@ -59,7 +58,6 @@ Widget buildDetailsBody(
     child: MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => sl<RequestsBloc>()),
-        BlocProvider(create: (context) => sl<ChatBloc>()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -85,6 +83,15 @@ Widget buildDetailsBody(
               if (state is ChatsLoading) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(context.tr('opening_chat')), backgroundColor: AppColors.primaryColor),
+                );
+              } else if (state is ChatCreated) {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.chatRoomPage,
+                  arguments: {
+                    'chatId': state.chat.id,
+                    'chatTitle': state.chat.otherUser?.fullName ?? context.tr('chat_room'),
+                  },
                 );
               } else if (state is ChatInitial) {
               } else if (state is ChatsError) {
@@ -486,9 +493,10 @@ Widget buildDetailsBody(
               ),
               SizedBox(height: media.height * 0.04),
 
-              buildAnimatedItem(
-                delayFactor: 4,
-                child: Builder( 
+              if (service.isOwner != true) ...[
+                buildAnimatedItem(
+                  delayFactor: 4,
+                  child: Builder(
                     builder: (context) {
                       return Center(
                         child: SizedBox(
@@ -497,14 +505,36 @@ Widget buildDetailsBody(
                           child: ElevatedButton(
                             onPressed: () {
                               if (AuthUtils.checkAuth(context)) {
-                                context.read<ChatBloc>().add(
-                                  CreatePersonalChatEvent(
-                                    service.userId ?? 0,
-                                    "${context.tr('chat_inquiry')} ${service.title}",
-                                  ),
-                                );
+                                final chatBloc = context.read<ChatBloc>();
+                                final currentState = chatBloc.state;
 
-                                Navigator.pushNamed(context, AppRoutes.chatListScreen);
+                                int? existingChatId;
+                                if (currentState is ChatsLoaded) {
+                                  for (final chat in currentState.chats) {
+                                    if (chat.type == 'personal' && chat.otherUser?.id == service.userId) {
+                                      existingChatId = chat.id;
+                                      break;
+                                    }
+                                  }
+                                }
+
+                                if (existingChatId != null) {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.chatRoomPage,
+                                    arguments: {
+                                      'chatId': existingChatId,
+                                      'chatTitle': service.userFullName ?? context.tr('chat_room'),
+                                    },
+                                  );
+                                } else {
+                                  chatBloc.add(
+                                    CreatePersonalChatEvent(
+                                      service.userId ?? 0,
+                                      "${context.tr('chat_inquiry')} ${service.title}",
+                                    ),
+                                  );
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -516,15 +546,20 @@ Widget buildDetailsBody(
                             ),
                             child: Text(
                               context.tr('message'),
-                              style: theme.textTheme.titleSmall?.copyWith(color: AppColors.whiteColor, fontSize: 18),
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                color: AppColors.whiteColor,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         ),
                       );
-                    }
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: media.height * 0.04),
+                SizedBox(height: media.height * 0.02),
+              ],
+
               buildAnimatedItem(
                 delayFactor: 4,
                 child: Center(

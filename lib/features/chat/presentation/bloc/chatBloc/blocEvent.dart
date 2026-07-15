@@ -48,3 +48,64 @@ class CreateGroupChatEvent extends ChatEvent {
   @override
   List<Object> get props => [name, memberIds];
 }
+
+class ClearMessagesEvent extends ChatEvent {}
+
+class MarkAsReadEvent extends ChatEvent {
+  final int chatId;
+  const MarkAsReadEvent(this.chatId);
+
+  @override
+  List<Object?> get props => [chatId];
+}
+
+class MarkAsReceivedEvent extends ChatEvent {
+  final int chatId;
+  const MarkAsReceivedEvent(this.chatId);
+
+  @override
+  List<Object?> get props => [chatId];
+}
+
+class GetMembersEvent extends ChatEvent {
+  final int chatId;
+  const GetMembersEvent(this.chatId);
+
+  @override
+  List<Object?> get props => [chatId];
+}
+
+class AddMembersEvent extends ChatEvent {
+  final int chatId;
+  final List<int> userIds;
+  const AddMembersEvent(this.chatId, this.userIds);
+
+  @override
+  List<Object?> get props => [chatId, userIds];
+}
+
+class RemoveMemberEvent extends ChatEvent {
+  final int chatId;
+  final int userId;
+  const RemoveMemberEvent(this.chatId, this.userId);
+
+  @override
+  List<Object?> get props => [chatId, userId];
+}
+
+class UpdateGroupEvent extends ChatEvent {
+  final int chatId;
+  final String name;
+  const UpdateGroupEvent(this.chatId, this.name);
+
+  @override
+  List<Object?> get props => [chatId, name];
+}
+
+class LeaveGroupEvent extends ChatEvent {
+  final int chatId;
+  const LeaveGroupEvent(this.chatId);
+
+  @override
+  List<Object?> get props => [chatId];
+}

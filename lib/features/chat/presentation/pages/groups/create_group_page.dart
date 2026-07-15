@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/widgets/customAppBar.dart';
-import '../bloc/chatBloc/chatBloc.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/widgets/customAppBar.dart';
+import '../../bloc/chatBloc/chatBloc.dart';
 import 'select_members_page.dart';
 
 class CreateGroupPage extends StatefulWidget {
@@ -17,13 +17,11 @@ class CreateGroupPage extends StatefulWidget {
 class _CreateGroupPageState extends State<CreateGroupPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _groupNameController = TextEditingController();
-  final TextEditingController _groupDescController = TextEditingController(); // 👈 حقل الوصف الجديد
   File? _groupImage;
 
   @override
   void dispose() {
     _groupNameController.dispose();
-    _groupDescController.dispose();
     super.dispose();
   }
 
@@ -75,7 +73,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 ),
                 const SizedBox(height: 32),
 
-                // حقل اسم المجموعة
                 TextFormField(
                   controller: _groupNameController,
                   style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
@@ -94,30 +91,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   ),
                   validator: (value) => (value == null || value.trim().isEmpty) ? "الرجاء إدخال اسم المجموعة" : null,
                 ).animate().fade(delay: 100.ms).slideY(begin: 0.1, end: 0),
-                const SizedBox(height: 16),
+                const SizedBox(height: 35),
 
-                TextFormField(
-                  controller: _groupDescController,
-                  maxLines: 3,
-                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
-                  decoration: InputDecoration(
-                    hintText: "وصف المجموعة (اختياري)...",
-                    hintStyle: TextStyle(color: isDarkMode ? Colors.white60 : Colors.grey),
-                    filled: true,
-                    fillColor: inputFillColor,
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.only(bottom: 40),
-                      child: Icon(Icons.description_outlined, color: AppColors.primaryColor),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: isDarkMode ? Colors.white10 : Colors.grey.withOpacity(0.2)),
-                    ),
-                  ),
-                ).animate().fade(delay: 200.ms).slideY(begin: 0.1, end: 0),
-                const SizedBox(height: 40),
 
                 SizedBox(
                   width: double.infinity,
@@ -133,7 +108,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                               value: chatBloc,
                               child: SelectMembersPage(
                                 groupName: _groupNameController.text.trim(),
-                                groupDescription: _groupDescController.text.trim(),
                               ),
                             ),
                           ),

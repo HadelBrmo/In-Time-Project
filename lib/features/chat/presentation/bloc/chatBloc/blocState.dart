@@ -14,6 +14,7 @@ abstract class ChatState extends Equatable {
 class ChatInitial extends ChatState {}
 
 class ChatsLoading extends ChatState {}
+
 class ChatsLoaded extends ChatState {
   final List<ChatEntity> chats;
   const ChatsLoaded(this.chats);
@@ -21,6 +22,7 @@ class ChatsLoaded extends ChatState {
   @override
   List<Object?> get props => [chats];
 }
+
 class ChatsError extends ChatState {
   final String message;
   const ChatsError(this.message);
@@ -29,7 +31,16 @@ class ChatsError extends ChatState {
   List<Object?> get props => [message];
 }
 
+class ChatCreated extends ChatState {
+  final ChatEntity chat;
+  const ChatCreated(this.chat);
+
+  @override
+  List<Object?> get props => [chat];
+}
+
 class MessagesLoading extends ChatState {}
+
 class MessagesLoaded extends ChatState {
   final List<MessageEntity> messages;
   const MessagesLoaded(this.messages);
@@ -38,8 +49,35 @@ class MessagesLoaded extends ChatState {
   List<Object?> get props => [messages];
 }
 
+class MessagesError extends ChatState {
+  final String message;
+  const MessagesError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class MessageSending extends ChatState {}
+
 class MessageSent extends ChatState {
   final MessageEntity message;
   const MessageSent(this.message);
+}
+
+class MembersLoading extends ChatState {}
+
+class MembersLoaded extends ChatState {
+  final List<ChatUserEntity> members;
+  const MembersLoaded(this.members);
+
+  @override
+  List<Object?> get props => [members];
+}
+
+class MemberActionSuccess extends ChatState {
+  final String message;
+  const MemberActionSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

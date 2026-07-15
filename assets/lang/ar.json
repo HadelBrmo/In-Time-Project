@@ -26,6 +26,7 @@
   "done_status": "منجزة",
   "processing_status": "قيد المعالجة",
   "rejected_status": "مرفوضة",
+  "complaints": "الشكاوى",
   "settings": "الإعدادات",
   "language": "اللغة",
   "arabic": "العربية",
@@ -166,7 +167,9 @@
   "error_not_found": "الرابط المطلوب غير موجود.",
   "error_code": "خطأ رقم",
   "error_occured": "عذراً، حدث خطأ ما",
+  "otp_sent_success": "تم إرسال رمز التحقق بنجاح!",
   "otp_resend_success": "تم إعادة إرسال رمز التحقق بنجاح!",
+  "registration_success": "تم إنشاء الحساب بنجاح!",
   "account_verification": "التحقق من الحساب",
   "otp_instruction": "لقد أرسلنا رمز تفعيل مكون من 6 أرقام إلى بريدك الإلكتروني:\n",
   "resend_code": "إعادة إرسال الرمز",
@@ -206,5 +209,7 @@
   "desc_required": "وصف الخدمة مطلوب",
   "desc_min_length": "يجب أن يكون الوصف 10 أحرف على الأقل",
   "submit_service": "إرسال الخدمة",
-  "cancel": "إلغاء"
+  "cancel": "إلغاء",
+  "personal_chats": "المحادثات",
+  "groups": "المجموعات"
 }

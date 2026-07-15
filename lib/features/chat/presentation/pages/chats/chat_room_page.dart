@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/widgets/customAppBar.dart';
-import '../../domain/entities/message_entity.dart';
-import '../bloc/chatBloc/blocEvent.dart';
-import '../bloc/chatBloc/blocState.dart';
-import '../bloc/chatBloc/chatBloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../../injection_container.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/localization/app_localizations.dart';
+import '../../../../../core/widgets/customAppBar.dart';
+import '../../../domain/entities/message_entity.dart';
+import '../../bloc/chatBloc/blocEvent.dart';
+import '../../bloc/chatBloc/blocState.dart';
+import '../../bloc/chatBloc/chatBloc.dart';
+import '../../widgets/messages/buildMessageBubble.dart';
+import '../../widgets/messages/buildMessageInputField.dart';
+import '../groups/group_info_page.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final int chatId;
   final String chatTitle;
+  final bool isGroup;
 
-  const ChatRoomPage({super.key, required this.chatId, required this.chatTitle});
+  const ChatRoomPage({super.key, required this.chatId, required this.chatTitle, this.isGroup = false});
 
   @override
   State<ChatRoomPage> createState() => _ChatRoomPageState();
@@ -22,11 +28,28 @@ class ChatRoomPage extends StatefulWidget {
 class _ChatRoomPageState extends State<ChatRoomPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  late int _currentUserId;
+  int? _groupCreatedBy;
 
   @override
   void initState() {
     super.initState();
+    _currentUserId = sl<SharedPreferences>().getInt("user_id") ?? 0;
+    
+    if (widget.isGroup) {
+      final chatState = context.read<ChatBloc>().state;
+      if (chatState is ChatsLoaded && chatState.chats.isNotEmpty) {
+        final chats = chatState.chats;
+        final index = chats.indexWhere((c) => c.id == widget.chatId);
+        final currentChat = index != -1 ? chats[index] : chats.first;
+        _groupCreatedBy = currentChat.createdBy;
+      }
+    }
+
+    context.read<ChatBloc>().add(ClearMessagesEvent());
     context.read<ChatBloc>().startMessagesPulling(widget.chatId);
+    context.read<ChatBloc>().add(MarkAsReceivedEvent(widget.chatId));
+    context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
   }
 
   @override
@@ -52,7 +75,26 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CustomAppBar(
-        title: Text(widget.chatTitle),
+        title: GestureDetector(
+          onTap: widget.isGroup
+              ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                        value: context.read<ChatBloc>(),
+                        child: GroupInfoPage(
+                          chatId: widget.chatId,
+                          chatTitle: widget.chatTitle,
+                          createdBy: _groupCreatedBy,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              : null,
+          child: Text(widget.chatTitle),
+        ),
       ),
       body: Center(
         child: Container(
@@ -61,8 +103,15 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             children: [
               Expanded(
                 child: BlocConsumer<ChatBloc, ChatState>(
+                  buildWhen: (previous, current) {
+                    return current is MessagesLoading ||
+                        current is MessagesLoaded ||
+                        current is ChatsError;
+                  },
                   listener: (context, state) {
                     if (state is MessagesLoaded) {
+                      context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
+
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (_scrollController.hasClients) {
                           _scrollController.animateTo(
@@ -78,15 +127,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     if (state is MessagesLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is MessagesLoaded) {
+                      final messages = state.messages.reversed.toList();
                       return ListView.builder(
                         controller: _scrollController,
                         reverse: true,
                         padding: const EdgeInsets.all(16),
-                        itemCount: state.messages.length,
+                        itemCount: messages.length,
                         itemBuilder: (context, index) {
-                          final message = state.messages[index];
-                          final isMe = message.senderId != 1;
-                          return _buildMessageBubble(message, isMe, theme)
+                          final message = messages[index];
+                          final isMe = message.senderId == _currentUserId;
+                          return MessageBubble(
+                            message: message,
+                            isMe: isMe,
+                            isGroup: widget.isGroup,
+                          )
                               .animate()
                               .fade(duration: 200.ms)
                               .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic);
@@ -102,7 +156,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   },
                 ),
               ),
-              _buildMessageInputField(theme, context),
+              MessageInputField(
+                controller: _messageController,
+                onSend: _sendMessage,
+              ),
             ],
           ),
         ),
@@ -110,59 +167,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  Widget _buildMessageBubble(MessageEntity message, bool isMe, ThemeData theme) {
-    return Align(
-      alignment: isMe ? Alignment.centerLeft : Alignment.centerRight,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.75),
-        decoration: BoxDecoration(
-          color: isMe ? AppColors.primaryColor : theme.colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(16),
-            topRight: const Radius.circular(16),
-            bottomLeft: isMe ? Radius.zero : const Radius.circular(16),
-            bottomRight: isMe ? const Radius.circular(16) : Radius.zero,
-          ),
-        ),
-        child: Text(
-          message.content,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: isMe ? AppColors.whiteColor : theme.textTheme.bodyLarge?.color,
-            fontSize: 15,
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildMessageInputField(ThemeData theme, BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      color: theme.cardColor,
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _messageController,
-                style: theme.textTheme.bodyLarge,
-                decoration: InputDecoration(
-                  hintText: context.tr('type_message_here'),
-                  hintStyle: theme.textTheme.titleMedium?.copyWith(color: theme.hintColor),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.send_rounded, color: AppColors.primaryColor),
-              onPressed: _sendMessage,
-            ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                .shimmer(delay: 3.seconds, duration: 1.5.seconds, color: theme.colorScheme.primaryContainer),
-          ],
-        ),
-      ),
-    );
-  }
+
 }

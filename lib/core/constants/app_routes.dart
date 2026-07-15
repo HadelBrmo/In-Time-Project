@@ -6,9 +6,9 @@ import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_01.dart';
 import '../../features/auth/presentation/pages/sign up/sign up_page_02.dart';
 import '../../features/chat/presentation/bloc/chatBloc/chatBloc.dart';
-import '../../features/chat/presentation/pages/chats_page.dart';
-import '../../features/chat/presentation/pages/chat_room_page.dart';
-import '../../features/chat/presentation/pages/create_group_page.dart';
+import '../../features/chat/presentation/pages/chats/chats_page.dart';
+import '../../features/chat/presentation/pages/chats/chat_room_page.dart';
+import '../../features/chat/presentation/pages/groups/create_group_page.dart';
 import '../../features/complaints/presentation/bloc/complaint_bloc.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
@@ -75,9 +75,10 @@ class AppRoutes {
         final args = settings.arguments as Map<String, dynamic>?;
         final chatId = args?['chatId'] as int? ?? 0;
         final chatTitle = args?['chatTitle'] as String? ?? "محادثة";
+        final isGroup = args?['isGroup'] as bool? ?? false;
 
         return _buildPageRoute(
-          page: ChatRoomPage(chatId: chatId, chatTitle: chatTitle),
+          page: ChatRoomPage(chatId: chatId, chatTitle: chatTitle, isGroup: isGroup),
           settings: settings,
         );
 

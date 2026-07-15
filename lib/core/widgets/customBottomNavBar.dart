@@ -4,7 +4,7 @@ import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/auth_utils.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 
-import '../../features/chat/presentation/pages/chats_page.dart';
+import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/wallet/presentation/pages/hours_balance_page.dart';
 
@@ -86,6 +86,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       ),
 
       floatingActionButton: FloatingActionButton(
+        heroTag: 'main_add_btn',
         onPressed: () {
           if (AuthUtils.checkAuth(context)) {
             Navigator.pushNamed(context, "/paidStrategyPage");

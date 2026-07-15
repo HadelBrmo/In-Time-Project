@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_routes.dart';
-import '../../../../core/localization/app_localizations.dart';
-import '../../domain/entities/chatEntity.dart';
-import '../bloc/chatBloc/chatBloc.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/app_routes.dart';
+import '../../../../../core/localization/app_localizations.dart';
+import '../../../domain/entities/chatEntity.dart';
+import '../../bloc/chatBloc/chatBloc.dart';
 
 Widget buildChatTile(BuildContext context, ChatEntity chat, ThemeData theme) {
   final isGroup = chat.type == 'group';
@@ -14,16 +14,18 @@ Widget buildChatTile(BuildContext context, ChatEntity chat, ThemeData theme) {
 
   return ListTile(
     onTap: () {
-      context.read<ChatBloc>().stopChatsPulling();
+      final chatBloc = context.read<ChatBloc>();
+      chatBloc.stopChatsPulling();
       Navigator.pushNamed(
         context,
         AppRoutes.chatRoomPage,
         arguments: {
           'chatId': chat.id,
           'chatTitle': chatTitle,
+          'isGroup': isGroup,
         },
       ).then((_) {
-        context.read<ChatBloc>().startChatsPulling();
+        chatBloc.startChatsPulling();
       });
     },
     leading: CircleAvatar(

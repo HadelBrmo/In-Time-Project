@@ -138,6 +138,10 @@ filename: profilePicture.path.split('/').last,
 final response = await dio.post(
 ApiStringConstants.registerCustomerUrl,
 data: formData,
+options: Options(
+receiveTimeout: const Duration(seconds: 60),
+sendTimeout: const Duration(seconds: 60),
+),
 );
 
 if(response.statusCode == 200 || response.statusCode == 201) {

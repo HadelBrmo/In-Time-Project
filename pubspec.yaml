@@ -66,6 +66,7 @@ dependencies:
   firebase_storage: ^12.3.6
   firebase_analytics: ^11.3.6
   firebase_crashlytics: ^4.2.3
+  flutter_webrtc: ^1.5.2
 
 
 

@@ -37,7 +37,7 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final chat = await remoteDataSource.createPersonalChat(receiverId, content);
       return Right(chat);
-    } on ServerException {
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -47,7 +47,7 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final chat = await remoteDataSource.createGroupChat(name, memberIds);
       return Right(chat);
-    } on ServerException {
+    } catch (e) {
       return Left(ServerFailure());
     }
   }

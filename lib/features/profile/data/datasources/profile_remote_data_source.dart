@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/user_profile_model.dart';
 
@@ -17,7 +18,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     try {
       // نزيد وقت الانتظار قليلاً لأن السيرفر يبدو بطيئاً في بعض الحسابات
       final response = await dio.get(
-        '/users/$userId',
+        ApiStringConstants.userProfileUrl(userId),
         options: Options(
           receiveTimeout: const Duration(seconds: 30),
         ),
@@ -50,7 +51,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
       final formData = FormData.fromMap(map);
 
-      final response = await dio.post('/profile', data: formData);
+      final response = await dio.post(ApiStringConstants.updateProfileUrl, data: formData);
       if (response.statusCode == 200) {
         return UserProfile.fromJson(response.data['data']);
       } else {

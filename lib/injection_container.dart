@@ -20,6 +20,13 @@ import 'features/chat/domain/usecases/get_messages_usecase.dart';
 import 'features/chat/domain/usecases/send_message_usecase.dart';
 import 'features/chat/domain/usecases/create_group_chat_usecase.dart';
 import 'features/chat/domain/usecases/create_personal_chat_usecase.dart';
+import 'features/chat/domain/usecases/mark_as_read_usecase.dart';
+import 'features/chat/domain/usecases/mark_as_received_usecase.dart';
+import 'features/chat/domain/usecases/get_members_usecase.dart';
+import 'features/chat/domain/usecases/add_members_usecase.dart';
+import 'features/chat/domain/usecases/remove_member_usecase.dart';
+import 'features/chat/domain/usecases/update_group_usecase.dart';
+import 'features/chat/domain/usecases/leave_group_usecase.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 
 // Services/Strategies Features
@@ -150,7 +157,15 @@ Future<void> init() async {
     getChatsUseCase: sl(),
     getMessagesUseCase: sl(),
     sendMessageUseCase: sl(),
-    createPersonalChatUseCase: sl(), createGroupChatUseCase: sl(),
+    createPersonalChatUseCase: sl(),
+    createGroupChatUseCase: sl(),
+    markAsReadUseCase: sl(),
+    markAsReceivedUseCase: sl(),
+    getMembersUseCase: sl(),
+    addMembersUseCase: sl(),
+    removeMemberUseCase: sl(),
+    updateGroupUseCase: sl(),
+    leaveGroupUseCase: sl(),
   ));
   sl.registerFactory(() => OtpBloc(sendOtpUseCase: sl()));
   sl.registerFactory(
@@ -214,6 +229,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SendMessageUseCase(sl()));
   sl.registerLazySingleton(() => CreatePersonalChatUseCase(sl()));
   sl.registerLazySingleton(() => CreateGroupChatUseCase(sl()));
+  sl.registerLazySingleton(() => MarkAsReadUseCase(sl()));
+  sl.registerLazySingleton(() => MarkAsReceivedUseCase(sl()));
+  sl.registerLazySingleton(() => GetMembersUseCase(sl()));
+  sl.registerLazySingleton(() => AddMembersUseCase(sl()));
+  sl.registerLazySingleton(() => RemoveMemberUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateGroupUseCase(sl()));
+  sl.registerLazySingleton(() => LeaveGroupUseCase(sl()));
   sl.registerLazySingleton(() => AddServiceUseCase(sl()));
   sl.registerLazySingleton(() => SendOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));

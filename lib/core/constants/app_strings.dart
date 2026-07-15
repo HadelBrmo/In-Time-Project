@@ -1,5 +1,6 @@
 ﻿class ApiStringConstants {
   static const String baseUrl = 'http://ali.ba-tech.tech/api';
+  static const String baseStorageUrl = 'http://ali.ba-tech.tech/storage/';
    static const String addPaidServiceUrl = '/servings/add-paid';
   static const String addVoluntaryServiceUrl = '/servings/add-voluntary';
   static const String addBarterServiceUrl = '/servings/add-barter';
@@ -27,5 +28,9 @@
   static String membersUrl(int chatId) => '/chats/$chatId/members';
   static String removeMemberUrl(int chatId, int userId) => '/chats/$chatId/members/$userId';
   static String leaveGroupUrl(int chatId) => '/chats/$chatId/leave';
+  static const String complaintsUrl = '/complaints';
+  static const String myComplaintsUrl = '/my-complaints';
+  static String userProfileUrl(int userId) => '/users/$userId';
+  static const String updateProfileUrl = '/profile';
 }
 

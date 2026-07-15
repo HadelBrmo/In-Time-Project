@@ -10,8 +10,10 @@ import '../../../../../core/widgets/customTextFormField.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/utils/validators.dart';
 import '../../../../../core/widgets/global_particles_wrapper.dart';
+import '../../../../../injection_container.dart';
 import '../../bloc/SignUpBloc/sign up_bloc.dart';
 import '../../bloc/SignUpBloc/sign up_event.dart';
+import '../../bloc/otpBloc/otp_bloc.dart';
 import '../../widgets/signup_widgets/buildHeaderForSignUp.dart';
 
 class SignUpPage2 extends StatefulWidget {
@@ -156,7 +158,12 @@ class _SignUpPage02State extends State<SignUpPage2> {
                                   );
                                   Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => const OtpPage(email: ""))
+                                      MaterialPageRoute(
+                                        builder: (_) => BlocProvider(
+                                          create: (context) => sl<OtpBloc>(),
+                                          child: OtpPage(email: _emailController.text),
+                                        ),
+                                      ),
                                   );
                                 }
                               },

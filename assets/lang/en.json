@@ -26,6 +26,7 @@
   "done_status": "Done",
   "processing_status": "Processing",
   "rejected_status": "Rejected",
+  "complaints": "Complaints",
   "settings": "Settings",
   "language": "Language",
   "arabic": "Arabic",
@@ -224,7 +225,9 @@
   "error_not_found": "Requested URL not found.",
   "error_code": "Error number",
   "error_occured": "Sorry, an error occurred",
+  "otp_sent_success": "Verification code sent successfully!",
   "otp_resend_success": "Verification code resent successfully!",
+  "registration_success": "Account created successfully!",
   "account_verification": "Account Verification",
   "otp_instruction": "We have sent a 6-digit activation code to your email:\n",
   "resend_code": "Resend Code",
@@ -234,5 +237,7 @@
   "enter_full_otp": "Please enter the full 6-digit code",
   "edit_profile": "Edit Profile",
   "job": "Job",
-  "save_changes": "Save Changes"
+  "save_changes": "Save Changes",
+  "personal_chats": "Chats",
+  "groups": "Groups"
 }

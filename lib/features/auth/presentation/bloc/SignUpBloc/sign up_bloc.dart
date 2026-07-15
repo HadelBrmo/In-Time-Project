@@ -62,7 +62,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       result.fold(
         (failure) => emit(state.copyWith(
           status: SignUpStatus.error,
-          errorMessage: "فشل عملية التسجيل، يرجى المحاولة لاحقاً",
+          errorMessage: failure.message,
         )),
         (_) => emit(state.copyWith(status: SignUpStatus.success)),
       );

@@ -20,6 +20,10 @@ class RegisterUseCase {
     required String birthDate,
     File? profilePicture,
   }) async {
+    if (fullName.isEmpty || email.isEmpty || password.isEmpty || otp.isEmpty) {
+      return Left(ServerFailure());
+    }
+
     return await repository.register(
       fullName: fullName,
       email: email,

@@ -13,7 +13,6 @@ import 'core/widgets/global_particles_wrapper.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
 import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
-// 🚀 استيراد البلوك الخاص باللغة (تأكدي من صحة المسار حسب مجلد الـ localization لديكِ)
 import 'features/localization/presentation/bloc/locale_bloc.dart';
 import 'features/localization/presentation/bloc/locale_event.dart';
 import 'features/localization/presentation/bloc/locale_state.dart';
