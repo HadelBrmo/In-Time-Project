@@ -1,12 +1,17 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/auth_utils.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/app_routes.dart';
 
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/wallet/presentation/pages/hours_balance_page.dart';
+import '../../injection_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -17,6 +22,79 @@ class CustomBottomNavBar extends StatefulWidget {
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   int _currentIndex = 3;
+  StreamSubscription? _callListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _startCallListener();
+  }
+
+  @override
+  void dispose() {
+    _callListener?.cancel();
+    super.dispose();
+  }
+
+  void _startCallListener() {
+    final userId = sl<SharedPreferences>().getInt("user_id");
+    if (userId == null) return;
+
+    _callListener = FirebaseFirestore.instance
+        .collection('rooms')
+        .where('receiverId', isEqualTo: userId)
+        .where('status', isEqualTo: 'ringing')
+        .snapshots()
+        .listen((snapshot) {
+      for (var change in snapshot.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          _showIncomingCallDialog(change.doc);
+        }
+      }
+    });
+  }
+
+  void _showIncomingCallDialog(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    final callerName = data['callerName'] ?? "Unknown";
+    final roomId = doc.id;
+    final callerId = data['callerId'];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text("اتصال فيديو وارد"),
+        content: Text("يتصل بك $callerName..."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              doc.reference.update({'status': 'ended'});
+              Navigator.pop(context);
+            },
+            child: const Text("رفض", style: TextStyle(color: Colors.red)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(
+                context,
+                AppRoutes.videoCallPage,
+                arguments: {
+                  'chatId': callerId,
+                  'chatTitle': callerName,
+                  'isIncomingCall': true,
+                  'existingRoomId': roomId,
+                },
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            child: const Text("قبول"),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildNavItem({
     required IconData icon,

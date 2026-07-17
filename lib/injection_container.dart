@@ -78,6 +78,7 @@ import 'features/servings/domain/usecases/comment/react_dislike_usecase.dart';
 import 'features/servings/domain/usecases/comment/react_like_usecase.dart';
 import 'features/servings/domain/usecases/comment/reply_to_comment_usecase.dart';
 import 'features/servings/domain/usecases/service/add_service_usecase.dart';
+import 'features/servings/domain/usecases/service/get_categories_usecase.dart';
 import 'features/servings/domain/usecases/service/get_payment_units_usecase.dart';
 import 'features/servings/domain/usecases/service/get_service_details_usecase.dart';
 import 'features/servings/domain/usecases/service/get_availability_slots_usecase.dart';
@@ -172,6 +173,7 @@ Future<void> init() async {
         () => ServicesBloc(
       addServiceUseCase: sl(),
       getPaymentUnitsUseCase: sl(),
+      getCategoriesUseCase: sl(),
       getServiceDetailsUseCase: sl(),
       getAvailabilitySlotsUseCase: sl(),
     ),
@@ -241,6 +243,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
+  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
   sl.registerLazySingleton(() => GetAvailabilitySlotsUseCase(sl()));
   sl.registerLazySingleton(() => SearchServingsUseCase(sl()));

@@ -12,11 +12,16 @@ class FetchMyRequestsEvent extends RequestsEvent {}
 class CreateServingRequestEvent extends RequestsEvent {
   final int servingId;
   final String? message;
+  final int? automaticallyCancelAfter;
 
-  const CreateServingRequestEvent({required this.servingId, this.message});
+  const CreateServingRequestEvent({
+    required this.servingId,
+    this.message,
+    this.automaticallyCancelAfter,
+  });
 
   @override
-  List<Object?> get props => [servingId, message];
+  List<Object?> get props => [servingId, message, automaticallyCancelAfter];
 }
 
 class DeleteRequestEvent extends RequestsEvent {

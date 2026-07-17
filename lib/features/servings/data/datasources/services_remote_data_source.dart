@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:in_time/core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
+import '../models/category_model.dart';
 import '../models/payment_unit_model.dart';
 import '../models/service_model.dart';
 
@@ -13,6 +14,8 @@ abstract class ServicesRemoteDataSource {
   });
 
   Future<List<PaymentUnitModel>> getPaymentUnits();
+
+  Future<List<CategoryModel>> getCategories();
 
   Future<ServiceModel> getServiceDetails(int serviceId);
 
@@ -95,6 +98,26 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       }
     } catch (e) {
       throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب وحدات الدفع');
+    }
+  }
+
+  @override
+  Future<List<CategoryModel>> getCategories() async {
+    try {
+      final response = await dio.post(
+        ApiStringConstants.getCategoriesUrl,
+        data: {"name": null, "parent_id": null},
+      );
+      if (response.statusCode == 200) {
+        final List data = response.data['data'];
+        return data.map((e) => CategoryModel.fromJson(e)).toList();
+      } else {
+        throw ServerExceptionWithDetails(
+          message: response.data['message'] ?? 'فشل جلب التصنيفات',
+        );
+      }
+    } catch (e) {
+      throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب التصنيفات');
     }
   }
 

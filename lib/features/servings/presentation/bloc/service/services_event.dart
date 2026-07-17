@@ -27,6 +27,8 @@ class AddServiceSubmittedEvent extends ServicesEvent {
 
 class GetPaymentUnitsEvent extends ServicesEvent {}
 
+class GetCategoriesEvent extends ServicesEvent {}
+
 class GetServiceDetailsEvent extends ServicesEvent {
   final int serviceId;
 

@@ -17,6 +17,11 @@
     if (value.length < 8) {
       return "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
     }
+    // Check for letters, numbers and special characters
+    final regex = RegExp(r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$');
+    if (!regex.hasMatch(value)) {
+      return "يجب أن تحتوي كلمة المرور على أحرف، أرقام، ورموز خاصة (@\$!%*?&#)";
+    }
     return null;
   }
 

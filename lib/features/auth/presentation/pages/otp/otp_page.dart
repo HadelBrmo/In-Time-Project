@@ -1,3 +1,4 @@
+import '../../../../../core/constants/app_routes.dart';
 import '../../../../../core/utils/snackbar_utils.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -114,7 +115,7 @@ class _OtpPageState extends State<OtpPage> {
             listener: (context, state) {
               if (state.status == SignUpStatus.success) {
                 SnackBarUtils.showSuccess(context, context.tr('registration_success'));
-                Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false);
               }
               if (state.status == SignUpStatus.error) {
                 SnackBarUtils.showError(context, state.errorMessage);

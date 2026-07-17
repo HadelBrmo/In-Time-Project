@@ -9,6 +9,7 @@ abstract class RequestRemoteDataSource {
   Future<String> createServingRequest({
     required int servingId,
     String? message,
+    int? automaticallyCancelAfter,
   });
   Future<String> deleteRequest(int requestId);
 
@@ -47,12 +48,14 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
   Future<String> createServingRequest({
     required int servingId,
     String? message,
+    int? automaticallyCancelAfter,
   }) async {
     final response = await dio.post(
       ApiStringConstants.createRequestUrl,
       data: {
         'serving_id': servingId,
         if (message != null) 'message': message,
+        if (automaticallyCancelAfter != null) 'automatically_cancel_after': automaticallyCancelAfter,
       },
     );
 

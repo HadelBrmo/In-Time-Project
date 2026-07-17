@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../../core/constants/app_routes.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/localization/app_localizations.dart';
@@ -95,6 +96,22 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               : null,
           child: Text(widget.chatTitle),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.videocam_rounded, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.videoCallPage,
+                arguments: {
+                  'chatId': widget.chatId,
+                  'chatTitle': widget.chatTitle,
+                },
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: Center(
         child: Container(

@@ -19,6 +19,7 @@ import '../../../../../../core/widgets/buildLabel.dart';
 import '../../../../../core/widgets/customDrawer.dart';
 import '../../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
 import '../../../domain/entity/service_entity.dart';
+import '../../../domain/entity/category_entity.dart';
 import '../../../domain/entity/payment_unit_entity.dart';
 import '../../bloc/service/services_bloc.dart';
 import '../../bloc/service/services_event.dart';
@@ -58,15 +59,17 @@ class _PaidServicePageState extends State<PaidServicePage> {
   String? selectedCategory;
   String? selectedPaymentUnit;
   List<PaymentUnitEntity> paymentUnitsFromServer = [];
+  List<CategoryEntity> categoriesFromServer = [];
   final List<String> meetingOptions = ["online", "direct"];
   
-  late List<Map<String, dynamic>> categoryOptions;
   double? locationLat;
   double? locationLng;
 
   @override
   void initState() {
     super.initState();
+    final bloc = context.read<ServicesBloc>();
+    
     if (widget.isBarter) {
       _serviceStrategy = BarterServiceStrategy();
       _priceController.text = "0";
@@ -75,23 +78,21 @@ class _PaidServicePageState extends State<PaidServicePage> {
       _priceController.text = "0";
     } else {
       _serviceStrategy = PaidServiceStrategy();
-      final bloc = context.read<ServicesBloc>();
       if (bloc.state is GetPaymentUnitsSuccessState) {
         paymentUnitsFromServer = (bloc.state as GetPaymentUnitsSuccessState).units;
       }
       bloc.add(GetPaymentUnitsEvent());
     }
+
+    if (bloc.state is GetCategoriesSuccessState) {
+      categoriesFromServer = (bloc.state as GetCategoriesSuccessState).categories;
+    }
+    bloc.add(GetCategoriesEvent());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    categoryOptions = [
-      {"id": "1", "name": context.tr('educational')},
-      {"id": "2", "name": context.tr('medical')},
-      {"id": "3", "name": context.tr('artistic')},
-      {"id": "4", "name": context.tr('engineering')}
-    ];
   }
 
   @override
@@ -139,8 +140,13 @@ class _PaidServicePageState extends State<PaidServicePage> {
     }
   }
 
-  Widget _buildCategoryGrid(bool isDarkMode) {
+  Widget _buildCategoryGrid(bool isDarkMode, ServicesState state) {
     final theme = Theme.of(context);
+    
+    if (state is GetCategoriesLoadingState && categoriesFromServer.isEmpty) {
+      return const Center(child: LoadingWidget(size: 30));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -150,25 +156,26 @@ class _PaidServicePageState extends State<PaidServicePage> {
           height: 85.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: categoryOptions.length,
+            itemCount: categoriesFromServer.length,
             itemBuilder: (context, index) {
-              final cat = categoryOptions[index];
-              final isSelected = selectedCategory == cat['id'];
+              final cat = categoriesFromServer[index];
+              final isSelected = selectedCategory == cat.id.toString();
 
               final icons = {
-                "1": Icons.school_outlined,
-                "2": Icons.medical_services_outlined,
-                "3": Icons.palette_outlined,
-                "4": Icons.architecture_outlined,
+                "Home Services": Icons.home_outlined,
+                "Education & Tutoring": Icons.school_outlined,
+                "Tech Support": Icons.computer_outlined,
+                "Health & Wellness": Icons.favorite_border_outlined,
+                "Transport": Icons.directions_bus_outlined,
               };
 
               return GestureDetector(
                 onTap: () {
-                  setState(() => selectedCategory = cat['id']);
+                  setState(() => selectedCategory = cat.id.toString());
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
-                  width: 85.w,
+                  width: 100.w,
                   margin: EdgeInsets.only(left: 10.w),
                   decoration: BoxDecoration(
                     color: isSelected
@@ -191,19 +198,25 @@ class _PaidServicePageState extends State<PaidServicePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        icons[cat['id']] ?? Icons.category_outlined,
+                        icons[cat.name] ?? Icons.category_outlined,
                         color: isSelected ? AppColors.whiteColor : AppColors.primaryColor,
                         size: 24.sp,
                       ),
                       SizedBox(height: 4.h),
-                      Text(
-                        cat['name'],
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 12.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected
-                              ? AppColors.whiteColor
-                              : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Text(
+                          cat.name,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontSize: 10.sp,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: isSelected
+                                ? AppColors.whiteColor
+                                : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                          ),
                         ),
                       ),
                     ],
@@ -291,6 +304,16 @@ class _PaidServicePageState extends State<PaidServicePage> {
             }
 
             if (state is GetPaymentUnitsErrorState) {
+              SnackBarUtils.showError(context, state.message);
+            }
+
+            if (state is GetCategoriesSuccessState) {
+              setState(() {
+                categoriesFromServer = state.categories;
+              });
+            }
+
+            if (state is GetCategoriesErrorState) {
               SnackBarUtils.showError(context, state.message);
             }
           },
@@ -395,7 +418,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                           ),
                           SizedBox(height: media.height * 0.02),
 
-                          _buildCategoryGrid(isDarkMode),
+                          _buildCategoryGrid(isDarkMode, state),
                           SizedBox(height: media.height * 0.02),
 
                           if (!widget.isBarter && !widget.isVoluntary) ...[

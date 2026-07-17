@@ -9,6 +9,7 @@ import '../../features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/chat/presentation/pages/chats/chat_room_page.dart';
 import '../../features/chat/presentation/pages/groups/create_group_page.dart';
+import '../../features/chat/presentation/pages/video_call/video_call_page.dart';
 import '../../features/complaints/presentation/bloc/complaint_bloc.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
@@ -44,6 +45,7 @@ class AppRoutes {
   static const String chatRoomPage = '/chatRoomPage';
   static const String createGroupScreen = '/createGroupScreen';
   static const String profilePage = '/profilePage';
+  static const String videoCallPage = '/videoCallPage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -140,6 +142,16 @@ class AppRoutes {
 
       case profilePage:
         return _buildPageRoute(page: const ProfilePage(), settings: settings);
+
+      case videoCallPage:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final chatId = args?['chatId'] as int? ?? 0;
+        final chatTitle = args?['chatTitle'] as String? ?? "مكالمة فيديو";
+
+        return _buildPageRoute(
+          page: VideoCallPage(chatId: chatId, chatTitle: chatTitle),
+          settings: settings,
+        );
 
       default:
         return _buildPageRoute(

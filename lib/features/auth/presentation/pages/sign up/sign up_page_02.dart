@@ -148,10 +148,11 @@ class _SignUpPage02State extends State<SignUpPage2> {
                               fontSize: 18,
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
+                                  final trimmedEmail = _emailController.text.trim();
                                   context.read<SignUpBloc>().add(
                                     UpdateSignUpFieldsEvent(
-                                      email: _emailController.text,
-                                      phone: _phoneController.text,
+                                      email: trimmedEmail,
+                                      phone: _phoneController.text.trim(),
                                       password: _passwordController.text,
                                       confirmPassword: _confirmPasswordController.text,
                                     ),
@@ -161,7 +162,7 @@ class _SignUpPage02State extends State<SignUpPage2> {
                                       MaterialPageRoute(
                                         builder: (_) => BlocProvider(
                                           create: (context) => sl<OtpBloc>(),
-                                          child: OtpPage(email: _emailController.text),
+                                          child: OtpPage(email: trimmedEmail),
                                         ),
                                       ),
                                   );

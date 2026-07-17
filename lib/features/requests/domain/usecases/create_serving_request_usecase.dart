@@ -10,10 +10,12 @@ class CreateServingRequestUseCase {
   Future<Either<Failure, String>> call({
     required int servingId,
     String? message,
+    int? automaticallyCancelAfter,
   }) async {
     return await repository.createServingRequest(
       servingId: servingId,
       message: message,
+      automaticallyCancelAfter: automaticallyCancelAfter,
     );
   }
 }

@@ -30,11 +30,13 @@ class RequestRepositoryImpl implements RequestRepository {
   Future<Either<Failure, String>> createServingRequest({
     required int servingId,
     String? message,
+    int? automaticallyCancelAfter,
   }) async {
     try {
       final resultMessage = await remoteDataSource.createServingRequest(
         servingId: servingId,
         message: message,
+        automaticallyCancelAfter: automaticallyCancelAfter,
       );
       return Right(resultMessage);
     } on ServerException {

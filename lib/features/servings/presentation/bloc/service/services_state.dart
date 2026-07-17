@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../domain/entity/category_entity.dart';
 import '../../../domain/entity/payment_unit_entity.dart';
 import '../../../domain/entity/service_entity.dart';
 
@@ -37,6 +38,23 @@ class GetPaymentUnitsSuccessState extends ServicesState {
 class GetPaymentUnitsErrorState extends ServicesState {
   final String message;
   const GetPaymentUnitsErrorState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class GetCategoriesLoadingState extends ServicesState {}
+
+class GetCategoriesSuccessState extends ServicesState {
+  final List<CategoryEntity> categories;
+  const GetCategoriesSuccessState(this.categories);
+  @override
+  List<Object?> get props => [categories];
+}
+
+class GetCategoriesErrorState extends ServicesState {
+  final String message;
+  const GetCategoriesErrorState(this.message);
 
   @override
   List<Object?> get props => [message];

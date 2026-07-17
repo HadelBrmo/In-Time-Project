@@ -5,7 +5,8 @@
   static const String addVoluntaryServiceUrl = '/servings/add-voluntary';
   static const String addBarterServiceUrl = '/servings/add-barter';
   static const String getPaymentUnitsUrl = '/payment-units';
-  static const String getCategoriesUrl = '/categories';
+  static const String getCategoriesUrl = '/categories/search';
+  static const String getCategoriesAllUrl = '/categories';
   static const String loginUrl = '/auth/login';
   static const String sendOtpUrl = '/auth/send-otp';
   static const String registerCustomerUrl = '/auth/register-customer';

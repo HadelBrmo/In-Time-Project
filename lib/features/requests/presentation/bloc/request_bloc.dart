@@ -37,6 +37,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
       final result = await createServingRequestUseCase(
         servingId: event.servingId,
         message: event.message,
+        automaticallyCancelAfter: event.automaticallyCancelAfter,
       );
       result.fold(
             (failure) {

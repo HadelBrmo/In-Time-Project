@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../domain/entity/category_entity.dart';
 import '../../domain/entity/payment_unit_entity.dart';
 import '../../domain/entity/service_entity.dart';
 import '../../domain/repository/servicesRepository.dart';
@@ -61,6 +62,24 @@ class ServicesRepositoryImpl implements ServicesRepository {
       return Right(result);
     } catch (e) {
       final localData = await localDataSource.getCachedPaymentUnits();
+      if (localData.isNotEmpty) {
+        return Right(localData);
+      }
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(message: e.message));
+      }
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
+    try {
+      final result = await remoteDataSource.getCategories();
+      await localDataSource.cacheCategories(result);
+      return Right(result);
+    } catch (e) {
+      final localData = await localDataSource.getCachedCategories();
       if (localData.isNotEmpty) {
         return Right(localData);
       }

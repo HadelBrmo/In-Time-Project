@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/error/failures.dart';
+import '../entity/category_entity.dart';
 import '../entity/payment_unit_entity.dart';
 import '../entity/service_entity.dart';
 
@@ -13,11 +14,12 @@ abstract class ServicesRepository {
 
   Future<Either<Failure, List<PaymentUnitEntity>>> getPaymentUnits();
 
+  Future<Either<Failure, List<CategoryEntity>>> getCategories();
+
   Future<Either<Failure, ServiceEntity>> getServiceDetails(int serviceId);
 
   Future<Either<Failure, List<dynamic>>> getAvailabilitySlots(int serviceId);
 
-  // My Servings Methods
   Future<Either<Failure, List<ServiceEntity>>> getMyServings();
 
   Future<Either<Failure, Unit>> updateServing({
