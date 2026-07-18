@@ -210,6 +210,8 @@
   "desc_min_length": "يجب أن يكون الوصف 10 أحرف على الأقل",
   "submit_service": "إرسال الخدمة",
   "cancel": "إلغاء",
+  "active": "نشط",
+  "inactive": "غير نشط",
   "personal_chats": "المحادثات",
   "groups": "المجموعات"
 }

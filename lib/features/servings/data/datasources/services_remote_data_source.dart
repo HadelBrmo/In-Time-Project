@@ -31,6 +31,8 @@ abstract class ServicesRemoteDataSource {
     required double costAmount,
     required String meetingType,
   });
+
+  Future<void> toggleServingStatus(int id, bool isActive);
 }
 
 class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
@@ -224,6 +226,31 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       );
     } catch (e) {
       throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء تحديث الخدمة');
+    }
+  }
+
+  @override
+  Future<void> toggleServingStatus(int id, bool isActive) async {
+    try {
+      if (isActive) return;
+
+      final endpoint = '/servings/$id/deactivate';
+      final response = await dio.post(endpoint);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return;
+      } else {
+        throw ServerExceptionWithDetails(
+          statusCode: response.statusCode,
+          message: response.data['message'] ?? 'فشل تغيير حالة الخدمة',
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data['message'] ?? 'فشل الاتصال بالسيرفر',
+      );
+    } catch (e) {
+      throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء تغيير حالة الخدمة');
     }
   }
 }

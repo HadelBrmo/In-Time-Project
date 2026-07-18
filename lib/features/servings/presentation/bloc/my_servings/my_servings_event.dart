@@ -17,3 +17,10 @@ class UpdateMyServingEvent extends MyServingsEvent {
     required this.meetingType,
   });
 }
+
+class ToggleMyServingStatusEvent extends MyServingsEvent {
+  final int id;
+  final bool isActive;
+
+  ToggleMyServingStatusEvent({required this.id, required this.isActive});
+}

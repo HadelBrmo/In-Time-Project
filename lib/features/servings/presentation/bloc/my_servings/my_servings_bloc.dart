@@ -1,16 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecases/service/get_my_servings_usecase.dart';
 import '../../../domain/usecases/service/update_serving_usecase.dart';
+import '../../../domain/usecases/service/toggle_serving_status_usecase.dart';
 import 'my_servings_event.dart';
 import 'my_servings_state.dart';
 
 class MyServingsBloc extends Bloc<MyServingsEvent, MyServingsState> {
   final GetMyServingsUseCase getMyServingsUseCase;
   final UpdateServingUseCase updateServingUseCase;
+  final ToggleServingStatusUseCase toggleServingStatusUseCase;
 
   MyServingsBloc({
     required this.getMyServingsUseCase,
     required this.updateServingUseCase,
+    required this.toggleServingStatusUseCase,
   }) : super(MyServingsInitialState()) {
 
     on<FetchMyServingsEvent>((event, emit) async {
@@ -31,6 +34,15 @@ class MyServingsBloc extends Bloc<MyServingsEvent, MyServingsState> {
         costAmount: event.costAmount,
         meetingType: event.meetingType,
       );
+      result.fold(
+            (failure) => emit(UpdateServingErrorState(failure.message)),
+            (_) => emit(UpdateServingSuccessState()),
+      );
+    });
+
+    on<ToggleMyServingStatusEvent>((event, emit) async {
+      emit(UpdateServingLoadingState());
+      final result = await toggleServingStatusUseCase(event.id, event.isActive);
       result.fold(
             (failure) => emit(UpdateServingErrorState(failure.message)),
             (_) => emit(UpdateServingSuccessState()),

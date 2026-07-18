@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/widgets/customAppBar.dart';
 import '../../../../core/widgets/loading_widget.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../injection_container.dart';
 import '../../../servings/presentation/bloc/service/services_bloc.dart';
 import '../../../servings/presentation/bloc/service/services_event.dart';
@@ -85,11 +86,20 @@ class ServiceDetailsPage extends StatelessWidget {
               final service = state.service;
               final bool isOwner = (isFromMyServings == true) ? true : (service.isOwner ?? false);
 
-              return buildDetailsBody(
-                context,
-                service,
-                isFromRequests,
-                isOwner,
+              return ResponsiveLayout(
+                mobileBody: buildDetailsBody(context, service, isFromRequests, isOwner),
+                tabletBody: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: buildDetailsBody(context, service, isFromRequests, isOwner),
+                  ),
+                ),
+                desktopBody: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1000),
+                    child: buildDetailsBody(context, service, isFromRequests, isOwner),
+                  ),
+                ),
               );
             }
             return Center(

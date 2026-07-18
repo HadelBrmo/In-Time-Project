@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/theme/glowingBorder.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../servings/presentation/bloc/service/services_bloc.dart';
 import '../../../../servings/presentation/bloc/service/services_event.dart';
 import '../../../../servings/presentation/widgets/services/build_days_picker.dart';
@@ -61,9 +62,7 @@ class _ServiceAvailabilityManagerWithState extends State<ServiceAvailabilityMana
 
   void _submitData() {
     if (_selectedDays.isEmpty || _startTimeController.text.isEmpty || _endTimeController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("الرجاء تحديد الأيام والأوقات أولاً"), backgroundColor: Colors.orange),
-      );
+      SnackBarUtils.showWarning(context, "الرجاء تحديد الأيام والأوقات أولاً");
       return;
     }
 
@@ -111,19 +110,9 @@ class _ServiceAvailabilityManagerWithState extends State<ServiceAvailabilityMana
           // Refresh availability slots in the details page
           context.read<ServicesBloc>().add(GetAvailabilitySlotsEvent(widget.serviceId));
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("تم تحديث مواعيد العمل بنجاح"),
-              backgroundColor: Colors.green,
-            ),
-          );
+          SnackBarUtils.showSuccess(context, "تم تحديث مواعيد العمل بنجاح");
         } else if (state is HomeErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
+          SnackBarUtils.showError(context, state.message);
         }
       },
       child: GlowingBorder(

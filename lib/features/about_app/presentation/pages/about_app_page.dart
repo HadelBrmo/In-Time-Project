@@ -4,6 +4,7 @@ import 'package:in_time/core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../widgets/buildFeatureCard.dart';
 import '../widgets/buildSectionTitle.dart';
 
@@ -36,124 +37,142 @@ class AboutAppPage extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
-        child: Column(
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      'assets/icons/Logo_01.png',
-                      height: media.height * 0.16,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    'In Time',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontSize: 24.sp,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Text(
-                      context.tr('about_app_desc'),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: 13.sp,
-                        color: isDarkMode ? AppColors.whiteColor.withOpacity(0.7) : AppColors.darkGreyColor,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 32.h),
-
-            buildSectionTitle(context, context.tr('features_title')),
-            SizedBox(height: 12.h),
-
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_1_title'),
-              description: context.tr('feature_1_desc'),
-              icon: Icons.calendar_month_rounded,
-            ),
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_2_title'),
-              description: context.tr('feature_2_desc'),
-              icon: Icons.video_call_rounded,
-            ),
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_3_title'),
-              description: context.tr('feature_3_desc'),
-              icon: Icons.star_rate_rounded,
-            ),
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_4_title'),
-              description: context.tr('feature_4_desc'),
-              icon: Icons.emoji_events_rounded,
-            ),
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_5_title'),
-              description: context.tr('feature_5_desc'),
-              icon: Icons.chat_bubble_rounded,
-            ),
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_6_title'),
-              description: context.tr('feature_6_desc'),
-              icon: Icons.cloud_done_rounded,
-            ),
-            buildFeatureCard(
-              context: context,
-              title: context.tr('feature_7_title'),
-              description: context.tr('feature_7_desc'),
-              icon: Icons.notifications_active_rounded,
-            ),
-
-            SizedBox(height: 24.h),
-
-            buildSectionTitle(context, context.tr('support_and_privacy')),
-            SizedBox(height: 12.h),
-
-            Container(
-              decoration: BoxDecoration(
-                color: isDarkMode ? theme.cardColor : AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: isDarkMode ? AppColors.whiteColor.withOpacity(0.08) : AppColors.greyColor.withOpacity(0.2),
-                  width: 1.w,
-                ),
-              ),
-              child: Column(
-                children: [
-                  _buildLinkRow(context: context, title: context.tr('privacy_policy'), icon: Icons.privacy_tip_outlined),
-                  const Divider(height: 1),
-                  _buildLinkRow(context: context, title: context.tr('help_center'), icon: Icons.help_outline_rounded),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              '${context.tr('version')} 1.0.0',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: 11.sp,
-                color: AppColors.greyColor,
-              ),
-            ),
-            SizedBox(height: 30.h),
-          ],
+      body: ResponsiveLayout(
+        mobileBody: _buildAboutContent(media, theme, isDarkMode, context),
+        tabletBody: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: _buildAboutContent(media, theme, isDarkMode, context),
+          ),
         ),
+        desktopBody: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: _buildAboutContent(media, theme, isDarkMode, context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAboutContent(MediaQueryHelper media, ThemeData theme, bool isDarkMode, BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+      child: Column(
+        children: [
+          Center(
+            child: Column(
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/icons/Logo_01.png',
+                    height: media.height * 0.16,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                Text(
+                  'In Time',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontSize: 24.sp,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Text(
+                    context.tr('about_app_desc'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 13.sp,
+                      color: isDarkMode ? AppColors.whiteColor.withOpacity(0.7) : AppColors.darkGreyColor,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 32.h),
+
+          buildSectionTitle(context, context.tr('features_title')),
+          SizedBox(height: 12.h),
+
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_1_title'),
+            description: context.tr('feature_1_desc'),
+            icon: Icons.calendar_month_rounded,
+          ),
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_2_title'),
+            description: context.tr('feature_2_desc'),
+            icon: Icons.video_call_rounded,
+          ),
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_3_title'),
+            description: context.tr('feature_3_desc'),
+            icon: Icons.star_rate_rounded,
+          ),
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_4_title'),
+            description: context.tr('feature_4_desc'),
+            icon: Icons.emoji_events_rounded,
+          ),
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_5_title'),
+            description: context.tr('feature_5_desc'),
+            icon: Icons.chat_bubble_rounded,
+          ),
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_6_title'),
+            description: context.tr('feature_6_desc'),
+            icon: Icons.cloud_done_rounded,
+          ),
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_7_title'),
+            description: context.tr('feature_7_desc'),
+            icon: Icons.notifications_active_rounded,
+          ),
+
+          SizedBox(height: 24.h),
+
+          buildSectionTitle(context, context.tr('support_and_privacy')),
+          SizedBox(height: 12.h),
+
+          Container(
+            decoration: BoxDecoration(
+              color: isDarkMode ? theme.cardColor : AppColors.whiteColor,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: isDarkMode ? AppColors.whiteColor.withOpacity(0.08) : AppColors.greyColor.withOpacity(0.2),
+                width: 1.w,
+              ),
+            ),
+            child: Column(
+              children: [
+                _buildLinkRow(context: context, title: context.tr('privacy_policy'), icon: Icons.privacy_tip_outlined),
+                const Divider(height: 1),
+                _buildLinkRow(context: context, title: context.tr('help_center'), icon: Icons.help_outline_rounded),
+              ],
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Text(
+            '${context.tr('version')} 1.0.0',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 11.sp,
+              color: AppColors.greyColor,
+            ),
+          ),
+          SizedBox(height: 30.h),
+        ],
       ),
     );
   }

@@ -158,13 +158,20 @@ class _SignUpPage02State extends State<SignUpPage2> {
                                     ),
                                   );
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => BlocProvider(
-                                          create: (context) => sl<OtpBloc>(),
-                                          child: OtpPage(email: trimmedEmail),
-                                        ),
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider.value(
+                                            value: context.read<SignUpBloc>(),
+                                          ),
+                                          BlocProvider(
+                                            create: (context) => sl<OtpBloc>(),
+                                          ),
+                                        ],
+                                        child: OtpPage(email: trimmedEmail),
                                       ),
+                                    ),
                                   );
                                 }
                               },

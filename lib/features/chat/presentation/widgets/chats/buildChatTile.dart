@@ -7,13 +7,21 @@ import '../../../../../core/localization/app_localizations.dart';
 import '../../../domain/entities/chatEntity.dart';
 import '../../bloc/chatBloc/chatBloc.dart';
 
-Widget buildChatTile(BuildContext context, ChatEntity chat, ThemeData theme) {
+Widget buildChatTile(
+  BuildContext context,
+  ChatEntity chat,
+  ThemeData theme, {
+  bool isSelected = false,
+  VoidCallback? onTap,
+}) {
   final isGroup = chat.type == 'group';
   final chatTitle = isGroup ? (chat.name ?? 'Group') : (chat.otherUser?.fullName ?? 'User');
   final hasUnread = chat.unreadCount > 0;
 
   return ListTile(
-    onTap: () {
+    selected: isSelected,
+    selectedTileColor: theme.colorScheme.primary.withOpacity(0.1),
+    onTap: onTap ?? () {
       final chatBloc = context.read<ChatBloc>();
       chatBloc.stopChatsPulling();
       Navigator.pushNamed(

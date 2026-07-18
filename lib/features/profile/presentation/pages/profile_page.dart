@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/customDrawer.dart';
 import '../../../../core/widgets/customErrorView.dart';
@@ -42,7 +43,7 @@ class ProfileView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      drawer: const CustomDrawer(),
+      drawer: ResponsiveLayout.isMobile(context) ? const CustomDrawer() : null,
       appBar: CustomAppBar(
         title: Text(
           context.tr('profile'),
@@ -75,7 +76,21 @@ class ProfileView extends StatelessWidget {
           if (state is ProfileLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ProfileLoaded) {
-            return _buildProfileContent(context, state.userProfile);
+            return ResponsiveLayout(
+              mobileBody: _buildProfileContent(context, state.userProfile),
+              tabletBody: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: _buildProfileContent(context, state.userProfile),
+                ),
+              ),
+              desktopBody: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: _buildProfileContent(context, state.userProfile),
+                ),
+              ),
+            );
           } else if (state is ProfileError) {
             return CustomErrorView(
               message: state.message,

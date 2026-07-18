@@ -211,6 +211,8 @@
   "desc_min_length": "Description must be at least 10 characters long",
   "submit_service": "Submit Service",
   "cancel": "Cancel",
+  "active": "Active",
+  "inactive": "Inactive",
   "leaderboard_page_title": "Leaderboard Page",
   "chat_nav": "Chat",
   "leaderboard_nav": "Leaderboard",

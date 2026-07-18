@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
+import '../../../../../core/utils/dialog_utils.dart';
 import '../../../../../core/widgets/customAppBar.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
@@ -51,17 +53,13 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
               current is MembersLoading || current is MembersLoaded || current is ChatsError,
           listener: (context, state) {
             if (state is MemberActionSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message), backgroundColor: Colors.green),
-              );
+              SnackBarUtils.showSuccess(context, state.message);
               if (state.message.contains("left")) {
                 Navigator.of(context).pop(); // Close GroupInfo
                 Navigator.of(context).pop(); // Close ChatRoom
               }
             } else if (state is ChatsError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-              );
+              SnackBarUtils.showError(context, state.message);
             }
           },
           builder: (context, state) {
@@ -170,21 +168,21 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
 
   void _showEditNameDialog(BuildContext context) {
     final TextEditingController nameController = TextEditingController(text: widget.chatTitle);
-    showDialog(
+    DialogUtils.showCustomDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: AlertDialog(
         title: const Text('تعديل اسم المجموعة'),
         content: TextField(
           controller: nameController,
           decoration: const InputDecoration(hintText: "اسم المجموعة الجديد"),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء')),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('إلغاء')),
           TextButton(
             onPressed: () {
               if (nameController.text.trim().isNotEmpty) {
                 context.read<ChatBloc>().add(UpdateGroupEvent(widget.chatId, nameController.text.trim()));
-                Navigator.pop(ctx);
+                Navigator.pop(context);
               }
             },
             child: const Text('حفظ'),
@@ -195,42 +193,28 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
   }
 
   void _confirmRemove(BuildContext context, int userId, String name) {
-    showDialog(
+    DialogUtils.showConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('إزالة عضو'),
-        content: Text('هل أنت متأكد من إزالة $name من المجموعة؟'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء')),
-          TextButton(
-            onPressed: () {
-              context.read<ChatBloc>().add(RemoveMemberEvent(widget.chatId, userId));
-              Navigator.pop(ctx);
-            },
-            child: const Text('إزالة', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+      title: 'إزالة عضو',
+      message: 'هل أنت متأكد من إزالة $name من المجموعة؟',
+      confirmText: 'إزالة',
+      confirmColor: Colors.red,
+      onConfirm: () {
+        context.read<ChatBloc>().add(RemoveMemberEvent(widget.chatId, userId));
+      },
     );
   }
 
   void _confirmLeave(BuildContext context) {
-    showDialog(
+    DialogUtils.showConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('مغادرة المجموعة'),
-        content: const Text('هل أنت متأكد من رغبتك في مغادرة هذه المجموعة؟'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء')),
-          TextButton(
-            onPressed: () {
-              context.read<ChatBloc>().add(LeaveGroupEvent(widget.chatId));
-              Navigator.pop(ctx);
-            },
-            child: const Text('مغادرة', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+      title: 'مغادرة المجموعة',
+      message: 'هل أنت متأكد من رغبتك في مغادرة هذه المجموعة؟',
+      confirmText: 'مغادرة',
+      confirmColor: Colors.red,
+      onConfirm: () {
+        context.read<ChatBloc>().add(LeaveGroupEvent(widget.chatId));
+      },
     );
   }
 

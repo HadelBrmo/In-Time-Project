@@ -9,6 +9,7 @@ import '../../../../core/utils/auth_utils.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/loading_widget.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../domain/entity/wallet_entity.dart';
 import '../bloc/wallet_bloc.dart';
 import '../bloc/wallet_event.dart';
@@ -91,20 +92,19 @@ class HoursBalancePage extends StatelessWidget {
                     ? hourWallets.first
                     : state.wallets.first;
 
-                return SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: media.width * 0.05,
-                    vertical: media.height * 0.03,
+                return ResponsiveLayout(
+                  mobileBody: _buildBalanceContent(media, hourWallet),
+                  tabletBody: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      child: _buildBalanceContent(media, hourWallet),
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BalanceCard(
-                        currentHours: hourWallet.balance.toInt(),
-                        targetHours: 20,
-                      ),
-                      SizedBox(height: media.height * 0.05),
-                    ],
+                  desktopBody: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 700),
+                      child: _buildBalanceContent(media, hourWallet),
+                    ),
                   ),
                 );
               }
@@ -113,6 +113,25 @@ class HoursBalancePage extends StatelessWidget {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBalanceContent(MediaQueryHelper media, WalletEntity hourWallet) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(
+        horizontal: media.width * 0.05,
+        vertical: media.height * 0.03,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BalanceCard(
+            currentHours: hourWallet.balance.toInt(),
+            targetHours: 20,
+          ),
+          SizedBox(height: media.height * 0.05),
+        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/auth_utils.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
+import 'package:in_time/core/widgets/responsive_layout.dart';
 
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
@@ -155,6 +156,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       const HomeScreen(),
     ];
 
+    return ResponsiveLayout(
+      mobileBody: _buildMobileLayout(theme, isDarkMode, screens),
+      tabletBody: _buildTabletLayout(theme, isDarkMode, screens),
+      desktopBody: _buildTabletLayout(theme, isDarkMode, screens), // Same as tablet for now but can be wider
+    );
+  }
+
+  Widget _buildMobileLayout(ThemeData theme, bool isDarkMode, List<Widget> screens) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
@@ -162,7 +171,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         index: _currentIndex,
         children: screens,
       ),
-
       floatingActionButton: FloatingActionButton(
         heroTag: 'main_add_btn',
         onPressed: () {
@@ -176,7 +184,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         child: Icon(Icons.add, color: AppColors.whiteColor, size: 35.sp),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
       bottomNavigationBar: BottomAppBar(
         color: AppColors.primaryColor.withOpacity(isDarkMode ? 0.82 : 0.95),
         shape: const CircularNotchedRectangle(),
@@ -206,6 +213,74 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTabletLayout(ThemeData theme, bool isDarkMode, List<Widget> screens) {
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            backgroundColor: AppColors.primaryColor.withOpacity(isDarkMode ? 0.82 : 0.95),
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (index) {
+              if (index == 0 || index == 1 || index == 2) {
+                if (!AuthUtils.checkAuth(context)) return;
+              }
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            labelType: NavigationRailLabelType.all,
+            unselectedIconTheme: IconThemeData(color: AppColors.whiteColor.withOpacity(0.55)),
+            selectedIconTheme: const IconThemeData(color: AppColors.whiteColor),
+            unselectedLabelTextStyle: TextStyle(color: AppColors.whiteColor.withOpacity(0.55)),
+            selectedLabelTextStyle: const TextStyle(color: AppColors.whiteColor, fontWeight: FontWeight.bold),
+            leading: Column(
+              children: [
+                SizedBox(height: 20.h),
+                FloatingActionButton(
+                  mini: true,
+                  heroTag: 'main_add_btn_tablet',
+                  onPressed: () {
+                    if (AuthUtils.checkAuth(context)) {
+                      Navigator.pushNamed(context, "/paidStrategyPage");
+                    }
+                  },
+                  backgroundColor: AppColors.whiteColor,
+                  child: const Icon(Icons.add, color: AppColors.primaryColor),
+                ),
+                SizedBox(height: 20.h),
+              ],
+            ),
+            destinations: [
+              NavigationRailDestination(
+                icon: const Icon(Icons.chat),
+                label: Text(context.tr('chat_nav')),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.emoji_events_outlined),
+                label: Text(context.tr('leaderboard_nav')),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.access_time),
+                label: Text(context.tr('my_hours_nav')),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.home_outlined),
+                label: Text(context.tr('home_nav')),
+              ),
+            ],
+          ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(
+            child: IndexedStack(
+              index: _currentIndex,
+              children: screens,
+            ),
+          ),
+        ],
       ),
     );
   }

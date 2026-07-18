@@ -23,6 +23,7 @@ class ServiceModel extends ServiceEntity {
     super.servingTypeName,
     super.isRequested,
     super.isOwner,
+    super.status,
     super.availabilitySlots,
     super.createdAt,
   });
@@ -38,14 +39,13 @@ class ServiceModel extends ServiceEntity {
       'location_lat': locationLat,
       'location_lng': locationLng,
       if (meetingType != null) 'meeting_type': meetingType,
+      if (status != null) 'status': status,
     };
   }
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
-    // التحقق من وجود المعرف في مفاتيح مختلفة
     final idValue = json['id'] ?? json['serving_id'];
     
-    // التحقق من نوع الخدمة سواء كان نصاً مباشراً أو ضمن كائن
     String? typeName;
     if (json['serving_type_name'] != null) {
       typeName = json['serving_type_name'].toString();
@@ -79,6 +79,7 @@ class ServiceModel extends ServiceEntity {
       servingTypeName: typeName,
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1),
       isOwner: json['isOwner'] ?? json['is_owner'] ?? false,
+      status: json['status']?.toString(),
       availabilitySlots: json['availability_slots'] ?? json['availabilitySlots'] ?? [],
       createdAt: json['created_at']?.toString(),
     );

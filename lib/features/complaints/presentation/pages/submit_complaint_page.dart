@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/snackbar_utils.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/buildLabel.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/customTextFormField.dart';
 import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../injection_container.dart';
 import '../../data/models/complaint_request.dart';
 import '../bloc/complaint_bloc.dart';
@@ -68,12 +70,7 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
   void _submitComplaint(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       if (selectedComplaintType == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.tr('please_select_complaint_type')),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
+        SnackBarUtils.showError(context, context.tr('please_select_complaint_type'));
         return;
       }
 
@@ -124,99 +121,112 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
               attachmentPath = null;
             });
           } else if (state is ComplaintError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${context.tr('error')}: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
+            SnackBarUtils.showError(context, '${context.tr('error')}: ${state.message}');
           }
         },
         builder: (context, state) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Image.asset(
-                      'assets/images/complaints/submit_complaint.png',
-                      height: 180,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.report_problem_rounded,
-                          size: 90,
-                          color: isDarkMode ? Colors.white30 : AppColors.greyColor,
-                        );
-                      },
-                    ),
-                  ).animate().fade(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      context.tr('complaint_instruction'),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: hintTextColor,
-                        height: 1.5,
-                      ),
-                    ),
-                  ).animate().fade(delay: 100.ms),
-                  const SizedBox(height: 28),
-                  buildLabel(context, context.tr('complaint_type')),
-                  const SizedBox(height: 8),
-                  ComplaintTypeDropdown(
-                    selectedType: selectedComplaintType,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedComplaintType = value;
-                      });
-                    },
-                  ).animate().fade(delay: 150.ms).slideY(begin: 0.1, end: 0),
-                  const SizedBox(height: 24),
-                  buildLabel(context, context.tr('complaint_description')),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: containerBorderColor,
-                        width: 1,
-                      ),
-                    ),
-                    child: CustomTextFormField(
-                      controller: descriptionController,
-                      hintText: context.tr('complaint_description_hint'),
-                      maxLines: 5,
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? context.tr('please_enter_complaint_description')
-                          : null,
-                    ),
-                  ).animate().fade(delay: 200.ms).slideY(begin: 0.1, end: 0),
-                  const SizedBox(height: 40),
-                  Center(
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 55,
-                      child: state is ComplaintSubmitting
-                          ? const Center(child: CircularProgressIndicator(color: AppColors.primaryColor))
-                          : CustomButton(
-                              text: context.tr('send_complaint'),
-                              fontSize: 16,
-                              color: AppColors.primaryColor,
-                              onPressed: () => _submitComplaint(context),
-                            ),
-                    ),
-                  ).animate().fade(delay: 250.ms).scale(begin: const Offset(0.98, 0.98)),
-                  const SizedBox(height: 24),
-                ],
+          return ResponsiveLayout(
+            mobileBody: _buildForm(theme, isDarkMode, hintTextColor, containerBorderColor, state),
+            tabletBody: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: _buildForm(theme, isDarkMode, hintTextColor, containerBorderColor, state),
+              ),
+            ),
+            desktopBody: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 700),
+                child: _buildForm(theme, isDarkMode, hintTextColor, containerBorderColor, state),
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildForm(ThemeData theme, bool isDarkMode, Color hintTextColor, Color containerBorderColor, ComplaintState state) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Image.asset(
+                'assets/images/complaints/submit_complaint.png',
+                height: 180,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.report_problem_rounded,
+                    size: 90,
+                    color: isDarkMode ? Colors.white30 : AppColors.greyColor,
+                  );
+                },
+              ),
+            ).animate().fade(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
+            const SizedBox(height: 16),
+            Center(
+              child: Text(
+                context.tr('complaint_instruction'),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: hintTextColor,
+                  height: 1.5,
+                ),
+              ),
+            ).animate().fade(delay: 100.ms),
+            const SizedBox(height: 28),
+            buildLabel(context, context.tr('complaint_type')),
+            const SizedBox(height: 8),
+            ComplaintTypeDropdown(
+              selectedType: selectedComplaintType,
+              onChanged: (value) {
+                setState(() {
+                  selectedComplaintType = value;
+                });
+              },
+            ).animate().fade(delay: 150.ms).slideY(begin: 0.1, end: 0),
+            const SizedBox(height: 24),
+            buildLabel(context, context.tr('complaint_description')),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: containerBorderColor,
+                  width: 1,
+                ),
+              ),
+              child: CustomTextFormField(
+                controller: descriptionController,
+                hintText: context.tr('complaint_description_hint'),
+                maxLines: 5,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? context.tr('please_enter_complaint_description')
+                    : null,
+              ),
+            ).animate().fade(delay: 200.ms).slideY(begin: 0.1, end: 0),
+            const SizedBox(height: 40),
+            Center(
+              child: SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: state is ComplaintSubmitting
+                    ? const Center(child: CircularProgressIndicator(color: AppColors.primaryColor))
+                    : CustomButton(
+                  text: context.tr('send_complaint'),
+                  fontSize: 16,
+                  color: AppColors.primaryColor,
+                  onPressed: () => _submitComplaint(context),
+                ),
+              ),
+            ).animate().fade(delay: 250.ms).scale(begin: const Offset(0.98, 0.98)),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }

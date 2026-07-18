@@ -5,6 +5,7 @@ import 'package:in_time/features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'package:in_time/injection_container.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/utils/dialog_utils.dart';
 
 class AuthUtils {
   static bool isLoggedIn() {
@@ -14,29 +15,14 @@ class AuthUtils {
   }
 
   static void showLoginPrompt(BuildContext context) {
-    showDialog(
+    DialogUtils.showConfirmDialog(
       context: context,
-      builder: (context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          title: const Text('تسجيل الدخول مطلوب'),
-          content: const Text('يرجى تسجيل الدخول للقيام بهذا الإجراء.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, AppRoutes.login);
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryColor),
-              child: const Text('تسجيل الدخول', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
-      ),
+      title: 'تسجيل الدخول مطلوب',
+      message: 'يرجى تسجيل الدخول للقيام بهذا الإجراء.',
+      confirmText: 'تسجيل الدخول',
+      onConfirm: () {
+        Navigator.pushNamed(context, AppRoutes.login);
+      },
     );
   }
 

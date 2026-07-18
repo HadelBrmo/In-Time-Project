@@ -161,4 +161,16 @@ class ServicesRepositoryImpl implements ServicesRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> toggleServingStatus(int id, bool isActive) async {
+    try {
+      await remoteDataSource.toggleServingStatus(id, isActive);
+      return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/dialog_utils.dart';
 import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../home/presentation/pages/serviceDetailsPage.dart';
@@ -10,8 +11,14 @@ import '../../domain/entity/service_entity.dart';
 class MyServingCard extends StatelessWidget {
   final ServiceEntity serving;
   final VoidCallback onEdit;
+  final Function(bool) onToggleStatus;
 
-  const MyServingCard({super.key, required this.serving, required this.onEdit});
+  const MyServingCard({
+    super.key,
+    required this.serving,
+    required this.onEdit,
+    required this.onToggleStatus,
+  });
 
   String _formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return "";
@@ -177,19 +184,62 @@ class MyServingCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit_calendar_outlined, color: AppColors.primaryColor, size: 22),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor.withOpacity(0.08),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          serving.status == 'active' ? context.tr('active') : context.tr('inactive'),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: serving.status == 'active' ? Colors.green : Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Transform.scale(
+                          scale: 0.7,
+                          child: Switch(
+                            value: serving.status == 'active',
+                            activeColor: Colors.green,
+                            onChanged: (isActive) {
+                              if (isActive) {
+                                onToggleStatus(true);
+                              } else {
+                                _showDeactivateConfirmation(context);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      onPressed: onEdit,
+                      icon: const Icon(Icons.edit_calendar_outlined, color: AppColors.primaryColor, size: 22),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor.withOpacity(0.08),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             )
           ],
         ),
       ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.15, end: 0, curve: Curves.easeOutBack),
+    );
+  }
+
+  void _showDeactivateConfirmation(BuildContext context) {
+    DialogUtils.showConfirmDialog(
+      context: context,
+      title: "إلغاء تنشيط الخدمة",
+      message: "هل أنت متأكد من رغبتك في إلغاء تنشيط هذه الخدمة؟ لن تظهر الخدمة للمستخدمين الآخرين بعد ذلك.",
+      confirmText: "تأكيد الإلغاء",
+      confirmColor: Colors.red,
+      onConfirm: () {
+        onToggleStatus(false);
+      },
     );
   }
 }

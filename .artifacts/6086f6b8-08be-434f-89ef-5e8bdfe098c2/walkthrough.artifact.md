@@ -1,27 +1,17 @@
-# Walkthrough - Added Auto-Cancel Days to Serving Request
+# Walkthrough - Filter Inactive Services from Home Screen
 
-I have successfully added the `automatically_cancel_after` parameter to the service request flow. This allows users to specify how many days the request should remain active before being automatically cancelled.
+I have updated the `HomeBloc` to ensure that only active services are displayed to users on the home screen, covering both the general search and the nearby services search.
 
 ## Changes Made
 
-### Domain Layer
-- **[RequestRepository](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/domain/repository/request_repository.dart)**: Added `automaticallyCancelAfter` to `createServingRequest`.
-- **[CreateServingRequestUseCase](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/domain/usecases/create_serving_request_usecase.dart)**: Updated the use case to pass the new parameter.
-
-### Data Layer
-- **[RequestRemoteDataSource](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/data/datasource/request_remote_datasource.dart)**: Updated the API call to include `automatically_cancel_after` in the request body.
-- **[RequestRepositoryImpl](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/data/repository/request_repository_impl.dart)**: Updated the implementation to pass the value through.
-
-### Presentation & UI
-- **[RequestsEvent](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/presentation/bloc/request_event.dart)**: Updated `CreateServingRequestEvent` to include the new field.
-- **[RequestsBloc](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/presentation/bloc/request_bloc.dart)**: Handled the new field in the Bloc.
-- **[showRequestDialog](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/requests/presentation/widgets/showRequestDialog.dart)**:
-    - Added a numeric input field for "إلغاء الطلب تلقائياً بعد (أيام)".
-    - Set a default value of **14 days**.
-    - Wrapped the content in a `SingleChildScrollView` to prevent overflow on small screens.
+### Home Feature
+- **[HomeBloc](file:///C:/Users/User/StudioProjects/In-Time-Project/lib/features/home/presentation/bloc/home_bloc.dart)**:
+    - Updated `FetchHomeServingsEvent` and `FetchNearbyServingsEvent` handlers to filter the list of services fetched from the server. Only services with `status == 'active'` (or `null`, for backward compatibility/default state) are kept.
+    - Updated the `_cloneServiceWithRequestedStatus` helper method to include the `status` field when cloning a `ServiceEntity`, ensuring the status is preserved when the UI state is updated (e.g., when a user requests a service).
 
 ## Verification Results
 
 ### Manual Verification
-- The dialog now shows the new input field with a default value of 14.
-- Sending a request now includes the specified number of days in the payload.
+1.  Deactivate one of your services from the **My Services** page.
+2.  Return to the **Home Screen** and refresh (or perform a search/nearby search).
+3.  Verify that the deactivated service no longer appears in the list of available services.

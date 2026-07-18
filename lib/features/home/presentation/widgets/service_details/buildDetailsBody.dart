@@ -6,6 +6,7 @@ import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/constants/mediaQuery.dart';
 import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/theme/glowingBorder.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../../core/utils/auth_utils.dart';
 import '../../../../../core/widgets/buildAnimatedItem.dart';
 import '../../../../../core/widgets/loading_widget.dart';
@@ -64,26 +65,22 @@ Widget buildDetailsBody(
           BlocListener<RequestsBloc, RequestsState>(
             listener: (context, state) {
               if (state is CreateRequestLoadingState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(context.tr('sending_request')), backgroundColor: AppColors.primaryColor),
+                SnackBarUtils.showSuccess(
+                  context,
+                  context.tr('sending_request'),
+
                 );
               } else if (state is CreateRequestSuccessState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message), backgroundColor: Colors.green),
-                );
+                SnackBarUtils.showSuccess(context, state.message);
               } else if (state is CreateRequestErrorState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage), backgroundColor: Colors.red),
-                );
+                SnackBarUtils.showError(context, state.errorMessage);
               }
             },
           ),
           BlocListener<ChatBloc, ChatState>(
             listener: (context, state) {
               if (state is ChatsLoading) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(context.tr('opening_chat')), backgroundColor: AppColors.primaryColor),
-                );
+                SnackBarUtils.showSuccess(context, context.tr('opening_chat'));
               } else if (state is ChatCreated) {
                 Navigator.pushNamed(
                   context,
@@ -95,9 +92,7 @@ Widget buildDetailsBody(
                 );
               } else if (state is ChatInitial) {
               } else if (state is ChatsError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-                );
+                SnackBarUtils.showError(context, state.message);
               }
             },
           ),

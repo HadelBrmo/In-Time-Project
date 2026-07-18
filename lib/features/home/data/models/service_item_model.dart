@@ -22,6 +22,7 @@ class ServiceModel extends ServiceEntity {
     super.servingTypeName,
     super.isRequested,
     super.isOwner,
+    super.status,
     super.createdAt,
   });
 
@@ -45,6 +46,7 @@ class ServiceModel extends ServiceEntity {
       'serving_type_name': servingTypeName,
       'requested': isRequested,
       'isOwner': isOwner,
+      if (status != null) 'status': status,
       'created_at': createdAt,
     };
   }
@@ -74,6 +76,7 @@ class ServiceModel extends ServiceEntity {
 
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1 || json['requested'] == true),
       isOwner: json['isOwner'] is bool ? json['isOwner'] : (json['isOwner'] == 1 || json['isOwner'] == true),
+      status: json['status']?.toString(),
       createdAt: json['created_at']?.toString(),
     );
   }

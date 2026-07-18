@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/app_colors.dart';
+import 'responsive_layout.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
@@ -82,5 +83,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(65.h);
+  Size get preferredSize {
+    // We can't use context here easily because it's PreferredSizeWidget.
+    // But we can use ScreenUtil or just check constraints if it was a widget.
+    // Since it's a PreferredSizeWidget, we can use a fixed height or a multiplier.
+    return const Size.fromHeight(70);
+  }
 }

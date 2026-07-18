@@ -10,6 +10,7 @@ import '../../../../core/constants/mediaQuery.dart';
 import '../../../../core/widgets/customAppBar.dart';
 import '../../../../core/widgets/customErrorView.dart';
 import '../../../../core/widgets/loading_widget.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import 'package:in_time/features/requests/presentation/pages/receivedRequestsView.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
@@ -89,157 +90,176 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
               )
             ],
           ),
-          body: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: media.width * 0.05,
-                  vertical: media.height * 0.03,
-                ),
-                child: Container(
-                  height: media.height * 0.055,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: TabBar(
-                    dividerColor: Colors.transparent,
-                    unselectedLabelColor: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
-                    labelColor: AppColors.whiteColor,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicator: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    tabs: [
-                      Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.assignment_outlined, size: 18),
-                            SizedBox(width: media.width * 0.02),
-                            Flexible(
-                              child: Text(
-                                context.tr('my_requests'),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.move_to_inbox_outlined, size: 18),
-                            SizedBox(width: media.width * 0.02),
-                            Flexible(
-                              child: Text(
-                                context.tr('received_requests'),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+          body: ResponsiveLayout(
+            mobileBody: _buildContent(media, theme, isDarkMode),
+            tabletBody: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: _buildContent(media, theme, isDarkMode),
+              ),
+            ),
+            desktopBody: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1000),
+                child: _buildContent(media, theme, isDarkMode),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(MediaQueryHelper media, ThemeData theme, bool isDarkMode) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: media.width * 0.05,
+            vertical: media.height * 0.03,
+          ),
+          child: Container(
+            height: media.height * 0.055,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TabBar(
+              dividerColor: Colors.transparent,
+              unselectedLabelColor: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
+              labelColor: AppColors.whiteColor,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                color: AppColors.primaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              tabs: [
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.assignment_outlined, size: 18),
+                      SizedBox(width: media.width * 0.02),
+                      Flexible(
+                        child: Text(
+                          context.tr('my_requests'),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    BlocListener<RequestsBloc, RequestsState>(
-                      listener: (context, state) {
-                        if (state is RequestDeletedSuccessState) {
-                          SnackBarUtils.showSuccess(context, context.tr('request_deleted_success'));
-                          context.read<RequestsBloc>().add(FetchMyRequestsEvent());
-                        } else if (state is RequestDeleteErrorState) {
-                          SnackBarUtils.showError(context, state.message);
-                        }
-                      },
-                      child: BlocBuilder<RequestsBloc, RequestsState>(
-                        builder: (context, state) {
-                          if (state is RequestsLoadingState) {
-                            return const LoadingWidget();
-                          } else if (state is RequestsLoadedState) {
-                            final filteredRequests = state.requests.where((req) {
-                              return req.serving.title.toLowerCase().contains(searchQuery.toLowerCase());
-                            }).toList();
-
-                            if (filteredRequests.isEmpty) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.assignment_late_outlined,
-                                      size: media.width * 0.15,
-                                      color: AppColors.greyColor,
-                                    ),
-                                    SizedBox(height: media.height * 0.015),
-                                    Text(
-                                      searchQuery.isEmpty ? context.tr('no_requests') : context.tr('no_search_results'),
-                                      style: theme.textTheme.titleMedium?.copyWith(
-                                        color: AppColors.greyColor,
-                                        fontSize: media.width * 0.04,
-                                      ),
-                                    ),
-                                  ],
-                                ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
-                              );
-                            }
-
-                            return ListView.builder(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: media.width * 0.05,
-                                vertical: media.height * 0.01,
-                              ),
-                              itemCount: filteredRequests.length,
-                              itemBuilder: (context, index) {
-                                final request = filteredRequests[index];
-                                return buildRequestCard(
-                                  context: context,
-                                  request: request,
-                                  media: media,
-                                  isDarkMode: isDarkMode,
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.serviceDetailsPage,
-                                      arguments: request.serving,
-                                    );
-                                  },
-                                  onLongPress: () {
-                                    showDeleteDialog(context, request.id);
-                                  },
-                                )
-                                    .animate()
-                                    .fadeIn(duration: 350.ms, delay: (index * 80).ms)
-                                    .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad);
-                              },
-                            );
-                          } else if (state is RequestsErrorState) {
-                            return CustomErrorView(
-                              message: state.message,
-                              statusCode: state.statusCode,
-                              onRetry: () {
-                                context.read<RequestsBloc>().add(FetchMyRequestsEvent());
-                              },
-                            );
-                          }
-                          return const SizedBox();
-                        },
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.move_to_inbox_outlined, size: 18),
+                      SizedBox(width: media.width * 0.02),
+                      Flexible(
+                        child: Text(
+                          context.tr('received_requests'),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    ReceivedRequestsView(searchQuery: searchQuery),                  ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            children: [
+              BlocListener<RequestsBloc, RequestsState>(
+                listener: (context, state) {
+                  if (state is RequestDeletedSuccessState) {
+                    SnackBarUtils.showSuccess(context, context.tr('request_deleted_success'));
+                    context.read<RequestsBloc>().add(FetchMyRequestsEvent());
+                  } else if (state is RequestDeleteErrorState) {
+                    SnackBarUtils.showError(context, state.message);
+                  }
+                },
+                child: BlocBuilder<RequestsBloc, RequestsState>(
+                  builder: (context, state) {
+                    if (state is RequestsLoadingState) {
+                      return const LoadingWidget();
+                    } else if (state is RequestsLoadedState) {
+                      final filteredRequests = state.requests.where((req) {
+                        return req.serving.title.toLowerCase().contains(searchQuery.toLowerCase());
+                      }).toList();
+
+                      if (filteredRequests.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.assignment_late_outlined,
+                                size: media.width * 0.15,
+                                color: AppColors.greyColor,
+                              ),
+                              SizedBox(height: media.height * 0.015),
+                              Text(
+                                searchQuery.isEmpty ? context.tr('no_requests') : context.tr('no_search_results'),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: AppColors.greyColor,
+                                  fontSize: media.width * 0.04,
+                                ),
+                              ),
+                            ],
+                          ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
+                        );
+                      }
+
+                      return ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: media.width * 0.05,
+                          vertical: media.height * 0.01,
+                        ),
+                        itemCount: filteredRequests.length,
+                        itemBuilder: (context, index) {
+                          final request = filteredRequests[index];
+                          return buildRequestCard(
+                            context: context,
+                            request: request,
+                            media: media,
+                            isDarkMode: isDarkMode,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.serviceDetailsPage,
+                                arguments: request.serving,
+                              );
+                            },
+                            onLongPress: () {
+                              showDeleteDialog(context, request.id);
+                            },
+                          )
+                              .animate()
+                              .fadeIn(duration: 350.ms, delay: (index * 80).ms)
+                              .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad);
+                        },
+                      );
+                    } else if (state is RequestsErrorState) {
+                      return CustomErrorView(
+                        message: state.message,
+                        statusCode: state.statusCode,
+                        onRetry: () {
+                          context.read<RequestsBloc>().add(FetchMyRequestsEvent());
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
                 ),
               ),
+              ReceivedRequestsView(searchQuery: searchQuery),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }

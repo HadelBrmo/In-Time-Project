@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_routes.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../../core/widgets/customAppBar.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../bloc/chatBloc/blocEvent.dart';
@@ -76,12 +77,13 @@ class _SelectMembersPageState extends State<SelectMembersPage> {
       child: BlocListener<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatCreated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("تم إنشاء المجموعة بنجاح"), backgroundColor: Colors.green),
+            SnackBarUtils.showSuccess(
+              context,
+              "تم إنشاء المجموعة بنجاح",
+
             );
-            // Navigate to the newly created group chat room
-            Navigator.of(context).pop(); // Back to CreateGroupPage
-            Navigator.of(context).pop(); // Back to ChatsPage
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
             
             Navigator.pushNamed(
               context,
@@ -93,14 +95,10 @@ class _SelectMembersPageState extends State<SelectMembersPage> {
               },
             );
           } else if (state is MemberActionSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: Colors.green),
-            );
+            SnackBarUtils.showSuccess(context, state.message);
             Navigator.pop(context);
           } else if (state is ChatsError) {
-             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-            );
+             SnackBarUtils.showError(context, state.message);
           }
         },
         child: Scaffold(

@@ -48,6 +48,11 @@ class _MyServingsViewState extends State<MyServingsView> {
                 final serving = state.servings[index];
                 return MyServingCard(
                   serving: serving,
+                  onToggleStatus: (isActive) {
+                    context.read<MyServingsBloc>().add(
+                      ToggleMyServingStatusEvent(id: serving.id!, isActive: isActive),
+                    );
+                  },
                   onEdit: () {
                     showModalBottomSheet(
                       context: context,

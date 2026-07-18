@@ -29,4 +29,6 @@ abstract class ServicesRepository {
     required double costAmount,
     required String meetingType,
   });
+
+  Future<Either<Failure, Unit>> toggleServingStatus(int id, bool isActive);
 }

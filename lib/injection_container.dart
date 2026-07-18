@@ -41,6 +41,7 @@ import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/localization/data/datasource/locale_local_data_source.dart';
 import 'features/localization/presentation/bloc/locale_bloc.dart';
 import 'features/servings/domain/usecases/service/get_my_servings_usecase.dart';
+import 'features/servings/domain/usecases/service/toggle_serving_status_usecase.dart';
 import 'features/servings/domain/usecases/service/update_serving_usecase.dart';
 import 'features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
 import 'features/requests/data/datasource/request_remote_datasource.dart';
@@ -205,6 +206,7 @@ Future<void> init() async {
   sl.registerFactory(() => MyServingsBloc(
     getMyServingsUseCase: sl(),
     updateServingUseCase: sl(),
+    toggleServingStatusUseCase: sl(),
   ));
   // ✅ تسجيل الـ UseCase الجديد أولاً (إذا لم تكن قد سجلته)
     // sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
@@ -263,6 +265,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetMyWalletsUseCase(sl()));
   sl.registerLazySingleton(() => GetMyServingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateServingUseCase(sl()));
+  sl.registerLazySingleton(() => ToggleServingStatusUseCase(sl()));
   sl.registerLazySingleton(() => SubmitComplaintUseCase(sl()));
   sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
@@ -277,7 +280,10 @@ Future<void> init() async {
   sl.registerLazySingleton<RequestRepository>(() => RequestRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
-  sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(
+    remoteDataSource: sl(),
+    sharedPreferences: sl(),
+  ));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));

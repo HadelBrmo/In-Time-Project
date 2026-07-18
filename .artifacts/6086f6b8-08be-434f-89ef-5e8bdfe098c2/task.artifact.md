@@ -1,5 +1,3 @@
-- [x] Update Domain Layer (Repository interface and UseCase)
-- [x] Update Data Layer (DataSource and Repository implementation)
-- [x] Update Presentation Layer (Event and Bloc)
-- [x] Update UI (Request Dialog)
-- [x] Verification
+- [x] Update `ProfileRepositoryImpl` to sync data with `SharedPreferences`
+- [x] Update `injection_container.dart` for DI
+- [ ] Verification

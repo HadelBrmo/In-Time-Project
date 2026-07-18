@@ -37,7 +37,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           take: event.take,
         );
 
-        final fullList = event.isRefresh ? newServings : [...oldServings, ...newServings];
+        final activeNewServings = newServings.where((s) => s.status == 'active' || s.status == null).toList();
+
+        final fullList = event.isRefresh ? activeNewServings : [...oldServings, ...activeNewServings];
         emit(HomeSuccessState(servings: fullList));
       } catch (e) {
         emit(HomeErrorState(message: e.toString()));
@@ -64,7 +66,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       failureOrData.fold(
             (failure) => emit(HomeErrorState(message: "فشل جلب الخدمات القريبة")),
             (newServings) {
-          final fullList = event.isRefresh ? newServings : [...oldServings, ...newServings];
+          final activeNewServings = newServings.where((s) => s.status == 'active' || s.status == null).toList();
+          final fullList = event.isRefresh ? activeNewServings : [...oldServings, ...activeNewServings];
           emit(HomeSuccessState(servings: fullList));
         },
       );
@@ -137,6 +140,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       servingTypeName: old.servingTypeName,
       isRequested: newStatus,
       isOwner: old.isOwner,
+      status: old.status,
       availabilitySlots: old.availabilitySlots,
       createdAt: old.createdAt,
     );
