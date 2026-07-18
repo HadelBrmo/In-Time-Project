@@ -13,6 +13,7 @@ import '../../../../core/widgets/customErrorView.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/global_particles_wrapper.dart';
 import '../../../../core/widgets/responsive_layout.dart';
+import '../../../../core/widgets/voice_input_button.dart';
 import '../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
@@ -225,7 +226,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-            // Search Bar & Filter - Max Width for Desktop
             Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 800),
@@ -263,6 +263,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Icons.search,
                                 color: AppColors.primaryColor,
                               ),
+
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: VoiceInputButton(
+                                  controller: _searchController,
+                                  onSpeechComplete: () {
+                                    _searchController.text = _searchController.text.trim();
+
+                                    _triggerFetch(isRefresh: true);
+                                  },
+                                ),
+                              ),
+
                               filled: true,
                               fillColor: isDarkMode ? const Color(0xFF1E1E1E) : AppColors.whiteColor,
                               contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.015),
@@ -279,7 +292,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-
                       GestureDetector(
                         onTap: () => _openFilterBottomSheet(context, isDarkMode),
                         child: Container(
