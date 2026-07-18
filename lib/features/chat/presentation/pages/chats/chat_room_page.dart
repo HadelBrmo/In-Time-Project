@@ -32,11 +32,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   late int _currentUserId;
   int? _groupCreatedBy;
 
+  late ChatBloc _chatBloc;
+
   @override
   void initState() {
     super.initState();
     _currentUserId = sl<SharedPreferences>().getInt("user_id") ?? 0;
-    
+
     if (widget.isGroup) {
       final chatState = context.read<ChatBloc>().state;
       if (chatState is ChatsLoaded && chatState.chats.isNotEmpty) {
@@ -51,11 +53,24 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     context.read<ChatBloc>().startMessagesPulling(widget.chatId);
     context.read<ChatBloc>().add(MarkAsReceivedEvent(widget.chatId));
     context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
+    context.read<ChatBloc>().add(LoadChatDraftEvent(widget.chatId));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _chatBloc = context.read<ChatBloc>();
   }
 
   @override
   void dispose() {
-    context.read<ChatBloc>().stopMessagesPulling();
+    _chatBloc.add(SaveChatDraftEvent(
+      chatId: widget.chatId,
+      draftText: _messageController.text,
+    ));
+
+    _chatBloc.stopMessagesPulling();
+
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -65,6 +80,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     if (_messageController.text.trim().isNotEmpty) {
       context.read<ChatBloc>().add(SendMessageEvent(widget.chatId, _messageController.text.trim()));
       _messageController.clear();
+      context.read<ChatBloc>().add(SaveChatDraftEvent(chatId: widget.chatId, draftText: ''));
     }
   }
 
@@ -79,20 +95,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         title: GestureDetector(
           onTap: widget.isGroup
               ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider.value(
-                        value: context.read<ChatBloc>(),
-                        child: GroupInfoPage(
-                          chatId: widget.chatId,
-                          chatTitle: widget.chatTitle,
-                          createdBy: _groupCreatedBy,
-                        ),
-                      ),
-                    ),
-                  );
-                }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BlocProvider.value(
+                  value: context.read<ChatBloc>(),
+                  child: GroupInfoPage(
+                    chatId: widget.chatId,
+                    chatTitle: widget.chatTitle,
+                    createdBy: _groupCreatedBy,
+                  ),
+                ),
+              ),
+            );
+          }
               : null,
           child: Text(widget.chatTitle),
         ),
@@ -126,6 +142,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         current is ChatsError;
                   },
                   listener: (context, state) {
+                    if (state is ChatDraftLoaded && state.draftText != null) {
+                      _messageController.text = state.draftText!;
+                      _messageController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: _messageController.text.length),
+                      );
+                    }
+
                     if (state is MessagesLoaded) {
                       context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
 
@@ -183,7 +206,4 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
     );
   }
-
-
-
 }

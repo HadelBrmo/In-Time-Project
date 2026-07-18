@@ -109,3 +109,20 @@ class LeaveGroupEvent extends ChatEvent {
   @override
   List<Object?> get props => [chatId];
 }
+
+class LoadChatDraftEvent extends ChatEvent {
+  final int chatId;
+  const LoadChatDraftEvent(this.chatId);
+
+  @override
+  List<Object?> get props => [chatId];
+}
+
+class SaveChatDraftEvent extends ChatEvent {
+  final int chatId;
+  final String draftText;
+  const SaveChatDraftEvent({required this.chatId, required this.draftText});
+
+  @override
+  List<Object?> get props => [chatId, draftText];
+}

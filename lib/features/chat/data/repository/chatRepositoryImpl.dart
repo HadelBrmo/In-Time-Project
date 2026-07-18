@@ -146,4 +146,19 @@ class ChatRepositoryImpl implements ChatRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<void> saveChatDraft(int chatId, String draftText) async {
+    await localDataSource.saveChatDraft(chatId, draftText);
+  }
+
+  @override
+  Future<String?> getChatDraft(int chatId) async {
+    return await localDataSource.getChatDraft(chatId);
+  }
+
+  @override
+  Future<void> clearChatDraft(int chatId) async {
+    await localDataSource.clearChatDraft(chatId);
+  }
 }

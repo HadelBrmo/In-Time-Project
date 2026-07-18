@@ -156,6 +156,7 @@ Future<void> init() async {
 
   // ==================== 1. Blocs (Factory) ====================
   sl.registerFactory(() => ChatBloc(
+    chatRepository: sl(),
     getChatsUseCase: sl(),
     getMessagesUseCase: sl(),
     sendMessageUseCase: sl(),

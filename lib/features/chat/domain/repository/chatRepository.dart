@@ -21,4 +21,9 @@ abstract class ChatRepository {
   Future<Either<Failure, Unit>> addMembers(int chatId, List<int> userIds);
   Future<Either<Failure, Unit>> removeMember(int chatId, int userId);
   Future<Either<Failure, Unit>> leaveGroup(int chatId);
+
+  // 🔹 Drafts operations (العمليات الجديدة)
+  Future<void> saveChatDraft(int chatId, String draftText);
+  Future<String?> getChatDraft(int chatId);
+  Future<void> clearChatDraft(int chatId);
 }

@@ -8,11 +8,16 @@ abstract class ChatLocalDataSource {
 
   Future<void> cacheMessages(int chatId, List<MessageModel> messages);
   Future<List<MessageModel>> getCachedMessages(int chatId);
+
+  Future<void> saveChatDraft(int chatId, String draftText);
+  Future<String?> getChatDraft(int chatId);
+  Future<void> clearChatDraft(int chatId);
 }
 
 class ChatLocalDataSourceImpl implements ChatLocalDataSource {
   static const String _chatsBoxName = 'chats_box';
   static const String _messagesBoxName = 'messages_box';
+  static const String _draftsBoxName = 'drafts_box';
 
   @override
   Future<void> cacheChats(List<ChatModel> chats) async {
@@ -46,5 +51,23 @@ class ChatLocalDataSourceImpl implements ChatLocalDataSource {
       return jsonList.map((json) => MessageModel.fromJson(Map<String, dynamic>.from(json))).toList();
     }
     return [];
+  }
+
+  @override
+  Future<void> saveChatDraft(int chatId, String draftText) async {
+    final box = await Hive.openBox(_draftsBoxName);
+    await box.put(chatId.toString(), draftText);
+  }
+
+  @override
+  Future<String?> getChatDraft(int chatId) async {
+    final box = await Hive.openBox(_draftsBoxName);
+    return box.get(chatId.toString()) as String?;
+  }
+
+  @override
+  Future<void> clearChatDraft(int chatId) async {
+    final box = await Hive.openBox(_draftsBoxName);
+    await box.delete(chatId.toString());
   }
 }

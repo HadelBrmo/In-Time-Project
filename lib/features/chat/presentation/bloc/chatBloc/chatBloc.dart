@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/repository/chatRepository.dart';
 import '../../../domain/usecases/add_members_usecase.dart';
 import '../../../domain/usecases/create_group_chat_usecase.dart';
 import '../../../domain/usecases/create_personal_chat_usecase.dart';
@@ -15,8 +16,9 @@ import '../../../domain/usecases/update_group_usecase.dart';
 import 'blocEvent.dart';
 import 'blocState.dart';
 
-
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  final ChatRepository chatRepository;
+
   final GetChatsUseCase getChatsUseCase;
   final GetMessagesUseCase getMessagesUseCase;
   final SendMessageUseCase sendMessageUseCase;
@@ -34,10 +36,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Timer? _messagesTimer;
 
   ChatBloc({
+    required this.chatRepository,
     required this.getChatsUseCase,
     required this.getMessagesUseCase,
     required this.sendMessageUseCase,
-    required this.createPersonalChatUseCase, required this.createGroupChatUseCase,
+    required this.createPersonalChatUseCase,
+    required this.createGroupChatUseCase,
     required this.markAsReadUseCase,
     required this.markAsReceivedUseCase,
     required this.getMembersUseCase,
@@ -60,6 +64,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<UpdateGroupEvent>(_onUpdateGroup);
     on<LeaveGroupEvent>(_onLeaveGroup);
     on<ClearMessagesEvent>((event, emit) => emit(ChatInitial()));
+
+    on<LoadChatDraftEvent>(_onLoadChatDraft);
+    on<SaveChatDraftEvent>(_onSaveChatDraft);
   }
 
   void startChatsPulling() {
@@ -104,12 +111,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
     final failureOrMessages = await getMessagesUseCase(event.chatId);
     failureOrMessages.fold(
-      (failure) {
+          (failure) {
         if (!event.isSilent) {
           emit(const MessagesError("Failed to fetch messages"));
         }
       },
-      (messages) => emit(MessagesLoaded(messages)),
+          (messages) => emit(MessagesLoaded(messages)),
     );
   }
 
@@ -156,8 +163,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> _onMarkAsRead(MarkAsReadEvent event, Emitter<ChatState> emit) async {
     final result = await markAsReadUseCase(event.chatId);
     result.fold(
-      (failure) => null,
-      (unit) => add(const GetChatsEvent(isSilent: true)),
+          (failure) => null,
+          (unit) => add(const GetChatsEvent(isSilent: true)),
     );
   }
 
@@ -169,8 +176,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(MembersLoading());
     final result = await getMembersUseCase(event.chatId);
     result.fold(
-      (failure) => emit(const ChatsError("Failed to fetch members")),
-      (members) => emit(MembersLoaded(members)),
+          (failure) => emit(const ChatsError("Failed to fetch members")),
+          (members) => emit(MembersLoaded(members)),
     );
   }
 
@@ -178,8 +185,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(MembersLoading());
     final result = await addMembersUseCase(event.chatId, event.userIds);
     result.fold(
-      (failure) => emit(const ChatsError("Failed to add members")),
-      (unit) {
+          (failure) => emit(const ChatsError("Failed to add members")),
+          (unit) {
         emit(const MemberActionSuccess("Member(s) added successfully"));
         add(GetMembersEvent(event.chatId));
       },
@@ -190,8 +197,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(MembersLoading());
     final result = await removeMemberUseCase(event.chatId, event.userId);
     result.fold(
-      (failure) => emit(const ChatsError("Failed to remove member")),
-      (unit) {
+          (failure) => emit(const ChatsError("Failed to remove member")),
+          (unit) {
         emit(const MemberActionSuccess("Member removed successfully"));
         add(GetMembersEvent(event.chatId));
       },
@@ -202,8 +209,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(MembersLoading());
     final result = await updateGroupUseCase(event.chatId, event.name);
     result.fold(
-      (failure) => emit(const ChatsError("Failed to update group")),
-      (unit) {
+          (failure) => emit(const ChatsError("Failed to update group")),
+          (unit) {
         emit(const MemberActionSuccess("Group updated successfully"));
         add(const GetChatsEvent(isSilent: true));
         add(GetMembersEvent(event.chatId));
@@ -216,15 +223,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(MembersLoading());
     final result = await leaveGroupUseCase(event.chatId);
     result.fold(
-      (failure) => emit(const ChatsError("Failed to leave group")),
-      (unit) {
+          (failure) => emit(const ChatsError("Failed to leave group")),
+          (unit) {
         emit(const MemberActionSuccess("You left the group"));
         add(const GetChatsEvent(isSilent: false));
       },
     );
   }
 
+  Future<void> _onLoadChatDraft(LoadChatDraftEvent event, Emitter<ChatState> emit) async {
+    final draft = await chatRepository.getChatDraft(event.chatId);
+    emit(ChatDraftLoaded(draft));
+  }
 
+  Future<void> _onSaveChatDraft(SaveChatDraftEvent event, Emitter<ChatState> emit) async {
+    if (event.draftText.trim().isEmpty) {
+      await chatRepository.clearChatDraft(event.chatId);
+    } else {
+      await chatRepository.saveChatDraft(event.chatId, event.draftText);
+    }
+  }
 
   @override
   Future<void> close() {

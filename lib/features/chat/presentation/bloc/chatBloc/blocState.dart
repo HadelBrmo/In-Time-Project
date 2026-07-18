@@ -81,3 +81,11 @@ class MemberActionSuccess extends ChatState {
   @override
   List<Object?> get props => [message];
 }
+
+class ChatDraftLoaded extends ChatState {
+  final String? draftText;
+  const ChatDraftLoaded(this.draftText);
+
+  @override
+  List<Object?> get props => [draftText];
+}
