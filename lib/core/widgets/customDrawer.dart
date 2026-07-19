@@ -106,7 +106,6 @@ class CustomDrawer extends StatelessWidget {
                       );
                     },
                   ),
-                  drawerItem(icon: Icons.brightness_6_outlined, text: context.tr('appearance')),
                   drawerItem(
                     icon: Icons.receipt_long_rounded,
                     text: context.tr('complaints'),

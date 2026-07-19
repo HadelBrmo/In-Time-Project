@@ -114,7 +114,7 @@ flutter:
     - assets/icons/Logo_01.png
     - assets/images/profile/profile.png
     - assets/lang/
-    - assets/animations/smooth-triple-dot-loading.lottie
+    - assets/animations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

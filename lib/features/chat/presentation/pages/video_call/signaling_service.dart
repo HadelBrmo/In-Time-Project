@@ -43,9 +43,9 @@ class SignalingService {
 
     await roomRef.set({
       'offer': offer.toMap(),
-      'callerId': currentUserId,
+      'callerId': currentUserId.toString(),
       'callerName': callerName,
-      'receiverId': targetUserId,
+      'receiverId': targetUserId.toString(),
       'status': 'ringing',
       'createdAt': FieldValue.serverTimestamp(),
     });

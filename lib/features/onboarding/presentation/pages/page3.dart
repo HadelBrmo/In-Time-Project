@@ -50,7 +50,7 @@ class Page3 extends StatelessWidget {
                         context.tr('onboarding_3_title'),
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleLarge?.copyWith(
-                          fontSize: media.isPortrait ? 24 : 22,
+                          fontSize: media.isPortrait ? 22 : 22,
                           color: iconAndTextColor,
                         ),
                       ),

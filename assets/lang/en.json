@@ -98,7 +98,7 @@
   "onboarding_2_title": "Share your skills with us",
   "onboarding_2_desc": "Provide your skills and help others in exchange for their time and expertise",
   "onboarding_3_title": "Join a collaborative community",
-  "onboarding_3_desc": "Real value lies in collaboration, knowledge exchange, and sharing experiences with others",
+  "onboarding_3_desc": "Real value lies in collaboration, and sharing experiences with others",
   "hours_balance": "Hours Balance",
   "login_required_balance": "You must login to view the balance",
   "update_success": "Updated successfully",
@@ -241,5 +241,15 @@
   "job": "Job",
   "save_changes": "Save Changes",
   "personal_chats": "Chats",
-  "groups": "Groups"
+  "groups": "Groups",
+  "no_complaints": "No previous complaints found",
+  "unspecified": "Unspecified",
+  "status_resolved": "Resolved",
+  "status_rejected": "Rejected",
+  "status_pending": "Pending",
+  "complaint_label": "Complaint",
+  "date_label": "Date",
+  "time_label": "Time",
+  "dark_mode": "Dark Mode",
+  "light_mode": "Light Mode"
 }

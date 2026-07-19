@@ -18,16 +18,17 @@ import 'complaint_details_page.dart';
 class ComplaintStatusListPage extends StatelessWidget {
   const ComplaintStatusListPage({super.key});
 
-@override
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final theme = Theme.of(context);
+
+    final String currentLocale = Localizations.localeOf(context).languageCode;
 
     final itemBgColor = isDarkMode ? const Color(0xFF1E1E1E) : AppColors.whiteColor;
     final itemBorderColor = isDarkMode ? AppColors.greyColor.withOpacity(0.3) : AppColors.greyColor.withOpacity(0.2);
     final textDarkColor = isDarkMode ? Colors.white70 : AppColors.greyColor;
 
-    // تم حذف Directionality من هنا لأن التطبيق يدعم العربية تلقائياً
     return BlocProvider(
       create: (context) => sl<ComplaintBloc>()..add(FetchMyComplaintsEvent()),
       child: Scaffold(
@@ -48,7 +49,7 @@ class ComplaintStatusListPage extends StatelessWidget {
               final complaints = state.complaints;
 
               if (complaints.isEmpty) {
-                return Center(child: Text('لا توجد شكاوى سابقة', style: theme.textTheme.titleMedium));
+                return Center(child: Text(context.tr('no_complaints'), style: theme.textTheme.titleMedium));
               }
 
               return ListView.separated(
@@ -57,26 +58,26 @@ class ComplaintStatusListPage extends StatelessWidget {
                 separatorBuilder: (context, index) => const SizedBox(height: 20),
                 itemBuilder: (context, index) {
                   final complaint = complaints[index];
-                  
+
                   final String id = complaint['id'].toString();
-                  final String reason = complaint['reason'] ?? 'غير محدد';
+                  final String reason = complaint['reason'] ?? context.tr('unspecified');
                   final String desc = complaint['description'] ?? '';
                   final DateTime createdAt = DateTime.parse(complaint['created_at']).toLocal();
-                  
-                  final String dateStr = DateFormat('yyyy-MM-dd').format(createdAt);
-                  final String timeStr = DateFormat('hh:mm a').format(createdAt);
-                  
+
+                  final String dateStr = DateFormat('yyyy-MM-dd', currentLocale).format(createdAt);
+                  final String timeStr = DateFormat('hh:mm a', currentLocale).format(createdAt);
+
                   ComplaintStatusType type;
                   String statusText;
                   if (complaint['status'] == 'resolved') {
                     type = ComplaintStatusType.done;
-                    statusText = 'تم الحل';
+                    statusText = context.tr('resolved');
                   } else if (complaint['status'] == 'rejected') {
                     type = ComplaintStatusType.rejected;
-                    statusText = 'مرفوض';
+                    statusText = context.tr('rejected');
                   } else {
                     type = ComplaintStatusType.processing;
-                    statusText = 'قيد الانتظار';
+                    statusText = context.tr('pending');
                   }
 
                   return Container(
@@ -95,49 +96,47 @@ class ComplaintStatusListPage extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                    Row(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    // ✅ 1. قسم رقم الشكوى والتاريخ (أصبح هو الأول ليظهر مكان الحالة)
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // جعل النص يبدأ من اليمين
-      children: [
-        Text(
-          'شكوى $id',
-          style: theme.textTheme.bodySmall?.copyWith(
-            fontSize: 22,
-            color: AppColors.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          'التاريخ: $dateStr',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: textDarkColor,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          'الوقت: $timeStr',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: textDarkColor,
-          ),
-        ),
-      ],
-    ),
-    // ✅ 2. حالة الشكوى (قيد الانتظار) أصبحت في الطرف الآخر
-    StatusBadgeWidget(
-      title: statusText,
-      type: type,
-    ),
-  ],
-),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${context.tr('complaint_label')} $id',
+                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                    fontSize: 17,
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  '${context.tr('date_label')}: $dateStr',
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: textDarkColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  '${context.tr('time_label')}: $timeStr',
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: textDarkColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            StatusBadgeWidget(
+                              title: statusText,
+                              type: type,
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 20),
                         SizedBox(
                           width: double.infinity,

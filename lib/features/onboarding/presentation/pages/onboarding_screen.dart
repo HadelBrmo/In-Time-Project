@@ -48,7 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: media.width * 0.05,
-              vertical: media.height * 0.07,
+              vertical: media.height * 0.04,
             ),
             child: Column(
               children: [
@@ -70,7 +70,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   }, 
                   color: AppColors.primaryColor,
                 ),
-                SizedBox(height: media.height * 0.08),
+                SizedBox(height: media.height * 0.06),
 
                 SmoothPageIndicator(
                   controller: pageController,

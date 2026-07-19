@@ -47,7 +47,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-
       child: TextFormField(
         maxLines: widget.maxLines,
         controller: widget.controller,
@@ -56,10 +55,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         validator: widget.validator,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
-        style: TextStyle(fontSize: 15, color: defaultTextColor),
+        style: TextStyle(fontSize: 15, color: defaultTextColor, fontFamily: 'Arial'),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: defaultHintColor, fontSize: 14),
+          hintStyle: TextStyle(color: defaultHintColor, fontSize: 14, fontFamily: 'Arial'),
           prefixIcon: widget.prefixIcon != null
               ? Icon(widget.prefixIcon, color: AppColors.primaryColor)
               : null,
@@ -75,6 +74,15 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           filled: true,
           fillColor: widget.fillColor ?? defaultFillColor,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+
+
+          errorStyle: const TextStyle(
+            fontFamily: 'Arial',
+            fontSize: 13,
+            color: Colors.redAccent,
+            fontWeight: FontWeight.normal,
+          ),
+
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(color: defaultBorderColor),
@@ -86,6 +94,14 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
           ),
         ),
       ),

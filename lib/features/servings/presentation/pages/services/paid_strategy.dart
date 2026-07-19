@@ -245,10 +245,10 @@ class _PaidServicePageState extends State<PaidServicePage> {
         ),
         inputDecorationTheme: InputDecorationTheme(
           labelStyle: const TextStyle(color: AppColors.whiteColor),
-          hintStyle: TextStyle(color: AppColors.whiteColor.withOpacity(0.6)),
+          hintStyle: TextStyle(color: AppColors.whiteColor),
           suffixStyle: const TextStyle(color: AppColors.whiteColor),
           prefixStyle: const TextStyle(color: AppColors.whiteColor),
-          counterStyle: TextStyle(color: AppColors.whiteColor.withOpacity(0.6)),
+          counterStyle: TextStyle(color: AppColors.whiteColor),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: Colors.white38),
@@ -383,7 +383,7 @@ class _PaidServicePageState extends State<PaidServicePage> {
                                 child: buildDropdownColumn(
                                   context: context,
                                   label: context.tr('service_type'),
-                                  hint: context.tr('select_service_type'),
+                                  hint: context.tr('select_type'),
                                   selectedValue: selectedMeetingType,
                                   items: meetingOptions.map((e) => e == 'online' ? context.tr('online') : context.tr('direct')).toList(),
                                   onChanged: (val) {

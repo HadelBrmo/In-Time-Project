@@ -107,6 +107,8 @@ import 'features/profile/domain/repositories/i_profile_repository.dart';
 import 'features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
+import 'features/theme/data/datasource/theme_local_data_source.dart';
+import 'features/theme/presentation/bloc/theme_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -228,6 +230,9 @@ Future<void> init() async {
   // 🌟 حقن البلوك الخاص باللغة
   sl.registerFactory(() => LocaleBloc(localDataSource: sl()));
 
+  // 🌟 حقن البلوك الخاص بالثيم
+  sl.registerFactory(() => ThemeBloc(localDataSource: sl()));
+
   // ==================== 2. Use Cases (LazySingleton) ====================
   sl.registerLazySingleton(() => GetChatsUseCase(sl()));
   sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
@@ -302,4 +307,5 @@ Future<void> init() async {
   sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(dio: sl()));
 
   sl.registerLazySingleton<LocaleLocalDataSource>(() => LocaleLocalDataSourceImpl(box: sl<Box>()));
+  sl.registerLazySingleton<ThemeLocalDataSource>(() => ThemeLocalDataSourceImpl(box: sl<Box>()));
 }

@@ -15,29 +15,38 @@ Widget buildDropdownColumn({
   final media = MediaQueryHelper(context);
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
+  final Color backgroundColor = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
+  final Color borderColor = isDarkMode ? const Color(0xFF3A3A3A) : AppColors.greyColor.withOpacity(0.3);
+  final Color dropdownBgColor = isDarkMode ? AppColors.blackColor : AppColors.whiteColor;
+  final Color textColor = isDarkMode ? Colors.white : AppColors.blackColor;
+  final Color hintColor = isDarkMode ? Colors.white70 : AppColors.darkGreyColor;
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      buildLabel(context,label),
+      buildLabel(context, label),
+      SizedBox(height: 8.h),
       Container(
-        padding: EdgeInsets.symmetric(horizontal: media.width * 0.025),
+        padding: EdgeInsets.symmetric(horizontal: media.width * 0.04, vertical: 2.h),
         decoration: BoxDecoration(
-          color: isDarkMode ? AppColors.blackColor : Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(media.width * 0.04),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.white24,
+            color: borderColor,
+            width: 1,
           ),
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             isExpanded: true,
             value: selectedValue,
-            dropdownColor: isDarkMode ? AppColors.blackColor : const Color(0xFF2C2C2C),
+            dropdownColor: dropdownBgColor,
             hint: Text(
               hint,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: Colors.white70,
+                color: hintColor,
+                fontFamily: 'Arial',
               ),
             ),
             icon: Icon(
@@ -52,7 +61,8 @@ Widget buildDropdownColumn({
                   value,
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: Colors.white,
+                    color: textColor,
+                    fontFamily: 'Arial',
                   ),
                 ),
               );

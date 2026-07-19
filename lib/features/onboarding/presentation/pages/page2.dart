@@ -61,13 +61,13 @@ class Page2 extends StatelessWidget {
                         context.tr('onboarding_2_title'),
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleLarge?.copyWith(
-                          fontSize: media.isPortrait ? 24 : 22,
+                          fontSize: media.isPortrait ? 22 : 22,
                           color: textColor,
                         ),
                       ),
                       SizedBox(height: media.height * 0.01),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
                         child: Text(
                           context.tr('onboarding_2_desc'),
                           textAlign: TextAlign.center,

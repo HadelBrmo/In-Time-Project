@@ -43,7 +43,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
     _callListener = FirebaseFirestore.instance
         .collection('rooms')
-        .where('receiverId', isEqualTo: userId)
+        .where('receiverId', isEqualTo: userId.toString())
         .where('status', isEqualTo: 'ringing')
         .snapshots()
         .listen((snapshot) {
@@ -110,36 +110,44 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ? AppColors.whiteColor
         : (isDarkMode ? AppColors.whiteColor.withOpacity(0.55) : AppColors.whiteColor.withOpacity(0.75));
 
-    return InkWell(
-      onTap: () {
-        if (index == 0 || index == 1 || index == 2) {
-          if (!AuthUtils.checkAuth(context)) return;
-        }
-        setState(() {
-          _currentIndex = index;
-        });
-      },
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: itemColor,
-            size: 26.sp,
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            label,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: itemColor,
-              fontSize: 12.sp,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          if (index == 0 || index == 1 || index == 2) {
+            if (!AuthUtils.checkAuth(context)) return;
+          }
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 4.h),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: itemColor,
+                  size: 24.sp,
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  label,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: itemColor,
+                    fontSize: 11.sp,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -159,7 +167,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return ResponsiveLayout(
       mobileBody: _buildMobileLayout(theme, isDarkMode, screens),
       tabletBody: _buildTabletLayout(theme, isDarkMode, screens),
-      desktopBody: _buildTabletLayout(theme, isDarkMode, screens), // Same as tablet for now but can be wider
+      desktopBody: _buildTabletLayout(theme, isDarkMode, screens),
     );
   }
 
@@ -181,34 +189,35 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         backgroundColor: AppColors.primaryColor,
         elevation: 4,
         shape: const CircleBorder(),
-        child: Icon(Icons.add, color: AppColors.whiteColor, size: 35.sp),
+        child: Icon(Icons.add, color: AppColors.whiteColor, size: 32.sp),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: AppColors.primaryColor.withOpacity(isDarkMode ? 0.82 : 0.95),
         shape: const CircularNotchedRectangle(),
-        notchMargin: 8.h,
+        notchMargin: 6.h,
         clipBehavior: Clip.antiAlias,
-        child: Container(
-          height: 65.h,
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  _buildNavItem(theme: theme, icon: Icons.chat, label: context.tr('chat_nav'), index: 0, isDarkMode: isDarkMode),
-                  SizedBox(width: 35.w),
-                  _buildNavItem(theme: theme, icon: Icons.emoji_events_outlined, label: context.tr('leaderboard_nav'), index: 1, isDarkMode: isDarkMode),
-                ],
+              Expanded(
+                child: Row(
+                  children: [
+                    _buildNavItem(theme: theme, icon: Icons.chat, label: context.tr('chat_nav'), index: 0, isDarkMode: isDarkMode),
+                    _buildNavItem(theme: theme, icon: Icons.emoji_events_outlined, label: context.tr('leaderboard_nav'), index: 1, isDarkMode: isDarkMode),
+                  ],
+                ),
               ),
-              SizedBox(width: 40.w),
-              Row(
-                children: [
-                  _buildNavItem(theme: theme, icon: Icons.access_time, label: context.tr('my_hours_nav'), index: 2, isDarkMode: isDarkMode),
-                  SizedBox(width: 35.w),
-                  _buildNavItem(theme: theme, icon: Icons.home_outlined, label: context.tr('home_nav'), index: 3, isDarkMode: isDarkMode),
-                ],
+              SizedBox(width: 65.w),
+              Expanded(
+                child: Row(
+                  children: [
+                    _buildNavItem(theme: theme, icon: Icons.access_time, label: context.tr('my_hours_nav'), index: 2, isDarkMode: isDarkMode),
+                    _buildNavItem(theme: theme, icon: Icons.home_outlined, label: context.tr('home_nav'), index: 3, isDarkMode: isDarkMode),
+                  ],
+                ),
               ),
             ],
           ),

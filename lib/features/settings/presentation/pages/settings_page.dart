@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/customAppBar.dart';
@@ -9,7 +10,9 @@ import '../../../../core/widgets/responsive_layout.dart';
 import '../../../localization/presentation/bloc/locale_bloc.dart';
 import '../../../localization/presentation/bloc/locale_event.dart';
 import '../../../localization/presentation/bloc/locale_state.dart';
-
+import '../../../theme/presentation/bloc/theme_bloc.dart';
+import '../../../theme/presentation/bloc/theme_event.dart';
+import '../../../theme/presentation/bloc/theme_state.dart';
 import '../widgets/buildLanguageOption.dart';
 import '../widgets/buildSectionCard.dart';
 import '../widgets/buildSecurityActionRow.dart';
@@ -21,8 +24,30 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
   bool _isNotificationsEnabled = true;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final isDark = context.read<ThemeBloc>().state.themeMode == ThemeMode.dark;
+      if (isDark) {
+        _controller.value = 0.0;
+      } else {
+        _controller.value = 0.5;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +156,50 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('appearance'),
+            icon: Icons.palette_outlined,
+            child: BlocBuilder<ThemeBloc, ThemeState>(
+              builder: (context, themeState) {
+                final isDarkMode = themeState.themeMode == ThemeMode.dark;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      isDarkMode ? context.tr('dark_mode') : context.tr('light_mode'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (isDarkMode) {
+                          _controller.animateTo(0.5, duration: const Duration(milliseconds: 500));
+                        } else {
+                          _controller.animateTo(0.0, duration: const Duration(milliseconds: 500));
+                        }
+                        context.read<ThemeBloc>().add(ToggleThemeEvent());
+                      },
+                      child: SizedBox(
+                        height: 50.h,
+                        width: 80.w,
+                        child: Lottie.asset(
+                          'assets/animations/dark_mode_animation.json',
+                          controller: _controller,
+                          onLoaded: (composition) {
+                            _controller.duration = composition.duration;
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           SizedBox(height: 16.h),

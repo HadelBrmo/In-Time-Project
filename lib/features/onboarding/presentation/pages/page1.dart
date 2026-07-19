@@ -26,7 +26,7 @@ class Page1 extends StatelessWidget {
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(media.width * 0.05),
+                padding: EdgeInsets.all(media.width * 0.04),
                 child: Column(
                   children: [
                     Align(
@@ -65,7 +65,7 @@ class Page1 extends StatelessWidget {
                           context.tr('onboarding_1_title'),
                           textAlign: TextAlign.center,
                           style: theme.textTheme.titleLarge?.copyWith(
-                            fontSize: media.isPortrait ? 24 : 22,
+                            fontSize: media.isPortrait ? 22 : 22,
                           ),
                         ),
                         SizedBox(height: media.height * 0.01),
