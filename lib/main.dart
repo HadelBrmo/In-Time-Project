@@ -117,6 +117,7 @@ class _MyAppState extends State<MyApp> {
                   );
                 },
                 initialRoute: '/',
+
                 onGenerateRoute: AppRoutes.generateRoute,
               );
             },
