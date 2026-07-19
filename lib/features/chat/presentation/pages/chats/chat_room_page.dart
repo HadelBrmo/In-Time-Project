@@ -31,6 +31,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final ScrollController _scrollController = ScrollController();
   late int _currentUserId;
   int? _groupCreatedBy;
+  String? _profilePicture;
 
   late ChatBloc _chatBloc;
 
@@ -39,13 +40,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     super.initState();
     _currentUserId = sl<SharedPreferences>().getInt("user_id") ?? 0;
 
-    if (widget.isGroup) {
-      final chatState = context.read<ChatBloc>().state;
-      if (chatState is ChatsLoaded && chatState.chats.isNotEmpty) {
-        final chats = chatState.chats;
-        final index = chats.indexWhere((c) => c.id == widget.chatId);
-        final currentChat = index != -1 ? chats[index] : chats.first;
+    final chatState = context.read<ChatBloc>().state;
+    if (chatState is ChatsLoaded && chatState.chats.isNotEmpty) {
+      final index = chatState.chats.indexWhere((c) => c.id == widget.chatId);
+      if (index != -1) {
+        final currentChat = chatState.chats[index];
         _groupCreatedBy = currentChat.createdBy;
+        _profilePicture = widget.isGroup ? null : currentChat.otherUser?.profilePicture;
       }
     }
 
@@ -110,9 +111,36 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             );
           }
               : null,
-          child: Text(widget.chatTitle),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.white24,
+                backgroundImage: _profilePicture != null ? NetworkImage(_profilePicture!) : null,
+                child: _profilePicture == null
+                    ? Icon(widget.isGroup ? Icons.groups_rounded : Icons.person_rounded, color: Colors.white, size: 18)
+                    : null,
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  widget.chatTitle,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.check, color: Colors.white),
+            onPressed: () {
+
+            },
+          ),
+          const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.videocam_rounded, color: Colors.white),
             onPressed: () {
@@ -126,7 +154,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               );
             },
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: Center(

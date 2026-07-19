@@ -9,6 +9,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/utils/auth_utils.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -55,7 +56,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   text: onlastPage ? context.tr('start_now') : context.tr('next'),
                   onPressed: () {
                     if (onlastPage) {
-                      Navigator.pushNamed(context, AppRoutes.login);
+                      if (AuthUtils.isLoggedIn()) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+                      } else {
+                        Navigator.pushNamed(context, AppRoutes.login);
+                      }
                     } else {
                       pageController.nextPage(
                         duration: const Duration(milliseconds: 500),

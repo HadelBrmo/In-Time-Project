@@ -110,6 +110,29 @@ class AboutAppPage extends StatelessWidget {
             description: context.tr('feature_2_desc'),
             icon: Icons.video_call_rounded,
           ),
+
+          // 📹 ميزة مكالمات الفيديو المستقرة عبر WebRTC و Firestore
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_webrtc_call_title'),
+            description: context.tr('feature_webrtc_call_desc'),
+            icon: Icons.missed_video_call_rounded,
+          ),
+
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_chat_draft_title'),
+            description: context.tr('feature_chat_draft_desc'),
+            icon: Icons.edit_note_rounded,
+          ),
+
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_analytics_dashboard_title'),
+            description: context.tr('feature_analytics_dashboard_desc'),
+            icon: Icons.analytics_rounded,
+          ),
+
           buildFeatureCard(
             context: context,
             title: context.tr('feature_3_title'),

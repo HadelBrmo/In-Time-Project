@@ -41,13 +41,12 @@ class SignalingService {
     RTCSessionDescription offer = await peerConnection!.createOffer();
     await peerConnection!.setLocalDescription(offer);
 
-    // Create the room with the offer and metadata for notification
     await roomRef.set({
       'offer': offer.toMap(),
       'callerId': currentUserId,
       'callerName': callerName,
       'receiverId': targetUserId,
-      'status': 'ringing', // ringing, accepted, ended
+      'status': 'ringing',
       'createdAt': FieldValue.serverTimestamp(),
     });
 
@@ -67,7 +66,6 @@ class SignalingService {
       }
     });
 
-    // Listen for remote ICE candidates
     roomRef.collection('calleeCandidates').snapshots().listen((snapshot) {
       for (var change in snapshot.docChanges) {
         if (change.type == DocumentChangeType.added) {

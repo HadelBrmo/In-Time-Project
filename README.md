@@ -1,3 +1,4 @@
+
 # ⏱️ In Time Platform
 **A Time-Based Service Exchange Ecosystem**
 
@@ -46,7 +47,9 @@
 | 🔄 **Time-Based Exchange** | Three economic models: `Barter`, `Paid`, and `Volunteer` services. |
 | 💰 **Hour Wallet** | Users start with 2 initial hours. Earn more by providing services to others. |
 | 🗺️ **Smart Map & Nearby** | GPS-powered live service discovery with Google Maps integration and distance-based sorting. |
-| 💬 **In-App Messaging** | Built-in chat system with automated polling queues for reliable messaging, scheduling, and service confirmation. |
+| 💬 **In-App Messaging** | Built-in chat system with automated polling queues for reliable messaging, scheduling, and service confirmation. Includes **Smart Drafts Caching** using Hive to prevent data loss. |
+| 📹 **WebRTC Video Calling** | Real-time Peer-to-Peer (P2P) voice and video calls integrated using `flutter_webrtc` with Firebase Firestore acting as a dynamic signaling mediator. |
+| 📊 **Local Usage Analytics** | Offline tracking dashboard displaying interactive statistics for messages sent, active sessions, and live hours balance. |
 | 🏆 **Gamification & Leaderboard** | Honor board tracking, user progress, and monthly rankings to boost community engagement. |
 | 📝 **Complaint & Dispute System** | Trackable tickets (`Processing`, `Done`, `Rejected`) with full theme support and context-aware error handling. |
 | ⭐ **Ratings & Reviews** | Verified reviews, ratings, and feedback systems to build platform trust. |
@@ -60,8 +63,10 @@
 - **Architecture:** Clean Architecture (Presentation → Domain → Data)
 - **Dependency Injection:** `get_it` (Service Locator)
 - **Functional Programming:** `dartz` (Either Left/Right Error handling)
-- **Local Storage / Caching:** `hive` (Fast NoSQL local object storage),`flutter_secure_storage` (Encrypted storage for sensitive data like Tokens)
+- **Local Storage / Caching:** `hive` (Fast NoSQL local object storage), `flutter_secure_storage` (Encrypted storage for sensitive data like Tokens)
+- **Real-Time Video & Signaling:** `flutter_webrtc` & `cloud_firestore`
 - **Networking:** `dio` (HTTP client with interceptors) & `http`
+- **Charts & Data Visualization:** `fl_chart`
 - **Key UI & Animation Packages:** `flutter_animate`, `lottie`, `confetti`, `smooth_page_indicator`, `flutter_screenutil`
 - **Location Services:** `google_maps_flutter` & `geolocator`
 
@@ -134,7 +139,6 @@ The project strictly follows **Clean Architecture** to ensure separation of conc
 <img src="screenShots/Complaints System/complain details.png" width="30%" />
 <img src="screenShots/Complaints System/complain state.png" width="30%" />
 
-
 ### 👤 Profile & Rewards
 <img src="screenShots/Profile & Rewards/profile.png" width="30%" />
 <img src="screenShots/Profile & Rewards/update profile.png" width="30%" />
@@ -152,14 +156,14 @@ lib/
 │   ├── theme/              # التصميم: AppTheme, GlowingBorder, Custom Styles
 │   ├── utils/              # أدوات مساعدة: AuthUtils, SnackBarUtils, Validators
 │   ├── widgets/            # عناصر واجهة مستخدم مشتركة: CustomAppBar, LoadingWidget
-│   └── services/           # خدمات النظام: LocationService, NotificationService
+│   └── services/           # خدمات النظام: LocationService, NotificationService, AnalyticsService
 │
 ├── features/
 │   ├── auth/               # تسجيل الدخول، إنشاء الحساب، ونظام الـ OTP
 │   ├── home/               # الصفحة الرئيسية، البحث، والخدمات القريبة (Nearby)
 │   ├── servings/           # إضافة وإدارة الخدمات، التعليقات، وأنماط التسعير (Strategies)
 │   ├── requests/           # إدارة الطلبات المرسلة والمستلمة (بدل exchange)
-│   ├── chat/               # المحادثات الفورية، المجموعات، ونظام الـ Polling
+│   ├── chat/               # المحادثات الفورية، المجموعات، ونظام الـ Polling ومكالمات WebRTC
 │   ├── complaints/         # تقديم الشكاوى وتتبع حالتها (Processing, Done)
 │   ├── profile/            # الملف الشخصي، التقييمات، ومعرض الأعمال
 │   ├── wallet/             # المحفظة الزمنية وعرض رصيد الساعات
@@ -169,43 +173,53 @@ lib/
 │
 ├── injection_container.dart # محرك حقن التبعيات (Service Locator)
 └── main.dart                # نقطة انطلاق التطبيق وإعدادات التشغيل الأساسية
-
 🚀 Getting Started
 Prerequisites
 Flutter SDK (3.x or higher)
+
 Dart SDK
+
 Android Studio / VS Code
+
 Emulator or Physical Device
 
+Bash
 # Clone the repository
-git clone https://github.com/HadelBrmo/In-Time-Project.git
-cd in-time-platform
+git clone [https://github.com/HadelBrmo/In-Time-Project.git](https://github.com/HadelBrmo/In-Time-Project.git)
+cd In-Time-Project
 
 # Install dependencies
 flutter pub get
 
+# Run build runner for models/adapters generation
+flutter pub run build_runner build
+
 # Run the app
 flutter run
-
 Build for Production
+Bash
 flutter build apk --release      # Android
 flutter build ios --release      # iOS
-
 🧪 Testing & Quality Assurance
-Unit Testing: bloc_test + mocktail for Business Logic & Repositories
-Widget Testing: UI component validation
-Performance: Pagination, compute() for heavy tasks, Firebase Performance Monitoring
-Offline-First: Hive caching with connectivity_plus sync queues
-Security: flutter_secure_storage for tokens, Dio interceptors for auto-refresh
-Logging: logger (dev) + Firebase Crashlytics (prod)
+Unit Testing: bloc_test + mocktail for Business Logic & Repositories validation.
+
+Widget Testing: UI component validation across device viewports.
+
+Performance Optimization: Local pagination, concurrent execution using compute() for heavy tasks, and Firebase Performance Monitoring.
+
+Offline-First Resilience: Hive local caching with connectivity_plus automated sync queues.
+
+Security Protocols: flutter_secure_storage for authorization tokens, encypted local data structures, and dynamic Dio interceptors for auto-refresh handling.
+
+Robust Logging: logger for isolated environment execution and Firebase Crashlytics for live environments.
 
 👥 Team & University
-Developers: Hadel Brmo 
+Developers: Hadel Brmo
+
 University: Damascus University
+
 Project Type: Graduation Project
 
-
 Built with ❤️ using Flutter & Clean Architecture
-⭐ If you found this project helpful, please consider giving it a star! ⭐
 
-```
+⭐ If you found this project helpful, please consider giving it a star! ⭐
