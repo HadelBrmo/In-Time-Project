@@ -4,8 +4,10 @@ import '../../../../core/error/failures.dart';
 import '../entity/request_entity.dart';
 import '../entity/received_request_entity.dart';
 
+import '../entity/request_status.dart';
+
 abstract class RequestRepository {
-  Future<Either<Failure, List<RequestEntity>>> getMyRequests();
+  Future<Either<Failure, List<RequestEntity>>> getMyRequests({RequestStatus? status});
   Future<Either<Failure, String>> createServingRequest({
     required int servingId,
     String? message,

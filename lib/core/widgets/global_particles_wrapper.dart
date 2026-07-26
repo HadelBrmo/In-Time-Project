@@ -1,5 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/settings/presentation/bloc/settings_bloc.dart';
+import '../../features/settings/presentation/bloc/settings_state.dart';
 import '../constants/app_colors.dart';
 
 class GlobalParticlesWrapper extends StatefulWidget {
@@ -51,34 +54,49 @@ class _GlobalParticlesWrapperState extends State<GlobalParticlesWrapper> with Si
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final size = Size(constraints.maxWidth, constraints.maxHeight);
-
-        if (_lastSize != size) {
-          _lastSize = size;
-          _initializeParticles(size);
-        }
-
-        for (var particle in _particles) {
-          particle.y -= particle.speed;
-          if (particle.y < 0) {
-            particle.y = size.height;
-            particle.x = _random.nextDouble() * size.width;
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, settingsState) {
+        if (!settingsState.animationsEnabled) {
+          if (_particleController.isAnimating) {
+            _particleController.stop();
+          }
+          return widget.child;
+        } else {
+          if (!_particleController.isAnimating) {
+            _particleController.repeat();
           }
         }
 
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: RepaintBoundary(
-                child: CustomPaint(
-                  painter: _ParticlePainter(particles: _particles, isDarkMode: isDarkMode),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final size = Size(constraints.maxWidth, constraints.maxHeight);
+
+            if (_lastSize != size) {
+              _lastSize = size;
+              _initializeParticles(size);
+            }
+
+            for (var particle in _particles) {
+              particle.y -= particle.speed;
+              if (particle.y < 0) {
+                particle.y = size.height;
+                particle.x = _random.nextDouble() * size.width;
+              }
+            }
+
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      painter: _ParticlePainter(particles: _particles, isDarkMode: isDarkMode),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            widget.child,
-          ],
+                widget.child,
+              ],
+            );
+          },
         );
       },
     );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/widgets/buildLabel.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/widgets/build_label.dart';
+import '../../../../../core/constants/media_query.dart';
 
 Widget buildDropdownColumn({
   required BuildContext context,

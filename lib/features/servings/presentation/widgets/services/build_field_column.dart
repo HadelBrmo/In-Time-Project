@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/widgets/buildLabel.dart';
-import '../../../../../core/widgets/customTextFormField.dart';
-import '../../../../auth/presentation/widgets/signup_widgets/customDatePickerField.dart';
+import '../../../../../core/widgets/build_label.dart';
+import '../../../../../core/widgets/custom_text_form_field.dart';
+import '../../../../auth/presentation/widgets/signup_widgets/custom_date_picker_field.dart';
 import 'build_days_picker.dart';
 import 'build_time_range_picker.dart';
 

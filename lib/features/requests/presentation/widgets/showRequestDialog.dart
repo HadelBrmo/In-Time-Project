@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/dialog_utils.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
 

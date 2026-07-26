@@ -11,13 +11,13 @@ import 'package:confetti/confetti.dart';
 import 'package:in_time/core/widgets/custom_button.dart';
 import 'package:in_time/features/servings/presentation/pages/services/serviceStrategy.dart';
 import '../../../../../../core/constants/app_colors.dart';
-import '../../../../../../core/constants/mediaQuery.dart';
-import '../../../../../../core/widgets/customAppBar.dart';
-import '../../../../../../core/widgets/customTextFormField.dart';
+import '../../../../../../core/constants/media_query.dart';
+import '../../../../../../core/widgets/custom_app_bar.dart';
+import '../../../../../../core/widgets/custom_text_form_field.dart';
 import '../../../../../../core/widgets/loading_widget.dart';
-import '../../../../../../core/widgets/buildLabel.dart';
-import '../../../../../core/widgets/customDrawer.dart';
-import '../../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
+import '../../../../../../core/widgets/build_label.dart';
+import '../../../../../../core/widgets/custom_drawer.dart';
+import '../../../../auth/presentation/pages/location_picker/location_picker_page.dart';
 import '../../../domain/entity/service_entity.dart';
 import '../../../domain/entity/category_entity.dart';
 import '../../../domain/entity/payment_unit_entity.dart';
@@ -276,8 +276,14 @@ class _PaidServicePageState extends State<PaidServicePage> {
           listener: (context, state) {
             if (state is AddServiceSuccessState) {
               _confettiController.play();
-              SnackBarUtils.showSuccess(context, context.tr('service_add_success'));
-              Future.delayed(const Duration(seconds: 1), () {
+              
+              final message = widget.isVoluntary 
+                  ? context.tr('voluntary_service_review') 
+                  : context.tr('service_add_success');
+                  
+              SnackBarUtils.showSuccess(context, message);
+              
+              Future.delayed(const Duration(seconds: 2), () {
                 if (mounted) Navigator.pop(context);
               });
             }
@@ -384,7 +390,9 @@ class _PaidServicePageState extends State<PaidServicePage> {
                                   context: context,
                                   label: context.tr('service_type'),
                                   hint: context.tr('select_type'),
-                                  selectedValue: selectedMeetingType,
+                                  selectedValue: selectedMeetingType == 'online'
+                                      ? context.tr('online')
+                                      : (selectedMeetingType == 'direct' ? context.tr('direct') : null),
                                   items: meetingOptions.map((e) => e == 'online' ? context.tr('online') : context.tr('direct')).toList(),
                                   onChanged: (val) {
                                     setState(() {

@@ -3,12 +3,14 @@ import 'package:equatable/equatable.dart';
 
 import '../../../servings/domain/entity/service_entity.dart';
 
+import 'request_status.dart';
+
 class RequestEntity extends Equatable {
   final int id;
   final int servingId;
   final int requesterId;
   final String message;
-  final String status;
+  final RequestStatus status;
   final String createdAt;
   final ServiceEntity serving;
 

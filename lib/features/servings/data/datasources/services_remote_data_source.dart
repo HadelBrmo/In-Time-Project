@@ -33,6 +33,8 @@ abstract class ServicesRemoteDataSource {
   });
 
   Future<void> toggleServingStatus(int id, bool isActive);
+
+  Future<void> rateServing(int serviceId, double rating);
 }
 
 class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
@@ -251,6 +253,31 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       );
     } catch (e) {
       throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء تغيير حالة الخدمة');
+    }
+  }
+
+  @override
+  Future<void> rateServing(int serviceId, double rating) async {
+    try {
+      final response = await dio.post(
+        '/servings/$serviceId/rate',
+        data: {'rating': rating},
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return;
+      } else {
+        throw ServerExceptionWithDetails(
+          statusCode: response.statusCode,
+          message: response.data['message'] ?? 'فشل إرسال التقييم',
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data['message'] ?? 'فشل الاتصال بالسيرفر',
+      );
+    } catch (e) {
+      throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء إرسال التقييم');
     }
   }
 }

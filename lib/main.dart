@@ -3,24 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'core/services/fcm_service.dart';
+import 'core/services/notification_service.dart';
 import 'core/localization/app_localizations.dart';
 import 'firebase_options.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/global_particles_wrapper.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
-import 'features/chat/presentation/bloc/chatBloc/blocEvent.dart';
 import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'features/localization/presentation/bloc/locale_bloc.dart';
 import 'features/localization/presentation/bloc/locale_event.dart';
 import 'features/localization/presentation/bloc/locale_state.dart';
+import 'features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'features/notifications/presentation/bloc/notifications_event.dart';
+import 'features/settings/presentation/bloc/settings_bloc.dart';
+import 'features/settings/presentation/bloc/settings_event.dart';
 import 'features/theme/presentation/bloc/theme_bloc.dart';
 import 'features/theme/presentation/bloc/theme_event.dart';
 import 'features/theme/presentation/bloc/theme_state.dart';
-import 'package:in_time/features/auth/presentation/bloc/SignUpBloc/sign up_bloc.dart';
-import 'package:in_time/features/auth/presentation/bloc/loginBloc/login_bloc.dart';
+import 'package:in_time/features/auth/presentation/bloc/sign_up_bloc/sign_up_bloc.dart';
+import 'package:in_time/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
@@ -36,8 +40,18 @@ void main() async {
 
   await di.init();
 
+  await LocalNotificationService.initialize();
+  await FCMService.initialize();
+
   final authLocal = sl<AuthLocalDataSource>();
   final String? token = await authLocal.getToken();
+
+  if (token != null && token.isNotEmpty) {
+    final fcmToken = await FCMService.getToken();
+    if (fcmToken != null) {
+      sl<NotificationsBloc>().add(UpdateFcmTokenEvent(fcmToken));
+    }
+  }
 
   final String initialRoute = (token != null && token.isNotEmpty) ? '/home' : '/';
 
@@ -62,6 +76,9 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return MultiBlocProvider(
           providers: [
+            BlocProvider<NotificationsBloc>(
+              create: (context) => sl<NotificationsBloc>()..add(GetUnreadNotificationsCountEvent()),
+            ),
             BlocProvider<ServicesBloc>(
               create: (context) => sl<ServicesBloc>(),
             ),
@@ -80,12 +97,16 @@ class _MyAppState extends State<MyApp> {
             BlocProvider<ThemeBloc>(
               create: (context) => sl<ThemeBloc>()..add(GetSavedThemeEvent()),
             ),
+            BlocProvider<SettingsBloc>(
+              create: (context) => sl<SettingsBloc>()..add(GetSavedSettingsEvent()),
+            ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, themeState) {
               return BlocBuilder<LocaleBloc, LocaleState>(
                 builder: (context, localeState) {
                   return MaterialApp(
+                    navigatorKey: AppRoutes.navigatorKey,
                     localizationsDelegates: const [
                       AppLocalizations.delegate,
                       GlobalMaterialLocalizations.delegate,

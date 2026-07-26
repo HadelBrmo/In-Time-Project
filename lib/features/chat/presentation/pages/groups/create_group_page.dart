@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/widgets/customAppBar.dart';
+import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/responsive_layout.dart';
 import '../../bloc/chatBloc/chatBloc.dart';
 import 'select_members_page.dart';

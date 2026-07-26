@@ -4,12 +4,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../../../localization/presentation/bloc/locale_bloc.dart';
 import '../../../localization/presentation/bloc/locale_event.dart';
 import '../../../localization/presentation/bloc/locale_state.dart';
+import '../../../notifications/presentation/bloc/notifications_bloc.dart';
+import '../../../notifications/presentation/bloc/notifications_event.dart';
+import '../../../notifications/presentation/bloc/notifications_state.dart';
+import '../bloc/settings_bloc.dart';
+import '../bloc/settings_event.dart';
+import '../bloc/settings_state.dart';
 import '../../../theme/presentation/bloc/theme_bloc.dart';
 import '../../../theme/presentation/bloc/theme_event.dart';
 import '../../../theme/presentation/bloc/theme_state.dart';
@@ -25,7 +31,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
-  bool _isNotificationsEnabled = true;
   late final AnimationController _controller;
 
   @override
@@ -139,23 +144,56 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
             context: context,
             title: context.tr('notifications'),
             icon: Icons.notifications_none_outlined,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  context.tr('enable_notifications'),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Switch(
-                  value: _isNotificationsEnabled,
-                  activeColor: AppColors.primaryColor,
-                  onChanged: (value) {
-                    setState(() => _isNotificationsEnabled = value);
-                  },
-                ),
-              ],
+            child: BlocBuilder<NotificationsBloc, NotificationsState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr('enable_notifications'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Switch(
+                      value: state.isNotificationsEnabled,
+                      activeColor: AppColors.primaryColor,
+                      onChanged: (value) {
+                        context.read<NotificationsBloc>().add(ToggleNotificationsEvent(value));
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('animations'),
+            icon: Icons.auto_awesome_motion_outlined,
+            child: BlocBuilder<SettingsBloc, SettingsState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr('enable_animations'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Switch(
+                      value: state.animationsEnabled,
+                      activeColor: AppColors.primaryColor,
+                      onChanged: (value) {
+                        context.read<SettingsBloc>().add(ToggleAnimationsEvent(value));
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           SizedBox(height: 16.h),
@@ -185,16 +223,21 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         }
                         context.read<ThemeBloc>().add(ToggleThemeEvent());
                       },
-                      child: SizedBox(
-                        height: 50.h,
-                        width: 80.w,
-                        child: Lottie.asset(
-                          'assets/animations/dark_mode_animation.json',
-                          controller: _controller,
-                          onLoaded: (composition) {
-                            _controller.duration = composition.duration;
-                          },
-                        ),
+                      child: BlocBuilder<SettingsBloc, SettingsState>(
+                        builder: (context, settingsState) {
+                          return SizedBox(
+                            height: 50.h,
+                            width: 80.w,
+                            child: Lottie.asset(
+                              'assets/animations/dark_mode_animation.json',
+                              controller: _controller,
+                              animate: settingsState.animationsEnabled,
+                              onLoaded: (composition) {
+                                _controller.duration = composition.duration;
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

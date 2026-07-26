@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../../core/error/failures.dart';
 import '../../entity/service_entity.dart';
-import '../../repository/servicesRepository.dart';
+import '../../repository/services_repository.dart';
 
 class GetServiceDetailsUseCase {
   final ServicesRepository repository;

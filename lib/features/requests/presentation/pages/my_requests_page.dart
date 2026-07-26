@@ -6,15 +6,16 @@ import 'package:in_time/core/constants/app_routes.dart';
 import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/snackbar_utils.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
-import '../../../../core/widgets/customAppBar.dart';
-import '../../../../core/widgets/customErrorView.dart';
+import '../../../../core/constants/media_query.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import 'package:in_time/features/requests/presentation/pages/receivedRequestsView.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
 import '../bloc/request_state.dart';
+import '../../domain/entity/request_status.dart';
 import '../widgets/request_card.dart';
 import '../widgets/showDeleteDialog.dart';
 
@@ -29,11 +30,12 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
   String searchQuery = "";
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  RequestStatus? selectedStatus;
 
   @override
   void initState() {
     super.initState();
-    context.read<RequestsBloc>().add(FetchMyRequestsEvent());
+    context.read<RequestsBloc>().add(const FetchMyRequestsEvent());
   }
 
   @override
@@ -116,7 +118,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: media.width * 0.05,
-            vertical: media.height * 0.03,
+            vertical: media.height * 0.02,
           ),
           child: Container(
             height: media.height * 0.055,
@@ -169,6 +171,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
             ),
           ),
         ),
+        _buildFilterBar(media, isDarkMode),
         Expanded(
           child: TabBarView(
             children: [
@@ -260,6 +263,71 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFilterBar(MediaQueryHelper media, bool isDarkMode) {
+    return Container(
+      height: 45.h,
+      margin: EdgeInsets.only(bottom: 10.h),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: media.width * 0.05),
+        children: [
+          _buildFilterChip(
+            label: context.tr('view_all'),
+            isSelected: selectedStatus == null,
+            onTap: () {
+              setState(() => selectedStatus = null);
+              context.read<RequestsBloc>().add(const FetchMyRequestsEvent());
+            },
+          ),
+          ...RequestStatus.values.map((status) {
+            return _buildFilterChip(
+              label: status.getTranslation(context),
+              isSelected: selectedStatus == status,
+              color: status.color,
+              onTap: () {
+                setState(() => selectedStatus = status);
+                context.read<RequestsBloc>().add(FetchMyRequestsEvent(status: status));
+              },
+            );
+          }).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(left: 8.w),
+      child: FilterChip(
+        label: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : (color ?? AppColors.primaryColor),
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 12.sp,
+          ),
+        ),
+        selected: isSelected,
+        onSelected: (_) => onTap(),
+        backgroundColor: Colors.transparent,
+        selectedColor: color ?? AppColors.primaryColor,
+        checkmarkColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: isSelected ? Colors.transparent : (color?.withOpacity(0.5) ?? AppColors.primaryColor.withOpacity(0.3)),
+          ),
+        ),
+        showCheckmark: false,
+      ),
     );
   }
 }

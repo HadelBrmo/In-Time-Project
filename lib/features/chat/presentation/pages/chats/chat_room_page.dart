@@ -6,7 +6,7 @@ import '../../../../../core/constants/app_routes.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/localization/app_localizations.dart';
-import '../../../../../core/widgets/customAppBar.dart';
+import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../domain/entities/message_entity.dart';
 import '../../bloc/chatBloc/blocEvent.dart';
 import '../../bloc/chatBloc/blocState.dart';

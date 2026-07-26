@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/assets_image.dart';
 import '../../../../../core/localization/app_localizations.dart';
-import '../../../../../core/theme/glowingBorder.dart';
+import '../../../../../core/theme/glowing_border.dart';
 import '../../../../servings/domain/entity/service_entity.dart';
 import '../../pages/serviceDetailsPage.dart';
 

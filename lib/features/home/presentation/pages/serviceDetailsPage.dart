@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/localization/app_localizations.dart';
-import 'package:in_time/core/widgets/customAppBar.dart';
+import 'package:in_time/core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../injection_container.dart';
@@ -11,7 +11,6 @@ import '../../../servings/presentation/bloc/service/services_state.dart';
 import '../widgets/service_details/buildDetailsBody.dart';
 import '../bloc/home_bloc.dart';
 
-// ✅ 1. استيراد صفحة تقديم الشكوى (بمسار مطلق آمن)
 import 'package:in_time/features/complaints/presentation/pages/submit_complaint_page.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
@@ -41,7 +40,20 @@ class ServiceDetailsPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
-          title: Text(context.tr('service_details')),
+          title: BlocBuilder<ServicesBloc, ServicesState>(
+            builder: (context, state) {
+              if (state is ServiceDetailsLoaded) {
+                return Text(
+                  state.service.title,
+                  style: theme.textTheme.titleSmall?.copyWith(fontSize: 18, color: Colors.white),
+                );
+              }
+              return Text(
+                context.tr('service_details'),
+                style: theme.textTheme.titleSmall?.copyWith(fontSize: 18, color: Colors.white),
+              );
+            },
+          ),
        
           actions: [
             BlocBuilder<ServicesBloc, ServicesState>(

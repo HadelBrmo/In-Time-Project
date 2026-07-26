@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/assets_image.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/global_particles_wrapper.dart';
 

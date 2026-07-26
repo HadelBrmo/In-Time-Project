@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/widgets/customAppBar.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../widgets/buildFeatureCard.dart';
 import '../widgets/buildSectionTitle.dart';

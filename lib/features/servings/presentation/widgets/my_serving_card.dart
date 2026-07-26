@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/dialog_utils.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../home/presentation/pages/serviceDetailsPage.dart';
 import '../../domain/entity/service_entity.dart';
@@ -233,9 +233,9 @@ class MyServingCard extends StatelessWidget {
   void _showDeactivateConfirmation(BuildContext context) {
     DialogUtils.showConfirmDialog(
       context: context,
-      title: "إلغاء تنشيط الخدمة",
-      message: "هل أنت متأكد من رغبتك في إلغاء تنشيط هذه الخدمة؟ لن تظهر الخدمة للمستخدمين الآخرين بعد ذلك.",
-      confirmText: "تأكيد الإلغاء",
+      title: context.tr('deactivate_service_title'),
+      message: context.tr('deactivate_service_msg'),
+      confirmText: context.tr('confirm_deactivation'),
       confirmColor: Colors.red,
       onConfirm: () {
         onToggleStatus(false);

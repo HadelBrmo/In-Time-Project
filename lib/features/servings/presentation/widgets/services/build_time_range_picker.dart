@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/widgets/customTextFormField.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/widgets/custom_text_form_field.dart';
+import '../../../../../core/constants/media_query.dart';
 
 Widget buildTimeRangePicker({
   required BuildContext context,

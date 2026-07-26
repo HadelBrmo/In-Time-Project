@@ -7,14 +7,14 @@ import '../../../../core/constants/app_routes.dart';
 import '../../../../core/utils/snackbar_utils.dart';
 import '../../../../core/utils/dialog_utils.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/widgets/customAppBar.dart';
-import '../../../../core/widgets/customDrawer.dart';
-import '../../../../core/widgets/customErrorView.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/custom_drawer.dart';
+import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/global_particles_wrapper.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../core/widgets/voice_input_button.dart';
-import '../../../auth/presentation/pages/locationPicker/location_picker_page.dart';
+import '../../../auth/presentation/pages/location_picker/location_picker_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -138,19 +138,20 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomAppBar(
           title: Text(
             context.tr('available_services'),
-            style: theme.textTheme.titleSmall,
+
           ),
+          showNotificationBell: true,
           actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.person,
-                color: AppColors.whiteColor,
-                size: 24,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.profilePage);
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(
+            //     Icons.person,
+            //     color: AppColors.whiteColor,
+            //     size: 24,
+            //   ),
+            //   onPressed: () {
+            //     Navigator.pushNamed(context, AppRoutes.profilePage);
+            //   },
+            // ),
             IconButton(
               icon: const Icon(
                 Icons.near_me_outlined,

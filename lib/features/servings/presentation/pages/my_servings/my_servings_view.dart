@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/utils/snackbar_utils.dart';
-import '../../../../../core/widgets/customAppBar.dart';
+import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../bloc/my_servings/my_servings_bloc.dart';
 import '../../bloc/my_servings/my_servings_event.dart';

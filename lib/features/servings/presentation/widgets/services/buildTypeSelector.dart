@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/localization/app_localizations.dart';
 
 class ServiceTypeSelector extends StatefulWidget {
   final Function(int) onTypeChanged;
@@ -18,7 +19,6 @@ class ServiceTypeSelector extends StatefulWidget {
 
 class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
   late int selectedType;
-  final List<String> types = ["تبادلية", "تطوعية", "مدفوعة"];
 
   @override
   void initState() {
@@ -28,6 +28,11 @@ class _ServiceTypeSelectorState extends State<ServiceTypeSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> types = [
+      context.tr('exchange'),
+      context.tr('voluntary'),
+      context.tr('paid'),
+    ];
     final media = MediaQueryHelper(context);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 

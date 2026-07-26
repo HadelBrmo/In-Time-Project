@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entity/request_status.dart';
+
 abstract class RequestsEvent extends Equatable {
   const RequestsEvent();
 
@@ -7,7 +9,14 @@ abstract class RequestsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchMyRequestsEvent extends RequestsEvent {}
+class FetchMyRequestsEvent extends RequestsEvent {
+  final RequestStatus? status;
+
+  const FetchMyRequestsEvent({this.status});
+
+  @override
+  List<Object?> get props => [status];
+}
 
 class CreateServingRequestEvent extends RequestsEvent {
   final int servingId;

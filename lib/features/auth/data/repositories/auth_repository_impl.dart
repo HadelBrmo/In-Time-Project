@@ -1,7 +1,6 @@
 ﻿// features/auth/data/repositories/auth_repository_impl.dart
 import 'dart:io';
 import 'package:dartz/dartz.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/login_auth_entity.dart';
@@ -12,12 +11,10 @@ import '../datasources/auth_remote_data_source.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
-  final SharedPreferences sharedPreferences;
 
   AuthRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
-    required this.sharedPreferences,
   });
 
   @override
@@ -28,7 +25,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final loginModel = await remoteDataSource.login(email: email, password: password);
 
-      await _saveAuthData(loginModel);
+      await localDataSource.saveAuthData(loginModel);
 
       return Right(loginModel);
     } on ServerExceptionWithDetails catch (e) {
@@ -46,7 +43,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final loginModel = await remoteDataSource.refreshToken(refreshToken: refreshToken);
 
-      await _saveAuthData(loginModel);
+      await localDataSource.saveAuthData(loginModel);
 
       return Right(loginModel);
     } on ServerExceptionWithDetails catch (e) {
@@ -56,30 +53,6 @@ class AuthRepositoryImpl implements AuthRepository {
       ));
     } catch (e) {
       return Left(ServerFailure());
-    }
-  }
-
-  Future<void> _saveAuthData(LoginAuthEntity authData) async {
-    if (authData.userId != 0) {
-      await sharedPreferences.setInt("user_id", authData.userId);
-    }
-    await sharedPreferences.setString("full_name", authData.fullName);
-    await sharedPreferences.setString("email", authData.email);
-    if (authData.profilePicture != null) {
-      await sharedPreferences.setString("profile_picture", authData.profilePicture!);
-    }
-    if (authData.token.isNotEmpty) {
-      await localDataSource.saveToken(authData.token);
-      await sharedPreferences.setString("token", authData.token);
-    }
-    if (authData.refreshToken != null) {
-      await sharedPreferences.setString("refresh_token", authData.refreshToken!);
-    }
-    if (authData.expiresIn != null) {
-      await sharedPreferences.setInt("expires_in", authData.expiresIn!);
-      // اختيارياً: حفظ وقت الانتهاء الفعلي
-      final expiryTime = DateTime.now().add(Duration(seconds: authData.expiresIn!));
-      await sharedPreferences.setString("expiry_date", expiryTime.toIso8601String());
     }
   }
 

@@ -7,7 +7,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/utils/auth_utils.dart';
 import '../../../../../core/widgets/responsive_layout.dart';
-import '../../../../../core/widgets/customAppBar.dart';
+import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../domain/entities/chatEntity.dart';

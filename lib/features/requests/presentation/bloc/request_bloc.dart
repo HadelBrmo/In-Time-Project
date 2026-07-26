@@ -19,7 +19,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
 
     on<FetchMyRequestsEvent>((event, emit) async {
       emit(RequestsLoadingState());
-      final result = await getMyRequestsUseCase();
+      final result = await getMyRequestsUseCase(status: event.status);
       result.fold(
             (failure) {
           if (failure is ServerFailure) {

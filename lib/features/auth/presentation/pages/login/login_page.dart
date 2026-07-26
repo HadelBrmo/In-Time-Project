@@ -2,15 +2,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/media_query.dart';
 
 import '../../../../../core/widgets/global_particles_wrapper.dart';
 import '../../../../../core/widgets/responsive_layout.dart';
 import '../../../../../injection_container.dart';
-import '../../bloc/loginBloc/login_bloc.dart';
-import '../../widgets/login_widgets/LoginForm.dart';
-import '../../widgets/login_widgets/buildFooterLinks.dart';
-import '../../widgets/login_widgets/buildHeader.dart';
+import '../../bloc/login_bloc/login_bloc.dart';
+import '../../widgets/login_widgets/login_form.dart';
+import '../../widgets/login_widgets/build_footer_links.dart';
+import '../../widgets/login_widgets/build_header.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

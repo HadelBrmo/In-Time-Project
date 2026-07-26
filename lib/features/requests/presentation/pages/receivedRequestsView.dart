@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/widgets/customErrorView.dart';
+import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/utils/snackbar_utils.dart';
 import '../bloc/received_requests/received_requests_bloc.dart';

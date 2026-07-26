@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 
 Widget buildDisabledButton(MediaQueryHelper media, bool isDarkMode, String text) {
   return Container(

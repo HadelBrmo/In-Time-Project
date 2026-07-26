@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../repository/chatRepository.dart';
+import '../repository/chat_repository.dart';
 
 class AddMembersUseCase {
   final ChatRepository repository;

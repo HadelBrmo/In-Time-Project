@@ -5,7 +5,7 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entity/category_entity.dart';
 import '../../domain/entity/payment_unit_entity.dart';
 import '../../domain/entity/service_entity.dart';
-import '../../domain/repository/servicesRepository.dart';
+import '../../domain/repository/services_repository.dart';
 import '../datasources/services_remote_data_source.dart';
 import '../datasources/services_local_datasource.dart';
 import '../models/service_model.dart';
@@ -169,6 +169,21 @@ class ServicesRepositoryImpl implements ServicesRepository {
       return const Right(unit);
     } on ServerExceptionWithDetails catch (e) {
       return Left(ServerFailureWithDetails(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> rateServing(int serviceId, double rating) async {
+    try {
+      await remoteDataSource.rateServing(serviceId, rating);
+      return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(
+        statusCode: e.statusCode,
+        message: e.message,
+      ));
     } catch (e) {
       return Left(ServerFailure());
     }

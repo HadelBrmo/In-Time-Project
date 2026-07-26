@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../../core/error/failures.dart';
-import '../../repository/servicesRepository.dart';
+import '../../repository/services_repository.dart';
 
 class ToggleServingStatusUseCase {
   final ServicesRepository repository;

@@ -1,11 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/error/failures.dart';
-import '../../../domain/usecases/service/add_service_usecase.dart';
-import '../../../domain/usecases/service/get_categories_usecase.dart';
-import '../../../domain/usecases/service/get_payment_units_usecase.dart';
-import '../../../domain/usecases/service/get_service_details_usecase.dart';
-import '../../../domain/usecases/service/get_availability_slots_usecase.dart';
-import '../../../domain/entity/service_entity.dart';
+import 'package:in_time/core/error/failures.dart';
+import 'package:in_time/features/servings/domain/usecases/service/add_service_usecase.dart';
+import 'package:in_time/features/servings/domain/usecases/service/get_categories_usecase.dart';
+import 'package:in_time/features/servings/domain/usecases/service/get_payment_units_usecase.dart';
+import 'package:in_time/features/servings/domain/usecases/service/get_service_details_usecase.dart';
+import 'package:in_time/features/servings/domain/usecases/service/get_availability_slots_usecase.dart';
+import 'package:in_time/features/servings/domain/usecases/service/rate_serving_usecase.dart';
+import 'package:in_time/features/servings/domain/entity/service_entity.dart';
 import 'services_event.dart';
 import 'services_state.dart';
 
@@ -15,6 +16,7 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
   final GetCategoriesUseCase getCategoriesUseCase;
   final GetServiceDetailsUseCase getServiceDetailsUseCase;
   final GetAvailabilitySlotsUseCase getAvailabilitySlotsUseCase;
+  final RateServingUseCase rateServingUseCase;
 
   ServicesBloc({
     required this.addServiceUseCase,
@@ -22,12 +24,14 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
     required this.getCategoriesUseCase,
     required this.getServiceDetailsUseCase,
     required this.getAvailabilitySlotsUseCase,
+    required this.rateServingUseCase,
   }) : super(ServicesInitial()) {
     on<AddServiceSubmittedEvent>(_onAddServiceSubmitted);
     on<GetPaymentUnitsEvent>(_onGetPaymentUnits);
     on<GetCategoriesEvent>(_onGetCategories);
     on<GetServiceDetailsEvent>(_onGetServiceDetails);
     on<GetAvailabilitySlotsEvent>(_onGetAvailabilitySlots);
+    on<RateServingEvent>(_onRateServing);
   }
 
   Future<void> _onAddServiceSubmitted(
@@ -126,5 +130,24 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
         },
       );
     }
+  }
+
+  Future<void> _onRateServing(
+    RateServingEvent event,
+    Emitter<ServicesState> emit,
+  ) async {
+    emit(RateServingLoading());
+
+    final result = await rateServingUseCase.call(event.serviceId, event.rating);
+    result.fold(
+      (failure) {
+        if (failure is ServerFailureWithDetails) {
+          emit(RateServingError(failure.message));
+        } else {
+          emit(const RateServingError("فشل إرسال التقييم"));
+        }
+      },
+      (success) => emit(RateServingSuccess()),
+    );
   }
 }

@@ -32,6 +32,7 @@ class PaidServiceStrategy implements ServiceStrategy {
       locationLat: lat ?? 33.5138,
       locationLng: lng ?? 36.2765,
       meetingType: meetingType,
+      servingTypeId: "1", // 1: paid
     );
   }
 }
@@ -48,11 +49,12 @@ class BarterServiceStrategy implements ServiceStrategy {
       description: description,
       categoryId: categoryId,
       costAmount: hours,
-      unitId: "2",
+      unitId: "1",
       locationAddress: locationAddress,
       locationLat: lat ?? 33.5138,
       locationLng: lng ?? 36.2765,
       meetingType: meetingType,
+      servingTypeId: "2",
     );
   }
 }
@@ -68,12 +70,13 @@ class VolunteerServiceStrategy implements ServiceStrategy {
       title: title,
       description: description,
       categoryId: categoryId,
-      costAmount: hours,
-      unitId: "2",
+      costAmount: "0",
+      unitId: "1",
       locationAddress: locationAddress,
       locationLat: lat ?? 33.5138,
       locationLng: lng ?? 36.2765,
       meetingType: meetingType,
+      servingTypeId: "3",
     );
   }
 }

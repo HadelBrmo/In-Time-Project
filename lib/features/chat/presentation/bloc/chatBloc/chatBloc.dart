@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/repository/chatRepository.dart';
+import '../../../domain/repository/chat_repository.dart';
 import '../../../domain/usecases/add_members_usecase.dart';
 import '../../../domain/usecases/create_group_chat_usecase.dart';
 import '../../../domain/usecases/create_personal_chat_usecase.dart';
-import '../../../domain/usecases/getChatsUseCase.dart';
+import '../../../domain/usecases/get_chats_use_case.dart';
 import '../../../domain/usecases/get_members_usecase.dart';
 import '../../../domain/usecases/get_messages_usecase.dart';
 import '../../../domain/usecases/mark_as_read_usecase.dart';

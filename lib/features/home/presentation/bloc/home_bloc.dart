@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../servings/domain/entity/service_entity.dart';
-import '../../domain/usecases/get_nearby_servings_useCase.dart';
+import '../../domain/usecases/get_nearby_servings_use_case.dart';
 import '../../domain/usecases/search_services_usecase.dart';
-import '../../domain/usecases/update_availability_useCase.dart';
+import '../../domain/usecases/update_availability_use_case.dart';
 import 'home_event.dart';
 import 'home_state.dart';
 
@@ -47,6 +47,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<FetchNearbyServingsEvent>((event, emit) async {
+      print("🏠 [HomeBloc] FetchNearbyServingsEvent triggered: lat=${event.lat}, lng=${event.lng}");
       List<ServiceEntity> oldServings = [];
       if (!event.isRefresh && state is HomeSuccessState) {
         oldServings = (state as HomeSuccessState).servings;
@@ -64,8 +65,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
 
       failureOrData.fold(
-            (failure) => emit(HomeErrorState(message: "فشل جلب الخدمات القريبة")),
+            (failure) {
+          print("🏠 [HomeBloc] FetchNearbyServingsEvent failed");
+          emit(const HomeErrorState(message: "فشل جلب الخدمات القريبة"));
+        },
             (newServings) {
+          print("🏠 [HomeBloc] FetchNearbyServingsEvent success: ${newServings.length} services found");
           final activeNewServings = newServings.where((s) => s.status == 'active' || s.status == null).toList();
           final fullList = event.isRefresh ? activeNewServings : [...oldServings, ...activeNewServings];
           emit(HomeSuccessState(servings: fullList));

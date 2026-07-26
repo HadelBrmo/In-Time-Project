@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
-import '../../../../core/constants/enums.dart';
-import '../../domain/entity/request_entity.dart';
+import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/media_query.dart';
+import 'package:in_time/injection_container.dart';
+import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
+import 'package:in_time/features/servings/presentation/widgets/services/rating_dialog.dart';
+import 'package:in_time/features/requests/domain/entity/request_status.dart';
+import 'package:in_time/features/requests/domain/entity/request_entity.dart';
 
 Widget buildRequestCard({
   required BuildContext context,
@@ -15,7 +19,7 @@ Widget buildRequestCard({
 }) {
   final cardColor = isDarkMode ? AppColors.blackColor : Colors.white;
   final titleColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
-  final statusEnum = RequestStatus.fromString(request.status);
+  final statusEnum = request.status;
 
   String formatRequestTime(String createdAtString) {
     try {
@@ -89,7 +93,7 @@ Widget buildRequestCard({
                               borderRadius: BorderRadius.circular(media.width * 0.02),
                             ),
                             child: Text(
-                              statusEnum.translation,
+                              statusEnum.getTranslation(context),
                               style: TextStyle(
                                 color: statusEnum.color,
                                 fontWeight: FontWeight.bold,
@@ -138,6 +142,34 @@ Widget buildRequestCard({
                           ),
                         ],
                       ),
+                      if (statusEnum == RequestStatus.completed) ...[
+                        SizedBox(height: media.height * 0.015),
+                        const Divider(height: 1),
+                        SizedBox(height: media.height * 0.01),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => BlocProvider(
+                                  create: (context) => sl<ServicesBloc>(),
+                                  child: RatingDialog(serviceId: request.serving.id ?? 0),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.star_outline_rounded, color: AppColors.yellowColor, size: 20),
+                            label: const Text(
+                              "قيم الخدمة",
+                              style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

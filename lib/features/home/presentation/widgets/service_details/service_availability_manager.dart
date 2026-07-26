@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
-import '../../../../../core/theme/glowingBorder.dart';
+import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/theme/glowing_border.dart';
 import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../servings/presentation/bloc/service/services_bloc.dart';
 import '../../../../servings/presentation/bloc/service/services_event.dart';

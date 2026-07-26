@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../../core/utils/dialog_utils.dart';
-import '../../../../../core/widgets/customAppBar.dart';
+import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
 import '../../bloc/chatBloc/chatBloc.dart';

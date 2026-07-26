@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_time/core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/media_query.dart';
 import '../../../../core/widgets/custom_button.dart';
 
 class BalanceCard extends StatelessWidget {

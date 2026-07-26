@@ -2,12 +2,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/responsive_layout.dart';
-import '../../../../core/widgets/customAppBar.dart';
-import '../../../../core/widgets/customDrawer.dart';
-import '../../../../core/widgets/customErrorView.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/custom_drawer.dart';
+import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../injection_container.dart';
 import '../../data/models/user_profile_model.dart';
 import '../bloc/profile_bloc.dart';

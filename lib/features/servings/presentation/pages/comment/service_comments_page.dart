@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:in_time/core/widgets/customAppBar.dart';
+import 'package:in_time/core/widgets/custom_app_bar.dart';
 
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../domain/entity/comment_entity.dart';
 import '../../bloc/comment/comment_bloc.dart';

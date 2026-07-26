@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/message_entity.dart';
-import '../repository/chatRepository.dart';
+import '../repository/chat_repository.dart';
 
 class SendMessageUseCase {
   final ChatRepository repository;

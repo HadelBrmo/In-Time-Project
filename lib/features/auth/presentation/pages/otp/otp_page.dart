@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../core/widgets/responsive_layout.dart';
-import '../../bloc/SignUpBloc/sign up_state.dart';
-import '../../bloc/SignUpBloc/sign up_bloc.dart';
-import '../../bloc/SignUpBloc/sign up_event.dart';
-import '../../bloc/otpBloc/otpEvent.dart';
-import '../../bloc/otpBloc/otpState.dart';
-import '../../bloc/otpBloc/otp_bloc.dart';
+import '../../bloc/sign_up_bloc/sign_up_state.dart';
+import '../../bloc/sign_up_bloc/sign_up_bloc.dart';
+import '../../bloc/sign_up_bloc/sign_up_event.dart';
+import '../../bloc/otp_bloc/otp_event.dart';
+import '../../bloc/otp_bloc/otp_state.dart';
+import '../../bloc/otp_bloc/otp_bloc.dart';
 
 class OtpPage extends StatefulWidget {
   final String email;

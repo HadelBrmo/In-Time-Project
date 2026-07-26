@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/media_query.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String? imageUrl;

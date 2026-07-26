@@ -7,9 +7,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:in_time/features/chat/data/datasources/chatRemoteDataSource.dart';
-import 'package:in_time/features/chat/data/repository/chatRepositoryImpl.dart';
-import 'package:in_time/features/chat/domain/usecases/getChatsUseCase.dart';
+import 'package:in_time/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:in_time/features/chat/data/repository/chat_repository_impl.dart';
+import 'package:in_time/features/chat/domain/usecases/get_chats_use_case.dart';
 import 'package:in_time/injection_container.dart' as di;
 import 'package:in_time/main.dart';
 

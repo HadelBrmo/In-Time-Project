@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/entity/category_entity.dart';
-import '../../../domain/entity/payment_unit_entity.dart';
-import '../../../domain/entity/service_entity.dart';
+import 'package:in_time/features/servings/domain/entity/category_entity.dart';
+import 'package:in_time/features/servings/domain/entity/payment_unit_entity.dart';
+import 'package:in_time/features/servings/domain/entity/service_entity.dart';
 
 abstract class ServicesState extends Equatable {
   const ServicesState();
@@ -73,6 +73,18 @@ class ServiceDetailsLoaded extends ServicesState {
 class ServiceDetailsError extends ServicesState {
   final String message;
   const ServiceDetailsError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class RateServingLoading extends ServicesState {}
+
+class RateServingSuccess extends ServicesState {}
+
+class RateServingError extends ServicesState {
+  final String message;
+  const RateServingError(this.message);
 
   @override
   List<Object?> get props => [message];

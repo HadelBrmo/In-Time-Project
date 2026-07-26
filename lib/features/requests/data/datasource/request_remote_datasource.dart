@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
+
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
-import '../models/request_model.dart';
+import '../../domain/entity/request_status.dart';
 import '../models/received_request_model.dart';
+import '../models/request_model.dart';
 
 abstract class RequestRemoteDataSource {
-  Future<List<RequestModel>> getMyRequests();
+  Future<List<RequestModel>> getMyRequests({RequestStatus? status});
   Future<String> createServingRequest({
     required int servingId,
     String? message,
@@ -26,9 +28,14 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
   RequestRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<List<RequestModel>> getMyRequests() async {
+  Future<List<RequestModel>> getMyRequests({RequestStatus? status}) async {
     try {
-      final response = await dio.get(ApiStringConstants.getMyRequestsUrl);
+      final response = await dio.get(
+        ApiStringConstants.getMyRequestsUrl,
+        queryParameters: {
+          if (status != null) 'status': status.toJson(),
+        },
+      );
       if (response.statusCode == 200) {
         final List<dynamic> dataJson = response.data['data'];
         return dataJson.map((json) => RequestModel.fromJson(json)).toList();

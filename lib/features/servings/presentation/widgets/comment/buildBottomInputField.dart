@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_time/core/utils/auth_utils.dart';
 
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/mediaQuery.dart';
+import '../../../../../core/constants/media_query.dart';
 import '../../bloc/comment/comment_bloc.dart';
 import '../../bloc/comment/comment_event.dart';
 
