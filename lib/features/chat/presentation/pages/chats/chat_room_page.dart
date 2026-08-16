@@ -9,6 +9,8 @@ import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/localization/app_localizations.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
+import '../../../../../core/utils/dialog_utils.dart';
 
 import '../../bloc/chat_bloc/bloc_event.dart';
 import '../../bloc/chat_bloc/bloc_state.dart';
@@ -17,6 +19,9 @@ import '../../widgets/messages/build_message_bubble.dart';
 import '../../widgets/messages/build_message_input_field.dart';
 import '../../widgets/messages/typing_indicator.dart';
 import '../groups/group_info_page.dart';
+import '../../../../requests/presentation/bloc/request_bloc.dart';
+import '../../../../requests/presentation/bloc/request_event.dart';
+import '../../../../requests/presentation/bloc/request_state.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final int chatId;
@@ -37,6 +42,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   String? _profilePicture;
   Timer? _typingTimer;
   bool _isTyping = false;
+  int? _requestId;
+  String? _unitId;
 
   late ChatBloc _chatBloc;
 
@@ -52,6 +59,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         final currentChat = chatState.chats[index];
         _groupCreatedBy = currentChat.createdBy;
         _profilePicture = widget.isGroup ? null : currentChat.otherUser?.profilePicture;
+        _requestId = currentChat.requestId;
+        _unitId = currentChat.unitId;
       }
     }
 
@@ -125,159 +134,196 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     final theme = Theme.of(context);
     final isMobile = MediaQuery.sizeOf(context).width < 600;
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: GestureDetector(
-          onTap: widget.isGroup
-              ? () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider.value(
-                  value: context.read<ChatBloc>(),
-                  child: GroupInfoPage(
-                    chatId: widget.chatId,
-                    chatTitle: widget.chatTitle,
-                    createdBy: _groupCreatedBy,
+    return BlocProvider(
+      create: (context) => sl<RequestsBloc>(),
+      child: BlocListener<RequestsBloc, RequestsState>(
+        listener: (context, state) {
+          if (state is RequestActionSuccessState) {
+            SnackBarUtils.showSuccess(context, state.message);
+          } else if (state is RequestActionErrorState) {
+            SnackBarUtils.showError(context, state.message);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          appBar: CustomAppBar(
+            title: GestureDetector(
+              onTap: widget.isGroup
+                  ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider.value(
+                      value: context.read<ChatBloc>(),
+                      child: GroupInfoPage(
+                        chatId: widget.chatId,
+                        chatTitle: widget.chatTitle,
+                        createdBy: _groupCreatedBy,
+                      ),
+                    ),
+                  ),
+                );
+              }
+                  : null,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.white24,
+                    backgroundImage: _profilePicture != null ? NetworkImage(_profilePicture!) : null,
+                    child: _profilePicture == null
+                        ? Icon(widget.isGroup ? Icons.groups_rounded : Icons.person_rounded, color: Colors.white, size: 18)
+                        : null,
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Text(
+                      widget.chatTitle,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              if (_unitId == "2" && _requestId != null)
+                Builder(
+                  builder: (context) => BlocBuilder<RequestsBloc, RequestsState>(
+                    builder: (context, state) {
+                      if (state is RequestActionLoadingState) {
+                        return const Center(child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)),
+                        ));
+                      }
+                      return IconButton(
+                        icon: const Icon(Icons.check_circle_outline, color: Colors.greenAccent, size: 28),
+                        tooltip: 'طلب إكمال الخدمة',
+                        onPressed: () => _showCompletionDialog(context),
+                      );
+                    },
                   ),
                 ),
-              ),
-            );
-          }
-              : null,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.white24,
-                backgroundImage: _profilePicture != null ? NetworkImage(_profilePicture!) : null,
-                child: _profilePicture == null
-                    ? Icon(widget.isGroup ? Icons.groups_rounded : Icons.person_rounded, color: Colors.white, size: 18)
-                    : null,
-              ),
-              const SizedBox(width: 10),
-              Flexible(
-                child: Text(
-                  widget.chatTitle,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 20),
-                ),
+              IconButton(
+                icon: const Icon(Icons.videocam_rounded, color: Colors.white),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.videoCallPage,
+                    arguments: {
+                      'chatId': widget.chatId,
+                      'chatTitle': widget.chatTitle,
+                    },
+                  );
+                },
               ),
             ],
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check, color: Colors.white),
-            onPressed: () {
-
-            },
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.videocam_rounded, color: Colors.white),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.videoCallPage,
-                arguments: {
-                  'chatId': widget.chatId,
-                  'chatTitle': widget.chatTitle,
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 900),
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocConsumer<ChatBloc, ChatState>(
-                  buildWhen: (previous, current) {
-                    return current is MessagesLoading ||
-                        current is MessagesLoaded ||
-                        current is ChatsError;
-                  },
-                  listener: (context, state) {
-                    if (state is ChatDraftLoaded && state.draftText != null) {
-                      _messageController.text = state.draftText!;
-                      _messageController.selection = TextSelection.fromPosition(
-                        TextPosition(offset: _messageController.text.length),
-                      );
-                    }
-
-                    if (state is MessagesLoaded) {
-                      context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
-
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0.0,
-                            duration: 300.ms,
-                            curve: Curves.easeOut,
+          body: Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 900),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: BlocConsumer<ChatBloc, ChatState>(
+                      buildWhen: (previous, current) {
+                        return current is MessagesLoading ||
+                            current is MessagesLoaded ||
+                            current is ChatsError;
+                      },
+                      listener: (context, state) {
+                        if (state is ChatDraftLoaded && state.draftText != null) {
+                          _messageController.text = state.draftText!;
+                          _messageController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _messageController.text.length),
                           );
                         }
-                      });
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is MessagesLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is MessagesLoaded) {
-                      final messages = state.messages.reversed.toList();
-                      return ListView.builder(
-                        controller: _scrollController,
-                        reverse: true,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index];
-                          final isMe = message.senderId == _currentUserId;
-                          return MessageBubble(
-                            message: message,
-                            isMe: isMe,
-                            isGroup: widget.isGroup,
-                          )
-                              .animate()
-                              .fade(duration: 200.ms)
-                              .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic);
-                        },
-                      );
-                    }
-                    return Center(
-                      child: Text(
-                        context.tr('start_chat_now'),
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    );
-                  },
-                ),
+
+                        if (state is MessagesLoaded) {
+                          context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
+
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (_scrollController.hasClients) {
+                              _scrollController.animateTo(
+                                0.0,
+                                duration: 300.ms,
+                                curve: Curves.easeOut,
+                              );
+                            }
+                          });
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is MessagesLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (state is MessagesLoaded) {
+                          final messages = state.messages.reversed.toList();
+                          return ListView.builder(
+                            controller: _scrollController,
+                            reverse: true,
+                            padding: const EdgeInsets.all(16),
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) {
+                              final message = messages[index];
+                              final isMe = message.senderId == _currentUserId;
+                              return MessageBubble(
+                                message: message,
+                                isMe: isMe,
+                                isGroup: widget.isGroup,
+                              )
+                                  .animate()
+                                  .fade(duration: 200.ms)
+                                  .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic);
+                            },
+                          );
+                        }
+                        return Center(
+                          child: Text(
+                            context.tr('start_chat_now'),
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  BlocBuilder<ChatBloc, ChatState>(
+                    buildWhen: (prev, curr) => curr is UserTypingState,
+                    builder: (context, state) {
+                      if (state is UserTypingState && state.isTyping) {
+                        return TypingIndicator(
+                          userName: widget.isGroup ? state.userName : null,
+                        ).animate().fade().slideY(begin: 0.5, end: 0);
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  MessageInputField(
+                    controller: _messageController,
+                    onSend: _sendMessage,
+                    onChanged: _onTextChanged,
+                  ),
+                ],
               ),
-              BlocBuilder<ChatBloc, ChatState>(
-                buildWhen: (prev, curr) => curr is UserTypingState,
-                builder: (context, state) {
-                  if (state is UserTypingState && state.isTyping) {
-                    return TypingIndicator(
-                      userName: widget.isGroup ? state.userName : null,
-                    ).animate().fade().slideY(begin: 0.5, end: 0);
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              MessageInputField(
-                controller: _messageController,
-                onSend: _sendMessage,
-                onChanged: _onTextChanged,
-              ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  void _showCompletionDialog(BuildContext context) {
+    DialogUtils.showConfirmDialog(
+      context: context,
+      title: "إكمال الخدمة",
+      message: "هل أنت متأكد من أنك انتهيت من تقديم الخدمة بالكامل؟ سيتم إرسال طلب للمستفيد لتأكيد ذلك.",
+      confirmText: "نعم، انتهيت",
+      onConfirm: () {
+        if (_requestId != null) {
+          context.read<RequestsBloc>().add(RequestCompletionEvent(_requestId!));
+        }
+      },
     );
   }
 }

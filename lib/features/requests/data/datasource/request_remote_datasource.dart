@@ -17,6 +17,11 @@ abstract class RequestRemoteDataSource {
   Future<List<ReceivedRequestGroupModel>> getReceivedRequests();
   Future<void> acceptRequest(int id);
   Future<void> rejectRequest(int id);
+  Future<void> requestCompletion(int requestId);
+  Future<void> confirmCompletion(int requestId);
+  Future<void> requestRevision(int requestId, int days);
+  Future<void> disputeRequest(int requestId);
+  Future<List<RequestModel>> getPendingConfirmations();
 }
 
 
@@ -126,5 +131,35 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
     if (response.statusCode != 200) {
       throw ServerException();
     }
+  }
+
+  @override
+  Future<void> requestCompletion(int requestId) async {
+    await dio.put(ApiStringConstants.requestCompletionUrl(requestId));
+  }
+
+  @override
+  Future<void> confirmCompletion(int requestId) async {
+    await dio.put(ApiStringConstants.confirmCompletionUrl(requestId));
+  }
+
+  @override
+  Future<void> requestRevision(int requestId, int days) async {
+    await dio.put(
+      ApiStringConstants.requestRevisionUrl(requestId),
+      data: {'revision_days': days},
+    );
+  }
+
+  @override
+  Future<void> disputeRequest(int requestId) async {
+    await dio.put(ApiStringConstants.disputeRequestUrl(requestId));
+  }
+
+  @override
+  Future<List<RequestModel>> getPendingConfirmations() async {
+    final response = await dio.get(ApiStringConstants.getPendingConfirmationsUrl);
+    final List data = response.data['data'];
+    return data.map((json) => RequestModel.fromJson(json)).toList();
   }
 }

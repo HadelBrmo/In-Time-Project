@@ -12,6 +12,7 @@ import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import 'package:in_time/features/requests/presentation/pages/received_requests_view.dart';
+import 'package:in_time/features/requests/presentation/pages/pending_confirmations_view.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
 import '../bloc/request_state.dart';
@@ -53,7 +54,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: DefaultTabController(
-        length: 2,
+        length: 3,
         initialIndex: 0,
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -172,6 +173,24 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                     ],
                   ),
                 ),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.fact_check_outlined, size: 18),
+                      SizedBox(width: media.width * 0.02),
+                      Flexible(
+                        child: Text(
+                          "تأكيدات",
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
+                            fontSize: 18,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -264,6 +283,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                 ),
               ),
               ReceivedRequestsView(searchQuery: searchQuery),
+              const PendingConfirmationsView(),
             ],
           ),
         ),

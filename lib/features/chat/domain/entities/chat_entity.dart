@@ -11,6 +11,9 @@ class ChatEntity extends Equatable {
   final MessageEntity? latestMessage;
   final ChatUserEntity? otherUser;
   final List<ChatUserEntity>? users;
+  final int? requestId;
+  final String? unitId;
+  final bool? isProvider;
 
   const ChatEntity({
     required this.id,
@@ -21,10 +24,13 @@ class ChatEntity extends Equatable {
     this.latestMessage,
     this.otherUser,
     this.users,
+    this.requestId,
+    this.unitId,
+    this.isProvider,
   });
 
   @override
-  List<Object?> get props => [id, type, name, createdBy, unreadCount, latestMessage, otherUser, users];
+  List<Object?> get props => [id, type, name, createdBy, unreadCount, latestMessage, otherUser, users, requestId, unitId, isProvider];
 }
 
 class ChatUserEntity extends Equatable {

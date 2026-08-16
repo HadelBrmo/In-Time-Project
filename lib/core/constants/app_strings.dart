@@ -20,6 +20,11 @@
   static const String getReceivedRequestsUrl = '/servings/requests/received';
   static String acceptRequestUrl(int id) => '/servings/requests/$id/accept';
   static String rejectRequestUrl(int id) => '/servings/requests/$id/reject';
+  static String requestCompletionUrl(int id) => '/servings/requests/$id/request-completion';
+  static String confirmCompletionUrl(int id) => '/servings/requests/$id/confirm-completion';
+  static String requestRevisionUrl(int id) => '/servings/requests/$id/request-revision';
+  static String disputeRequestUrl(int id) => '/servings/requests/$id/dispute';
+  static const String getPendingConfirmationsUrl = '/servings/requests/pending-confirmation';
   static const String getMyServingsUrl = '/servings/my';
   static String updateAvailabilityUrl(int serviceId) => '/servings/$serviceId/availability-slots';
   static const String chatsUrl = '/chats';

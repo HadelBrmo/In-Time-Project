@@ -18,8 +18,10 @@ class SavedServicesPage extends StatelessWidget {
     final isDarkMode = theme.brightness == Brightness.dark;
     final mediaQuery = MediaQuery.of(context);
 
+    final currentDirection = Directionality.of(context);
+
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: currentDirection,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
@@ -33,9 +35,9 @@ class SavedServicesPage extends StatelessWidget {
                     onPressed: () {
                       DialogUtils.showConfirmDialog(
                         context: context,
-                        title: "مسح الكل",
-                        message: "هل أنت متأكد من رغبتك في مسح جميع الخدمات المحفوظة؟",
-                        confirmText: "مسح الكل",
+                        title: context.tr('clear_all'),
+                        message: context.tr('clear_all_saved_confirm_desc'),
+                        confirmText: context.tr('clear_all'),
                         confirmColor: Colors.red,
                         onConfirm: () {
                           context.read<SavedServicesBloc>().add(ClearAllSavedServicesEvent());
@@ -69,7 +71,7 @@ class SavedServicesPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          "لا توجد خدمات محفوظة بعد",
+                          context.tr('no_saved_services_yet'),
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: isDarkMode ? Colors.white70 : Colors.black54,
                           ),
@@ -92,9 +94,9 @@ class SavedServicesPage extends StatelessWidget {
                       onLongPress: () {
                         DialogUtils.showConfirmDialog(
                           context: context,
-                          title: "إزالة من المحفوظات",
-                          message: "هل أنت متأكد من رغبتك في إزالة هذه الخدمة من قائمة المحفوظات؟",
-                          confirmText: "إزالة",
+                          title: context.tr('remove_from_saved'),
+                          message: context.tr('remove_from_saved_confirm_desc'),
+                          confirmText: context.tr('remove'),
                           confirmColor: Colors.red,
                           onConfirm: () {
                             context.read<SavedServicesBloc>().add(ToggleSaveServiceEvent(serving));

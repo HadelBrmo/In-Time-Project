@@ -49,6 +49,29 @@ class CreateRequestErrorState extends RequestsState {
 }
 class RequestDeletedSuccessState extends RequestsState {}
 
+class RequestActionLoadingState extends RequestsState {}
+
+class RequestActionSuccessState extends RequestsState {
+  final String message;
+  const RequestActionSuccessState(this.message);
+  @override
+  List<Object?> get props => [message];
+}
+
+class RequestActionErrorState extends RequestsState {
+  final String message;
+  const RequestActionErrorState(this.message);
+  @override
+  List<Object?> get props => [message];
+}
+
+class PendingConfirmationsLoadedState extends RequestsState {
+  final List<RequestEntity> requests;
+  const PendingConfirmationsLoadedState(this.requests);
+  @override
+  List<Object?> get props => [requests];
+}
+
 class RequestDeleteErrorState extends RequestsState {
   final String message;
   const RequestDeleteErrorState({required this.message});

@@ -12,6 +12,8 @@ class ChatModel extends ChatEntity {
     super.latestMessage,
     super.otherUser,
     super.users,
+    super.requestId,
+    super.unitId
   });
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,8 @@ class ChatModel extends ChatEntity {
       users: json['users'] != null
           ? (json['users'] as List).map((u) => ChatUserModel.fromJson(u as Map<String, dynamic>)).toList()
           : null,
+      requestId: json['request_id'] as int?,
+      unitId: json['unit_id']?.toString(),
     );
   }
 
@@ -43,6 +47,8 @@ class ChatModel extends ChatEntity {
       'latest_message': (latestMessage as MessageModel?)?.toJson(),
       'other_user': (otherUser as ChatUserModel?)?.toJson(),
       'users': users?.map((u) => (u as ChatUserModel).toJson()).toList(),
+      'request_id': requestId,
+      'unit_id': unitId,
     };
   }
 }

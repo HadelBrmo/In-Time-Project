@@ -94,4 +94,54 @@ class RequestRepositoryImpl implements RequestRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> requestCompletion(int requestId) async {
+    try {
+      await remoteDataSource.requestCompletion(requestId);
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> confirmCompletion(int requestId) async {
+    try {
+      await remoteDataSource.confirmCompletion(requestId);
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> requestRevision(int requestId, int days) async {
+    try {
+      await remoteDataSource.requestRevision(requestId, days);
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> disputeRequest(int requestId) async {
+    try {
+      await remoteDataSource.disputeRequest(requestId);
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<RequestEntity>>> getPendingConfirmations() async {
+    try {
+      final result = await remoteDataSource.getPendingConfirmations();
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

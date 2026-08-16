@@ -55,6 +55,7 @@ import 'features/requests/domain/usecases/get_my_requests_usecase.dart';
 import 'features/requests/domain/usecases/accept_request_usecase.dart';
 import 'features/requests/domain/usecases/get_received_requests_usecase.dart';
 import 'features/requests/domain/usecases/reject_request_usecase.dart';
+import 'features/requests/domain/usecases/handle_completion_usecases.dart';
 import 'features/requests/presentation/bloc/received_requests/received_requests_bloc.dart';
 import 'features/requests/presentation/bloc/request_bloc.dart';
 import 'core/network/decorators/logging_interceptor.dart';
@@ -229,6 +230,11 @@ Future<void> init() async {
     getMyRequestsUseCase: sl(),
     createServingRequestUseCase: sl(),
     deleteRequestUseCase: sl(),
+    requestCompletionUseCase: sl(),
+    confirmCompletionUseCase: sl(),
+    requestRevisionUseCase: sl(),
+    disputeRequestUseCase: sl(),
+    getPendingConfirmationsUseCase: sl(),
   ));
   sl.registerFactory(() => ReceivedRequestsBloc(
     getReceivedRequestsUseCase: sl(),
@@ -312,6 +318,14 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetReceivedRequestsUseCase(sl()));
   sl.registerLazySingleton(() => AcceptRequestUseCase(sl()));
   sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
+
+  // Completion Use Cases
+  sl.registerLazySingleton(() => RequestCompletionUseCase(sl()));
+  sl.registerLazySingleton(() => ConfirmCompletionUseCase(sl()));
+  sl.registerLazySingleton(() => RequestRevisionUseCase(sl()));
+  sl.registerLazySingleton(() => DisputeRequestUseCase(sl()));
+  sl.registerLazySingleton(() => GetPendingConfirmationsUseCase(sl()));
+
   sl.registerLazySingleton(() => GetMyWalletsUseCase(sl()));
   sl.registerLazySingleton(() => GetMyServingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateServingUseCase(sl()));

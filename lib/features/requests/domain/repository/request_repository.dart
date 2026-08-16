@@ -18,4 +18,9 @@ abstract class RequestRepository {
   Future<Either<Failure, List<ReceivedRequestGroupEntity>>> getReceivedRequests();
   Future<Either<Failure, Unit>> acceptRequest(int id);
   Future<Either<Failure, Unit>> rejectRequest(int id);
+  Future<Either<Failure, Unit>> requestCompletion(int requestId);
+  Future<Either<Failure, Unit>> confirmCompletion(int requestId);
+  Future<Either<Failure, Unit>> requestRevision(int requestId, int days);
+  Future<Either<Failure, Unit>> disputeRequest(int requestId);
+  Future<Either<Failure, List<RequestEntity>>> getPendingConfirmations();
 }
