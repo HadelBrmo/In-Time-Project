@@ -10,11 +10,11 @@ import '../../../../../core/widgets/responsive_layout.dart';
 import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/loading_widget.dart';
-import '../../../domain/entities/chatEntity.dart';
-import '../../bloc/chatBloc/blocState.dart';
-import '../../bloc/chatBloc/chatBloc.dart';
-import '../../widgets/chats/buildChatList.dart';
-import '../../widgets/chats/buildChatTile.dart';
+import '../../../domain/entities/chat_entity.dart';
+import '../../bloc/chat_bloc/bloc_state.dart';
+import '../../bloc/chat_bloc/chat_bloc.dart';
+import '../../widgets/chats/build_chat_list.dart';
+import '../../widgets/chats/build_chat_tile.dart';
 import 'chat_room_page.dart';
 
 class ChatsPage extends StatefulWidget {

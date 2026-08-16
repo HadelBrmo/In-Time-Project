@@ -176,7 +176,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print("Handling a background message: ${message.messageId}");
   }
-  
+
   if (message.notification == null) {
     FCMService.processMessage(message);
   }

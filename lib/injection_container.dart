@@ -27,7 +27,9 @@ import 'features/chat/domain/usecases/add_members_usecase.dart';
 import 'features/chat/domain/usecases/remove_member_usecase.dart';
 import 'features/chat/domain/usecases/update_group_usecase.dart';
 import 'features/chat/domain/usecases/leave_group_usecase.dart';
-import 'features/chat/presentation/bloc/chatBloc/chatBloc.dart';
+import 'features/chat/domain/usecases/send_typing_usecase.dart';
+import 'features/chat/domain/usecases/stop_typing_usecase.dart';
+import 'features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 
 // Services/Strategies Features
 import 'features/home/data/datasources/home_datasources.dart';
@@ -83,7 +85,7 @@ import 'features/servings/domain/usecases/service/get_categories_usecase.dart';
 import 'features/servings/domain/usecases/service/get_payment_units_usecase.dart';
 import 'features/servings/domain/usecases/service/get_service_details_usecase.dart';
 import 'features/servings/domain/usecases/service/get_availability_slots_usecase.dart';
-import 'features/servings/domain/usecases/service/rate_serving_usecase.dart';
+import 'features/servings/domain/usecases/service/get_serving_types_usecase.dart';
 import 'features/servings/presentation/bloc/comment/comment_bloc.dart';
 import 'features/servings/presentation/bloc/service/services_bloc.dart';
 
@@ -103,12 +105,22 @@ import 'features/complaints/presentation/bloc/complaint_bloc.dart';
 
 // Profile Feature 👤
 import 'features/profile/data/datasources/profile_remote_data_source.dart';
-import 'features/profile/data/datasources/profile_local_data_source.dart';
 import 'features/profile/data/repositories/profile_repository_impl.dart';
 import 'features/profile/domain/repositories/i_profile_repository.dart';
 import 'features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
+import 'features/servings/domain/usecases/service/rate_serving_usecase.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
+import 'features/theme/data/datasource/theme_local_data_source.dart';
+import 'features/theme/presentation/bloc/theme_bloc.dart';
+
+// Saved Services 📑
+import 'features/servings/data/datasources/saved_services_local_datasource.dart';
+import 'features/servings/data/repository/saved_services_repository_impl.dart';
+import 'features/servings/domain/repository/saved_services_repository.dart';
+import 'features/servings/presentation/bloc/saved_services/saved_services_bloc.dart';
+
+// Notifications Feature 🔔
 import 'features/notifications/data/datasources/notification_remote_data_source.dart';
 import 'features/notifications/data/repositories/notification_repository_impl.dart';
 import 'features/notifications/domain/repositories/notification_repository.dart';
@@ -118,10 +130,8 @@ import 'features/notifications/domain/usecases/mark_all_notifications_as_read.da
 import 'features/notifications/domain/usecases/mark_notification_as_read.dart';
 import 'features/notifications/domain/usecases/update_fcm_token.dart';
 import 'features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'features/settings/data/datasources/settings_local_data_source.dart';
-import 'features/settings/presentation/bloc/settings_bloc.dart';
-import 'features/theme/data/datasource/theme_local_data_source.dart';
-import 'features/theme/presentation/bloc/theme_bloc.dart';
+
+import 'core/services/pusher_service.dart';
 
 final sl = GetIt.instance;
 
@@ -130,6 +140,8 @@ Future<void> init() async {
   final sharedPrefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPrefs);
   sl.registerLazySingleton<FlutterSecureStorage>(() => const FlutterSecureStorage());
+
+  sl.registerLazySingleton<PusherService>(() => PusherService());
 
   final localeBox = await Hive.openBox('locale_box');
   sl.registerLazySingleton<Box>(() => localeBox);
@@ -140,6 +152,10 @@ Future<void> init() async {
         baseUrl: ApiStringConstants.baseUrl,
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       ),
     );
 
@@ -166,13 +182,6 @@ Future<void> init() async {
   }
 
   // ==================== 1. Blocs (Factory) ====================
-  sl.registerLazySingleton(() => NotificationsBloc(
-    getMyNotificationsUseCase: sl(),
-    markNotificationAsReadUseCase: sl(),
-    markAllNotificationsAsReadUseCase: sl(),
-    getUnreadNotificationsCountUseCase: sl(),
-    updateFcmTokenUseCase: sl(),
-  ));
   sl.registerFactory(() => ChatBloc(
     chatRepository: sl(),
     getChatsUseCase: sl(),
@@ -187,6 +196,9 @@ Future<void> init() async {
     removeMemberUseCase: sl(),
     updateGroupUseCase: sl(),
     leaveGroupUseCase: sl(),
+    sendTypingUseCase: sl(),
+    stopTypingUseCase: sl(),
+    pusherService: sl(),
   ));
   sl.registerFactory(() => OtpBloc(sendOtpUseCase: sl()));
   sl.registerFactory(
@@ -196,7 +208,8 @@ Future<void> init() async {
       getCategoriesUseCase: sl(),
       getServiceDetailsUseCase: sl(),
       getAvailabilitySlotsUseCase: sl(),
-      rateServingUseCase: sl(),
+      rateServingUseCase: sl(), getServingTypesUseCase: sl(
+        ),
     ),
   );
   sl.registerFactory(() => LoginBloc(loginUseCase: sl()));
@@ -244,19 +257,23 @@ Future<void> init() async {
     updateProfileUseCase: sl(),
   ));
 
+  sl.registerLazySingleton(() => NotificationsBloc(
+    getMyNotificationsUseCase: sl(),
+    markNotificationAsReadUseCase: sl(),
+    markAllNotificationsAsReadUseCase: sl(),
+    getUnreadNotificationsCountUseCase: sl(),
+    updateFcmTokenUseCase: sl(),
+  ));
+
+  sl.registerFactory(() => SavedServicesBloc(repository: sl()));
+
   // 🌟 حقن البلوك الخاص باللغة
-  sl.registerFactory(() => SettingsBloc(localDataSource: sl()));
   sl.registerFactory(() => LocaleBloc(localDataSource: sl()));
 
   // 🌟 حقن البلوك الخاص بالثيم
   sl.registerFactory(() => ThemeBloc(localDataSource: sl()));
 
   // ==================== 2. Use Cases (LazySingleton) ====================
-  sl.registerLazySingleton(() => GetMyNotificationsUseCase(sl()));
-  sl.registerLazySingleton(() => MarkNotificationAsReadUseCase(sl()));
-  sl.registerLazySingleton(() => MarkAllNotificationsAsReadUseCase(sl()));
-  sl.registerLazySingleton(() => GetUnreadNotificationsCountUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateFcmTokenUseCase(sl()));
   sl.registerLazySingleton(() => GetChatsUseCase(sl()));
   sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
   sl.registerLazySingleton(() => SendMessageUseCase(sl()));
@@ -269,6 +286,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RemoveMemberUseCase(sl()));
   sl.registerLazySingleton(() => UpdateGroupUseCase(sl()));
   sl.registerLazySingleton(() => LeaveGroupUseCase(sl()));
+  sl.registerLazySingleton(() => SendTypingUseCase(sl()));
+  sl.registerLazySingleton(() => StopTypingUseCase(sl()));
   sl.registerLazySingleton(() => AddServiceUseCase(sl()));
   sl.registerLazySingleton(() => SendOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
@@ -277,6 +296,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
   sl.registerLazySingleton(() => GetAvailabilitySlotsUseCase(sl()));
+  sl.registerLazySingleton(() => GetServingTypesUseCase(sl()));
   sl.registerLazySingleton(() => RateServingUseCase(sl()));
   sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
   sl.registerLazySingleton(() => GetNearbyServingsUseCase(sl()));
@@ -301,11 +321,17 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
 
+  // Notifications Use Cases
+  sl.registerLazySingleton(() => GetMyNotificationsUseCase(sl()));
+  sl.registerLazySingleton(() => MarkNotificationAsReadUseCase(sl()));
+  sl.registerLazySingleton(() => MarkAllNotificationsAsReadUseCase(sl()));
+  sl.registerLazySingleton(() => GetUnreadNotificationsCountUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateFcmTokenUseCase(sl()));
+
   // ==================== 3. Repositories (LazySingleton) ====================
-  sl.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl(), sharedPreferences: sl()));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<RequestRepository>(() => RequestRepositoryImpl(remoteDataSource: sl()));
@@ -313,12 +339,14 @@ Future<void> init() async {
   sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(
     remoteDataSource: sl(),
-    localDataSource: sl(),
+    sharedPreferences: sl(),
   ));
+  sl.registerLazySingleton<SavedServicesRepository>(() => SavedServicesRepositoryImpl(localDataSource: sl()));
+
+  sl.registerLazySingleton<NotificationRepository>(
+      () => NotificationRepositoryImpl(remoteDataSource: sl()));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
-  sl.registerLazySingleton<NotificationRemoteDataSource>(() => NotificationRemoteDataSourceImpl(dio: sl()));
-  sl.registerLazySingleton<SettingsLocalDataSource>(() => SettingsLocalDataSourceImpl(sharedPreferences: sl()));
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ChatLocalDataSource>(() => ChatLocalDataSourceImpl());
   sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
@@ -326,13 +354,17 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl());
-  sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl(), sharedPreferences: sl()));
+  sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl()));
   sl.registerLazySingleton<CommentRemoteDataSource>(() => CommentRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<RequestRemoteDataSource>(() => RequestRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ComplaintRemoteDataSource>(() => ComplaintRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(dio: sl()));
-  sl.registerLazySingleton<ProfileLocalDataSource>(() => ProfileLocalDataSourceImpl(sharedPreferences: sl()));
+
+  sl.registerLazySingleton<SavedServicesLocalDataSource>(() => SavedServicesLocalDataSourceImpl(sharedPreferences: sl()));
+
+  sl.registerLazySingleton<NotificationRemoteDataSource>(
+      () => NotificationRemoteDataSourceImpl(dio: sl()));
 
   sl.registerLazySingleton<LocaleLocalDataSource>(() => LocaleLocalDataSourceImpl(box: sl<Box>()));
   sl.registerLazySingleton<ThemeLocalDataSource>(() => ThemeLocalDataSourceImpl(box: sl<Box>()));

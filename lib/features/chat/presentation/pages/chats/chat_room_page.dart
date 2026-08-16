@@ -1,18 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/constants/app_routes.dart';
+import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/localization/app_localizations.dart';
-import '../../../../../core/widgets/custom_app_bar.dart';
-import '../../../domain/entities/message_entity.dart';
-import '../../bloc/chatBloc/blocEvent.dart';
-import '../../bloc/chatBloc/blocState.dart';
-import '../../bloc/chatBloc/chatBloc.dart';
-import '../../widgets/messages/buildMessageBubble.dart';
-import '../../widgets/messages/buildMessageInputField.dart';
+
+import '../../bloc/chat_bloc/bloc_event.dart';
+import '../../bloc/chat_bloc/bloc_state.dart';
+import '../../bloc/chat_bloc/chat_bloc.dart';
+import '../../widgets/messages/build_message_bubble.dart';
+import '../../widgets/messages/build_message_input_field.dart';
+import '../../widgets/messages/typing_indicator.dart';
 import '../groups/group_info_page.dart';
 
 class ChatRoomPage extends StatefulWidget {
@@ -32,6 +35,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   late int _currentUserId;
   int? _groupCreatedBy;
   String? _profilePicture;
+  Timer? _typingTimer;
+  bool _isTyping = false;
 
   late ChatBloc _chatBloc;
 
@@ -51,7 +56,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     }
 
     context.read<ChatBloc>().add(ClearMessagesEvent());
-    context.read<ChatBloc>().startMessagesPulling(widget.chatId);
+    context.read<ChatBloc>().startMessagesPulling(widget.chatId, isGroup: widget.isGroup);
     context.read<ChatBloc>().add(MarkAsReceivedEvent(widget.chatId));
     context.read<ChatBloc>().add(MarkAsReadEvent(widget.chatId));
     context.read<ChatBloc>().add(LoadChatDraftEvent(widget.chatId));
@@ -70,8 +75,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       draftText: _messageController.text,
     ));
 
-    _chatBloc.stopMessagesPulling();
+    _chatBloc.stopMessagesPulling(isGroup: widget.isGroup);
 
+    _typingTimer?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -79,9 +85,38 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   void _sendMessage() {
     if (_messageController.text.trim().isNotEmpty) {
+      _stopTyping();
       context.read<ChatBloc>().add(SendMessageEvent(widget.chatId, _messageController.text.trim()));
       _messageController.clear();
       context.read<ChatBloc>().add(SaveChatDraftEvent(chatId: widget.chatId, draftText: ''));
+    }
+  }
+
+  void _onTextChanged(String value) {
+    if (value.isEmpty) {
+      _stopTyping();
+    } else {
+      _startTyping();
+    }
+  }
+
+  void _startTyping() {
+    if (!_isTyping) {
+      _isTyping = true;
+      context.read<ChatBloc>().add(StartTypingEvent(widget.chatId));
+    }
+
+    _typingTimer?.cancel();
+    _typingTimer = Timer(const Duration(seconds: 3), () {
+      _stopTyping();
+    });
+  }
+
+  void _stopTyping() {
+    if (_isTyping) {
+      _isTyping = false;
+      context.read<ChatBloc>().add(StopTypingEvent(widget.chatId));
+      _typingTimer?.cancel();
     }
   }
 
@@ -223,9 +258,21 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   },
                 ),
               ),
+              BlocBuilder<ChatBloc, ChatState>(
+                buildWhen: (prev, curr) => curr is UserTypingState,
+                builder: (context, state) {
+                  if (state is UserTypingState && state.isTyping) {
+                    return TypingIndicator(
+                      userName: widget.isGroup ? state.userName : null,
+                    ).animate().fade().slideY(begin: 0.5, end: 0);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
               MessageInputField(
                 controller: _messageController,
                 onSend: _sendMessage,
+                onChanged: _onTextChanged,
               ),
             ],
           ),

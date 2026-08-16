@@ -1,5 +1,5 @@
 ﻿class ApiStringConstants {
-  static const String baseUrl = 'http://ali.ba-tech.tech/api';
+  static const String baseUrl = 'https://ali.ba-tech.tech/api';
   static const String baseStorageUrl = 'http://ali.ba-tech.tech/storage/';
    static const String addPaidServiceUrl = '/servings/add-paid';
   static const String addVoluntaryServiceUrl = '/servings/add-voluntary';
@@ -7,6 +7,7 @@
   static const String getPaymentUnitsUrl = '/payment-units';
   static const String getCategoriesUrl = '/categories/search';
   static const String getCategoriesAllUrl = '/categories';
+  static const String getServingTypesUrl = '/serving-types';
   static const String loginUrl = '/auth/login';
   static const String sendOtpUrl = '/auth/send-otp';
   static const String registerCustomerUrl = '/auth/register-customer';
@@ -29,9 +30,16 @@
   static String membersUrl(int chatId) => '/chats/$chatId/members';
   static String removeMemberUrl(int chatId, int userId) => '/chats/$chatId/members/$userId';
   static String leaveGroupUrl(int chatId) => '/chats/$chatId/leave';
+  static String typingUrl(int chatId) => '/chats/$chatId/typing';
+  static String stopTypingUrl(int chatId) => '/chats/$chatId/stop-typing';
   static const String complaintsUrl = '/complaints';
   static const String myComplaintsUrl = '/my-complaints';
   static String userProfileUrl(int userId) => '/users/$userId';
   static const String updateProfileUrl = '/profile';
+
+  static const String wsHost = 'ali.ba-tech.tech';
+  static const String wsKey = 'app-key';
+  static const int wsPort = 443;
+  static const String wsAuthEndpoint = '/broadcasting/auth';
 }
 

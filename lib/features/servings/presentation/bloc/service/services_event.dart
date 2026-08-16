@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:in_time/features/servings/domain/entity/service_entity.dart';
+import '../../../domain/entity/service_entity.dart';
 
 abstract class ServicesEvent extends Equatable {
   const ServicesEvent();
@@ -29,6 +29,8 @@ class GetPaymentUnitsEvent extends ServicesEvent {}
 
 class GetCategoriesEvent extends ServicesEvent {}
 
+class GetServingTypesEvent extends ServicesEvent {}
+
 class GetServiceDetailsEvent extends ServicesEvent {
   final int serviceId;
 
@@ -47,11 +49,11 @@ class GetAvailabilitySlotsEvent extends ServicesEvent {
   List<Object?> get props => [serviceId];
 }
 
-class RateServingEvent extends ServicesEvent {
+class RateServiceEvent extends ServicesEvent {
   final int serviceId;
   final double rating;
 
-  const RateServingEvent(this.serviceId, this.rating);
+  const RateServiceEvent({required this.serviceId, required this.rating});
 
   @override
   List<Object?> get props => [serviceId, rating];

@@ -47,7 +47,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<FetchNearbyServingsEvent>((event, emit) async {
-      print("🏠 [HomeBloc] FetchNearbyServingsEvent triggered: lat=${event.lat}, lng=${event.lng}");
       List<ServiceEntity> oldServings = [];
       if (!event.isRefresh && state is HomeSuccessState) {
         oldServings = (state as HomeSuccessState).servings;
@@ -65,12 +64,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
 
       failureOrData.fold(
-            (failure) {
-          print("🏠 [HomeBloc] FetchNearbyServingsEvent failed");
-          emit(const HomeErrorState(message: "فشل جلب الخدمات القريبة"));
-        },
+            (failure) => emit(HomeErrorState(message: "فشل جلب الخدمات القريبة")),
             (newServings) {
-          print("🏠 [HomeBloc] FetchNearbyServingsEvent success: ${newServings.length} services found");
           final activeNewServings = newServings.where((s) => s.status == 'active' || s.status == null).toList();
           final fullList = event.isRefresh ? activeNewServings : [...oldServings, ...activeNewServings];
           emit(HomeSuccessState(servings: fullList));

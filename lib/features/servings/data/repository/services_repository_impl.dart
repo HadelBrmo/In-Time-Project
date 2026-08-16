@@ -5,6 +5,7 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entity/category_entity.dart';
 import '../../domain/entity/payment_unit_entity.dart';
 import '../../domain/entity/service_entity.dart';
+import '../../domain/entity/serving_type_entity.dart';
 import '../../domain/repository/services_repository.dart';
 import '../datasources/services_remote_data_source.dart';
 import '../datasources/services_local_datasource.dart';
@@ -83,6 +84,19 @@ class ServicesRepositoryImpl implements ServicesRepository {
       if (localData.isNotEmpty) {
         return Right(localData);
       }
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(message: e.message));
+      }
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ServingTypeEntity>>> getServingTypes() async {
+    try {
+      final result = await remoteDataSource.getServingTypes();
+      return Right(result);
+    } catch (e) {
       if (e is ServerExceptionWithDetails) {
         return Left(ServerFailureWithDetails(message: e.message));
       }

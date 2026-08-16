@@ -11,13 +11,13 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/responsive_layout.dart';
-import 'package:in_time/features/requests/presentation/pages/receivedRequestsView.dart';
+import 'package:in_time/features/requests/presentation/pages/received_requests_view.dart';
 import '../bloc/request_bloc.dart';
 import '../bloc/request_event.dart';
 import '../bloc/request_state.dart';
-import '../../domain/entity/request_status.dart';
 import '../widgets/request_card.dart';
-import '../widgets/showDeleteDialog.dart';
+import '../widgets/show_delete_dialog.dart';
+import '../../../../core/constants/enums.dart';
 
 class MyRequestsPage extends StatefulWidget {
   const MyRequestsPage({super.key});
@@ -118,7 +118,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: media.width * 0.05,
-            vertical: media.height * 0.02,
+            vertical: media.height * 0.03,
           ),
           child: Container(
             height: media.height * 0.055,
@@ -144,7 +144,10 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                       Flexible(
                         child: Text(
                           context.tr('my_requests'),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold,
+                              fontFamily: 'Arial',
+                          fontSize: 18
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -160,7 +163,9 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                       Flexible(
                         child: Text(
                           context.tr('received_requests'),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
+                          fontSize: 18,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -171,7 +176,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
             ),
           ),
         ),
-        _buildFilterBar(media, isDarkMode),
+        _buildStatusFilter(media, theme, isDarkMode),
         Expanded(
           child: TabBarView(
             children: [
@@ -179,7 +184,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                 listener: (context, state) {
                   if (state is RequestDeletedSuccessState) {
                     SnackBarUtils.showSuccess(context, context.tr('request_deleted_success'));
-                    context.read<RequestsBloc>().add(FetchMyRequestsEvent());
+                    context.read<RequestsBloc>().add(FetchMyRequestsEvent(status: selectedStatus));
                   } else if (state is RequestDeleteErrorState) {
                     SnackBarUtils.showError(context, state.message);
                   }
@@ -250,7 +255,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                         message: state.message,
                         statusCode: state.statusCode,
                         onRetry: () {
-                          context.read<RequestsBloc>().add(FetchMyRequestsEvent());
+                          context.read<RequestsBloc>().add(FetchMyRequestsEvent(status: selectedStatus));
                         },
                       );
                     }
@@ -266,67 +271,69 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
     );
   }
 
-  Widget _buildFilterBar(MediaQueryHelper media, bool isDarkMode) {
+  Widget _buildStatusFilter(MediaQueryHelper media, ThemeData theme, bool isDarkMode) {
     return Container(
-      height: 45.h,
-      margin: EdgeInsets.only(bottom: 10.h),
+      height: 50.h,
+      padding: EdgeInsets.symmetric(horizontal: media.width * 0.05),
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: media.width * 0.05),
         children: [
-          _buildFilterChip(
-            label: context.tr('view_all'),
-            isSelected: selectedStatus == null,
-            onTap: () {
-              setState(() => selectedStatus = null);
-              context.read<RequestsBloc>().add(const FetchMyRequestsEvent());
-            },
-          ),
-          ...RequestStatus.values.map((status) {
-            return _buildFilterChip(
-              label: status.getTranslation(context),
-              isSelected: selectedStatus == status,
-              color: status.color,
-              onTap: () {
-                setState(() => selectedStatus = status);
-                context.read<RequestsBloc>().add(FetchMyRequestsEvent(status: status));
+          Padding(
+            padding: EdgeInsets.only(left: 8.w),
+            child: ChoiceChip(
+              label: const Text('الكل'),
+              selected: selectedStatus == null,
+              selectedColor: AppColors.primaryColor,
+              checkmarkColor: Colors.white,
+              backgroundColor: AppColors.primaryColor.withOpacity(0.05),
+              side: BorderSide(
+                color: selectedStatus == null ? AppColors.primaryColor : AppColors.primaryColor.withOpacity(0.3),
+                width: 1,
+              ),
+              labelStyle: TextStyle(
+                color: selectedStatus == null ? Colors.white : (isDarkMode ? Colors.white70 : Colors.black87),
+                fontWeight: selectedStatus == null ? FontWeight.bold : FontWeight.normal,
+              ),
+              onSelected: (bool selected) {
+                if (selected) {
+                  setState(() {
+                    selectedStatus = null;
+                  });
+                  context.read<RequestsBloc>().add(const FetchMyRequestsEvent());
+                }
               },
+            ),
+          ),
+          ...RequestStatus.values.where((s) => s != RequestStatus.unknown).map((status) {
+            final isSelected = selectedStatus == status;
+            return Padding(
+              padding: EdgeInsets.only(left: 8.w),
+              child: ChoiceChip(
+                label: Text(status.translation),
+                selected: isSelected,
+                selectedColor: status.color,
+                checkmarkColor: Colors.white,
+                backgroundColor: status.color.withOpacity(0.05),
+                side: BorderSide(
+                  color: isSelected ? status.color : status.color.withOpacity(0.4),
+                  width: 1,
+                ),
+                labelStyle: TextStyle(
+                  color: isSelected ? Colors.white : (isDarkMode ? Colors.white70 : Colors.black87),
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                onSelected: (bool selected) {
+                  if (selected) {
+                    setState(() {
+                      selectedStatus = status;
+                    });
+                    context.read<RequestsBloc>().add(FetchMyRequestsEvent(status: status));
+                  }
+                },
+              ),
             );
           }).toList(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildFilterChip({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-    Color? color,
-  }) {
-    return Padding(
-      padding: EdgeInsets.only(left: 8.w),
-      child: FilterChip(
-        label: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : (color ?? AppColors.primaryColor),
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            fontSize: 12.sp,
-          ),
-        ),
-        selected: isSelected,
-        onSelected: (_) => onTap(),
-        backgroundColor: Colors.transparent,
-        selectedColor: color ?? AppColors.primaryColor,
-        checkmarkColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: isSelected ? Colors.transparent : (color?.withOpacity(0.5) ?? AppColors.primaryColor.withOpacity(0.3)),
-          ),
-        ),
-        showCheckmark: false,
       ),
     );
   }

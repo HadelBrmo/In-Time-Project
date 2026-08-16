@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:in_time/features/auth/presentation/pages/sign_up/sign_up_page_03.dart';
 import 'package:in_time/features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_page_01.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_page_02.dart';
-import '../../features/chat/presentation/bloc/chatBloc/chatBloc.dart';
+import '../../features/auth/presentation/pages/sign_up/sign_up_page_03.dart';
+import '../../features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/chat/presentation/pages/chats/chat_room_page.dart';
 import '../../features/chat/presentation/pages/groups/create_group_page.dart';
 import '../../features/chat/presentation/pages/video_call/video_call_page.dart';
 import '../../features/complaints/presentation/bloc/complaint_bloc.dart';
-import '../../features/notifications/presentation/pages/notifications_page.dart';
+import '../../features/home/presentation/pages/service_details_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
-import '../../features/home/presentation/pages/serviceDetailsPage.dart';
 import '../../features/requests/presentation/bloc/received_requests/received_requests_bloc.dart';
 import '../../features/requests/domain/entity/request_entity.dart';
 import '../../features/requests/presentation/bloc/request_bloc.dart';
@@ -24,14 +23,13 @@ import '../../features/requests/presentation/pages/my_requests_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/servings/presentation/pages/services/paid_strategy.dart';
+import '../../features/notifications/presentation/pages/notifications_page.dart';
 import '../../injection_container.dart';
 import '../constants/app_colors.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../../features/complaints/presentation/pages/submit_complaint_page.dart';
 
 class AppRoutes {
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
@@ -49,7 +47,9 @@ class AppRoutes {
   static const String createGroupScreen = '/createGroupScreen';
   static const String profilePage = '/profilePage';
   static const String videoCallPage = '/videoCallPage';
-  static const String notificationsPage = '/notifications';
+  static const String notificationsPage = '/notificationsPage';
+
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -158,7 +158,10 @@ class AppRoutes {
         );
 
       case notificationsPage:
-        return _buildPageRoute(page: const NotificationsPage(), settings: settings);
+        return _buildPageRoute(
+          page: const NotificationsPage(),
+          settings: settings,
+        );
 
       default:
         return _buildPageRoute(
@@ -194,6 +197,7 @@ class AppRoutes {
           curve: Curves.easeIn,
         ));
 
+        // دمج الحركتين معاً لخروج ناعم ومنبثق من الشاشة
         return ScaleTransition(
           scale: scaleAnimation,
           child: FadeTransition(

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'chatEntity.dart';
+import 'chat_entity.dart';
 
 class MessageEntity extends Equatable {
   final int id;

@@ -1,7 +1,6 @@
+import '../../../../core/constants/enums.dart';
 import '../../../home/data/models/service_item_model.dart';
 import '../../domain/entity/request_entity.dart';
-import '../../domain/entity/request_status.dart';
-import '../../../servings/domain/entity/service_entity.dart';
 
 class RequestModel extends RequestEntity {
   const RequestModel({
@@ -20,7 +19,7 @@ class RequestModel extends RequestEntity {
       servingId: json['serving_id'] is int ? json['serving_id'] : int.tryParse(json['serving_id']?.toString() ?? '') ?? 0,
       requesterId: json['requester_id'] is int ? json['requester_id'] : int.tryParse(json['requester_id']?.toString() ?? '') ?? 0,
       message: json['message'] ?? '',
-      status: RequestStatus.fromString(json['status'] ?? 'pending'),
+      status: RequestStatus.fromString(json['status']),
       createdAt: json['created_at'] ?? '',
       serving: ServiceModel.fromJson(json['serving'] ?? {}),
     );

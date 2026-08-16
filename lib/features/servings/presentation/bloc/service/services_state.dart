@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:in_time/features/servings/domain/entity/category_entity.dart';
-import 'package:in_time/features/servings/domain/entity/payment_unit_entity.dart';
-import 'package:in_time/features/servings/domain/entity/service_entity.dart';
+import '../../../domain/entity/category_entity.dart';
+import '../../../domain/entity/payment_unit_entity.dart';
+import '../../../domain/entity/service_entity.dart';
+import '../../../domain/entity/serving_type_entity.dart';
 
 abstract class ServicesState extends Equatable {
   const ServicesState();
@@ -60,6 +61,23 @@ class GetCategoriesErrorState extends ServicesState {
   List<Object?> get props => [message];
 }
 
+class GetServingTypesLoadingState extends ServicesState {}
+
+class GetServingTypesSuccessState extends ServicesState {
+  final List<ServingTypeEntity> types;
+  const GetServingTypesSuccessState(this.types);
+  @override
+  List<Object?> get props => [types];
+}
+
+class GetServingTypesErrorState extends ServicesState {
+  final String message;
+  const GetServingTypesErrorState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class ServiceDetailsLoading extends ServicesState {}
 
 class ServiceDetailsLoaded extends ServicesState {
@@ -78,13 +96,13 @@ class ServiceDetailsError extends ServicesState {
   List<Object?> get props => [message];
 }
 
-class RateServingLoading extends ServicesState {}
+class RateServiceLoadingState extends ServicesState {}
 
-class RateServingSuccess extends ServicesState {}
+class RateServiceSuccessState extends ServicesState {}
 
-class RateServingError extends ServicesState {
+class RateServiceErrorState extends ServicesState {
   final String message;
-  const RateServingError(this.message);
+  const RateServiceErrorState(this.message);
 
   @override
   List<Object?> get props => [message];

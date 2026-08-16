@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-import '../../domain/entity/request_status.dart';
+import '../../../../core/constants/enums.dart';
 
 abstract class RequestsEvent extends Equatable {
   const RequestsEvent();

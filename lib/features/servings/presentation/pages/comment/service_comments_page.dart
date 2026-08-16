@@ -9,8 +9,8 @@ import '../../../domain/entity/comment_entity.dart';
 import '../../bloc/comment/comment_bloc.dart';
 import '../../bloc/comment/comment_event.dart';
 import '../../bloc/comment/comment_state.dart';
-import '../../widgets/comment/buildBottomInputField.dart';
-import '../../widgets/comment/buildCommentCard.dart';
+import '../../widgets/comment/build_bottom_input_field.dart';
+import '../../widgets/comment/build_comment_card.dart';
 
 class ServiceCommentsPage extends StatefulWidget {
   final int servingId;

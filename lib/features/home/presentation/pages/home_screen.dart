@@ -15,12 +15,14 @@ import '../../../../core/widgets/global_particles_wrapper.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../core/widgets/voice_input_button.dart';
 import '../../../auth/presentation/pages/location_picker/location_picker_page.dart';
+import '../../../notifications/presentation/bloc/notifications_bloc.dart';
+import '../../../notifications/presentation/bloc/notifications_state.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
-import '../widgets/home_widget/buildServiceCard.dart';
-import '../widgets/home_widget/showFilterBottomSheet.dart';
-import '../widgets/home_widget/showPaginationDialog.dart';
+import '../widgets/home_widget/build_service_card.dart';
+import '../widgets/home_widget/show_filter_bottom_sheet.dart';
+import '../widgets/home_widget/show_pagination_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -138,20 +140,52 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomAppBar(
           title: Text(
             context.tr('available_services'),
-
+            style: theme.textTheme.titleSmall,
           ),
-          showNotificationBell: true,
           actions: [
-            // IconButton(
-            //   icon: const Icon(
-            //     Icons.person,
-            //     color: AppColors.whiteColor,
-            //     size: 24,
-            //   ),
-            //   onPressed: () {
-            //     Navigator.pushNamed(context, AppRoutes.profilePage);
-            //   },
-            // ),
+            BlocBuilder<NotificationsBloc, NotificationsState>(
+              builder: (context, state) {
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: AppColors.whiteColor,
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.notificationsPage);
+                      },
+                    ),
+                    if (state.unreadCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            '${state.unreadCount}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(
                 Icons.near_me_outlined,

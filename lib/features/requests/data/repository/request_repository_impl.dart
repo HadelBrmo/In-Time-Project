@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
+import '../../../../core/constants/enums.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
-import '../../domain/entity/received_request_entity.dart';
 import '../../domain/entity/request_entity.dart';
-import '../../domain/entity/request_status.dart';
+import '../../domain/entity/received_request_entity.dart';
 import '../../domain/repository/request_repository.dart';
 import '../datasource/request_remote_datasource.dart';
 
@@ -18,7 +18,7 @@ class RequestRepositoryImpl implements RequestRepository {
   @override
   Future<Either<Failure, List<RequestEntity>>> getMyRequests({RequestStatus? status}) async {
     try {
-      final remoteRequests = await remoteDataSource.getMyRequests(status: status);
+      final remoteRequests = await remoteDataSource.getMyRequests(status: status?.name);
       return Right(remoteRequests);
     } on DioException catch (e) {
       return Left(ServerFailure());

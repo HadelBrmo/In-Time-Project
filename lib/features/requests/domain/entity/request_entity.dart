@@ -1,9 +1,8 @@
 // features/requests/domain/entities/request_entity.dart
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/constants/enums.dart';
 import '../../../servings/domain/entity/service_entity.dart';
-
-import 'request_status.dart';
 
 class RequestEntity extends Equatable {
   final int id;

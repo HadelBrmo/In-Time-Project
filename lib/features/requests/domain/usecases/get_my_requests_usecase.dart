@@ -1,11 +1,9 @@
 import 'package:dartz/dartz.dart';
 
+import '../../../../core/constants/enums.dart';
 import '../../../../core/error/failures.dart';
 import '../entity/request_entity.dart';
 import '../repository/request_repository.dart';
-
-
-import '../entity/request_status.dart';
 
 
 class GetMyRequestsUseCase {

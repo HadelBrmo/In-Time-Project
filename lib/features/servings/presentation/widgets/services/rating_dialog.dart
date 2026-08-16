@@ -28,10 +28,10 @@ class _RatingDialogState extends State<RatingDialog> {
 
     return BlocListener<ServicesBloc, ServicesState>(
       listener: (context, state) {
-        if (state is RateServingSuccess) {
+        if (state is RateServiceSuccessState) {
           SnackBarUtils.showSuccess(context, context.tr('rating_success'));
           Navigator.pop(context);
-        } else if (state is RateServingError) {
+        } else if (state is RateServiceErrorState) {
           SnackBarUtils.showError(context, state.message);
         }
       },
@@ -79,7 +79,7 @@ class _RatingDialogState extends State<RatingDialog> {
               SizedBox(height: 25.h),
               BlocBuilder<ServicesBloc, ServicesState>(
                 builder: (context, state) {
-                  final bool isLoading = state is RateServingLoading;
+                  final bool isLoading = state is RateServiceLoadingState;
                   final bool isDisabled = _rating == 0 || isLoading;
 
                   return CustomButton(
@@ -87,10 +87,13 @@ class _RatingDialogState extends State<RatingDialog> {
                     onPressed: isDisabled
                         ? () {}
                         : () {
-                            context.read<ServicesBloc>().add(
-                                  RateServingEvent(widget.serviceId, _rating),
-                                );
-                          },
+                      context.read<ServicesBloc>().add(
+                        RateServiceEvent(
+                          serviceId: widget.serviceId,
+                          rating: _rating,
+                        ),
+                      );
+                    },
                     color: isDisabled ? Colors.grey : AppColors.primaryColor,
                   );
                 },

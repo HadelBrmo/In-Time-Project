@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_time/features/auth/data/datasources/auth_local_data_source.dart';
-import 'package:in_time/features/chat/presentation/bloc/chatBloc/chatBloc.dart';
 import 'package:in_time/injection_container.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/utils/dialog_utils.dart';
+
+import '../../features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 
 class AuthUtils {
   static bool isLoggedIn() {

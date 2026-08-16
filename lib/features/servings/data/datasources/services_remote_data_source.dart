@@ -5,6 +5,7 @@ import '../../../../core/error/exceptions.dart';
 import '../models/category_model.dart';
 import '../models/payment_unit_model.dart';
 import '../models/service_model.dart';
+import '../models/serving_type_model.dart';
 
 abstract class ServicesRemoteDataSource {
   Future<void> addService({
@@ -17,11 +18,12 @@ abstract class ServicesRemoteDataSource {
 
   Future<List<CategoryModel>> getCategories();
 
+  Future<List<ServingTypeModel>> getServingTypes();
+
   Future<ServiceModel> getServiceDetails(int serviceId);
 
   Future<List<dynamic>> getAvailabilitySlots(int serviceId);
 
-  // My Servings Methods
   Future<List<ServiceModel>> getMyServings();
   
   Future<void> updateServing({
@@ -122,6 +124,23 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       }
     } catch (e) {
       throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب التصنيفات');
+    }
+  }
+
+  @override
+  Future<List<ServingTypeModel>> getServingTypes() async {
+    try {
+      final response = await dio.get(ApiStringConstants.getServingTypesUrl);
+      if (response.statusCode == 200) {
+        final List data = response.data['data'];
+        return data.map((e) => ServingTypeModel.fromJson(e)).toList();
+      } else {
+        throw ServerExceptionWithDetails(
+          message: response.data['message'] ?? 'فشل جلب أنواع الخدمات',
+        );
+      }
+    } catch (e) {
+      throw ServerExceptionWithDetails(message: 'حدث خطأ أثناء جلب أنواع الخدمات');
     }
   }
 
@@ -281,3 +300,4 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
     }
   }
 }
+

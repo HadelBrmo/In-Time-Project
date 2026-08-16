@@ -7,9 +7,9 @@ import '../../../../../core/utils/dialog_utils.dart';
 import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/loading_widget.dart';
 import '../../../../../injection_container.dart';
-import '../../bloc/chatBloc/chatBloc.dart';
-import '../../bloc/chatBloc/blocEvent.dart';
-import '../../bloc/chatBloc/blocState.dart';
+import '../../bloc/chat_bloc/chat_bloc.dart';
+import '../../bloc/chat_bloc/bloc_event.dart';
+import '../../bloc/chat_bloc/bloc_state.dart';
 import 'select_members_page.dart';
 
 class GroupInfoPage extends StatefulWidget {
@@ -107,13 +107,12 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('الأعضاء', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          if (isCreator)
-                            TextButton.icon(
-                              onPressed: () => _openAddMembers(context),
-                              icon: const Icon(Icons.person_add),
-                              label: const Text('إضافة'),
-                              style: TextButton.styleFrom(foregroundColor: AppColors.primaryColor),
-                            ),
+                          TextButton.icon(
+                            onPressed: () => _openAddMembers(context, members),
+                            icon: const Icon(Icons.person_add),
+                            label: const Text('إضافة'),
+                            style: TextButton.styleFrom(foregroundColor: AppColors.primaryColor),
+                          ),
                         ],
                       ),
                     ),
@@ -218,7 +217,8 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
     );
   }
 
-  void _openAddMembers(BuildContext context) {
+  void _openAddMembers(BuildContext context, List<dynamic> currentMembers) {
+    final List<int> memberIds = currentMembers.map((m) => m.id as int).toList();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -228,6 +228,7 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
             groupName: widget.chatTitle,
             isAddingToExistingGroup: true,
             chatId: widget.chatId,
+            existingMemberIds: memberIds,
           ),
         ),
       ),

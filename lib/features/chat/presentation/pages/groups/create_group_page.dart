@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/responsive_layout.dart';
-import '../../bloc/chatBloc/chatBloc.dart';
+import '../../bloc/chat_bloc/chat_bloc.dart';
 import 'select_members_page.dart';
 
 class CreateGroupPage extends StatefulWidget {

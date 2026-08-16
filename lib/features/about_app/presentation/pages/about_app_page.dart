@@ -5,8 +5,8 @@ import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/responsive_layout.dart';
-import '../widgets/buildFeatureCard.dart';
-import '../widgets/buildSectionTitle.dart';
+import '../widgets/build_feature_card.dart';
+import '../widgets/build_section_title.dart';
 
 class AboutAppPage extends StatelessWidget {
   const AboutAppPage({super.key});

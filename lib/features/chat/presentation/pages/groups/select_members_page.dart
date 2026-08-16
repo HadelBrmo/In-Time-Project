@@ -6,9 +6,10 @@ import '../../../../../core/constants/app_routes.dart';
 import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../../core/widgets/custom_app_bar.dart';
 import '../../../../../core/widgets/loading_widget.dart';
-import '../../bloc/chatBloc/blocEvent.dart';
-import '../../bloc/chatBloc/blocState.dart';
-import '../../bloc/chatBloc/chatBloc.dart';
+import '../../bloc/chat_bloc/bloc_event.dart';
+import '../../bloc/chat_bloc/bloc_state.dart';
+import '../../bloc/chat_bloc/chat_bloc.dart';
+
 
 class SelectableUser {
   final int id;
@@ -23,12 +24,14 @@ class SelectMembersPage extends StatefulWidget {
   final String groupName;
   final bool isAddingToExistingGroup;
   final int? chatId;
+  final List<int>? existingMemberIds;
 
   const SelectMembersPage({
     super.key,
     required this.groupName,
     this.isAddingToExistingGroup = false,
     this.chatId,
+    this.existingMemberIds,
   });
 
   @override
@@ -143,6 +146,7 @@ class _SelectMembersPageState extends State<SelectMembersPage> {
                       if (!_isUsersInitialized && state is ChatsLoaded) {
                         _allUsers = state.chats
                             .where((chat) => chat.type == 'personal' && chat.otherUser != null)
+                            .where((chat) => widget.existingMemberIds == null || !widget.existingMemberIds!.contains(chat.otherUser!.id))
                             .map((chat) => SelectableUser(
                                   id: chat.otherUser!.id,
                                   name: chat.otherUser!.fullName,
@@ -232,7 +236,10 @@ class _SelectMembersPageState extends State<SelectMembersPage> {
                       },
                       backgroundColor: AppColors.primaryColor,
                       icon: const Icon(Icons.check, color: Colors.white),
-                      label: Text("إنشاء الآن ($_selectedCount)", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      label: Text(
+                        widget.isAddingToExistingGroup ? "إضافة للأعضاء ($_selectedCount)" : "إنشاء الآن ($_selectedCount)", 
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                      ),
                     ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack)
                   : const SizedBox.shrink();
             },

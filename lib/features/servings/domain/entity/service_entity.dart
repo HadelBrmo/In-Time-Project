@@ -20,7 +20,6 @@ class ServiceEntity extends Equatable {
   final String? categoryName;
   final String? unitName;
   final String? servingTypeName;
-  final String? servingTypeId;
   final bool isRequested;
   final bool? isOwner;
   final String? status;
@@ -45,7 +44,6 @@ class ServiceEntity extends Equatable {
     this.categoryName,
     this.unitName,
     this.servingTypeName,
-    this.servingTypeId,
     this.isRequested = false,
     this.isOwner = false,
     this.status,
@@ -71,7 +69,6 @@ class ServiceEntity extends Equatable {
     String? categoryName,
     String? unitName,
     String? servingTypeName,
-    String? servingTypeId,
     bool? isRequested,
     bool? isOwner,
     String? status,
@@ -96,7 +93,6 @@ class ServiceEntity extends Equatable {
       categoryName: categoryName ?? this.categoryName,
       unitName: unitName ?? this.unitName,
       servingTypeName: servingTypeName ?? this.servingTypeName,
-      servingTypeId: servingTypeId ?? this.servingTypeId,
       isRequested: isRequested ?? this.isRequested,
       isOwner: isOwner ?? this.isOwner,
       status: status ?? this.status,
@@ -124,7 +120,6 @@ class ServiceEntity extends Equatable {
     categoryName,
     unitName,
     servingTypeName,
-    servingTypeId,
     isRequested,
     isOwner,
     status,

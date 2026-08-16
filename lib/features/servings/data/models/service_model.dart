@@ -21,7 +21,6 @@ class ServiceModel extends ServiceEntity {
     super.categoryName,
     super.unitName,
     super.servingTypeName,
-    super.servingTypeId,
     super.isRequested,
     super.isOwner,
     super.status,
@@ -31,17 +30,22 @@ class ServiceModel extends ServiceEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'description': description,
-      'category_id': categoryId?.toString(),
-      'cost_amount': costAmount?.toString(),
-      if (unitId != null) 'unit_id': unitId.toString(),
+      'category_id': int.tryParse(categoryId ?? '') ?? categoryId,
+      'cost_amount': int.tryParse(costAmount?.toString() ?? '0') ?? 0,
+      if (unitId != null) 'unit_id': int.tryParse(unitId!) ?? unitId,
       'location_address': locationAddress,
-      'location_lat': locationLat?.toString(),
-      'location_lng': locationLng?.toString(),
+      'location_lat': locationLat,
+      'location_lng': locationLng,
       if (meetingType != null) 'meeting_type': meetingType,
-      if (servingTypeId != null) 'serving_type_id': servingTypeId.toString(),
       if (status != null) 'status': status,
+      'serving_type_name': servingTypeName,
+      'unit_name': unitName,
+      'category_name': categoryName,
+      'user_full_name': userFullName,
+      'image_url': imageUrl,
     };
   }
 
@@ -79,7 +83,6 @@ class ServiceModel extends ServiceEntity {
       categoryName: json['category_name']?.toString() ?? json['categoryName'],
       unitName: json['unit_name']?.toString() ?? json['unitName'],
       servingTypeName: typeName,
-      servingTypeId: json['serving_type_id']?.toString(),
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1),
       isOwner: json['isOwner'] ?? json['is_owner'] ?? false,
       status: json['status']?.toString(),

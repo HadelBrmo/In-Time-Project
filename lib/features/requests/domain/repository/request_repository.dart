@@ -1,10 +1,9 @@
 import 'package:dartz/dartz.dart';
 
+import '../../../../core/constants/enums.dart';
 import '../../../../core/error/failures.dart';
 import '../entity/request_entity.dart';
 import '../entity/received_request_entity.dart';
-
-import '../entity/request_status.dart';
 
 abstract class RequestRepository {
   Future<Either<Failure, List<RequestEntity>>> getMyRequests({RequestStatus? status});
