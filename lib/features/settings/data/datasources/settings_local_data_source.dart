@@ -19,6 +19,6 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
 
   @override
   bool isAnimationsEnabled() {
-    return sharedPreferences.getBool(_animationsKey) ?? true;
+    return sharedPreferences.getBool(_animationsKey) ?? false;
   }
 }

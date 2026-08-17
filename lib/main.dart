@@ -19,6 +19,8 @@ import 'features/localization/presentation/bloc/locale_state.dart';
 import 'features/theme/presentation/bloc/theme_bloc.dart';
 import 'features/theme/presentation/bloc/theme_event.dart';
 import 'features/theme/presentation/bloc/theme_state.dart';
+import 'features/settings/presentation/bloc/settings_bloc.dart';
+import 'features/settings/presentation/bloc/settings_event.dart';
 import 'package:in_time/features/auth/presentation/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:in_time/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
@@ -100,6 +102,9 @@ class _MyAppState extends State<MyApp> {
               create: (context) => sl<NotificationsBloc>()
                 ..add(GetMyNotificationsEvent())
                 ..add(GetUnreadNotificationsCountEvent()),
+            ),
+            BlocProvider<SettingsBloc>(
+              create: (context) => sl<SettingsBloc>()..add(GetSavedSettingsEvent()),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(

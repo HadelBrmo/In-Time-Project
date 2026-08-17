@@ -114,6 +114,8 @@ import 'features/servings/domain/usecases/service/rate_serving_usecase.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
 import 'features/theme/data/datasource/theme_local_data_source.dart';
 import 'features/theme/presentation/bloc/theme_bloc.dart';
+import 'features/settings/data/datasources/settings_local_data_source.dart';
+import 'features/settings/presentation/bloc/settings_bloc.dart';
 
 // Saved Services 📑
 import 'features/servings/data/datasources/saved_services_local_datasource.dart';
@@ -279,6 +281,9 @@ Future<void> init() async {
   // 🌟 حقن البلوك الخاص بالثيم
   sl.registerFactory(() => ThemeBloc(localDataSource: sl()));
 
+  // 🌟 حقن البلوك الخاص بالإعدادات
+  sl.registerFactory(() => SettingsBloc(localDataSource: sl()));
+
   // ==================== 2. Use Cases (LazySingleton) ====================
   sl.registerLazySingleton(() => GetChatsUseCase(sl()));
   sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
@@ -382,4 +387,5 @@ Future<void> init() async {
 
   sl.registerLazySingleton<LocaleLocalDataSource>(() => LocaleLocalDataSourceImpl(box: sl<Box>()));
   sl.registerLazySingleton<ThemeLocalDataSource>(() => ThemeLocalDataSourceImpl(box: sl<Box>()));
+  sl.registerLazySingleton<SettingsLocalDataSource>(() => SettingsLocalDataSourceImpl(sharedPreferences: sl()));
 }

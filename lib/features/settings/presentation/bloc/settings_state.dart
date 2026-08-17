@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class SettingsState extends Equatable {
   final bool animationsEnabled;
 
-  const SettingsState({this.animationsEnabled = true});
+  const SettingsState({this.animationsEnabled = false});
 
   SettingsState copyWith({bool? animationsEnabled}) {
     return SettingsState(

@@ -34,6 +34,7 @@ class ChatModel extends ChatEntity {
           : null,
       requestId: json['request_id'] as int?,
       unitId: json['unit_id']?.toString(),
+     // isProvider: json['is_provider'] as bool?,
     );
   }
 
@@ -49,6 +50,7 @@ class ChatModel extends ChatEntity {
       'users': users?.map((u) => (u as ChatUserModel).toJson()).toList(),
       'request_id': requestId,
       'unit_id': unitId,
+     // 'is_provider': isProvider,
     };
   }
 }

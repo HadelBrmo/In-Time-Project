@@ -64,6 +64,8 @@
   "not_specified": "Not specified",
   "guest": "Guest",
   "appearance": "Appearance",
+  "app_animations": "App Animations",
+  "enable_animations": "Enable Animations",
   "saved": "Saved",
   "activity_history": "Activity History",
   "my_services": "My Services",

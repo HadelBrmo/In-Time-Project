@@ -13,6 +13,9 @@ import '../../../localization/presentation/bloc/locale_state.dart';
 import '../../../theme/presentation/bloc/theme_bloc.dart';
 import '../../../theme/presentation/bloc/theme_event.dart';
 import '../../../theme/presentation/bloc/theme_state.dart';
+import '../bloc/settings_bloc.dart';
+import '../bloc/settings_event.dart';
+import '../bloc/settings_state.dart';
 import '../widgets/buildLanguageOption.dart';
 import '../widgets/buildSectionCard.dart';
 import '../widgets/buildSecurityActionRow.dart';
@@ -150,12 +153,41 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 ),
                 Switch(
                   value: _isNotificationsEnabled,
-                  activeColor: AppColors.primaryColor,
+                  activeTrackColor: AppColors.primaryColor,
                   onChanged: (value) {
                     setState(() => _isNotificationsEnabled = value);
                   },
                 ),
               ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('app_animations'),
+            icon: Icons.animation,
+            child: BlocBuilder<SettingsBloc, SettingsState>(
+              builder: (context, settingsState) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr('enable_animations'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Switch(
+                      value: settingsState.animationsEnabled,
+                      activeTrackColor: AppColors.primaryColor,
+                      onChanged: (value) {
+                        context.read<SettingsBloc>().add(ToggleAnimationsEvent(value));
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           SizedBox(height: 16.h),

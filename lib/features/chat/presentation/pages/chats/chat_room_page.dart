@@ -44,6 +44,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   bool _isTyping = false;
   int? _requestId;
   String? _unitId;
+  bool? _isProvider;
 
   late ChatBloc _chatBloc;
 
@@ -61,6 +62,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         _profilePicture = widget.isGroup ? null : currentChat.otherUser?.profilePicture;
         _requestId = currentChat.requestId;
         _unitId = currentChat.unitId;
+        _isProvider = currentChat.isProvider;
       }
     }
 
@@ -188,7 +190,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               ),
             ),
             actions: [
-              if (_unitId == "2" && _requestId != null)
+              if (_unitId == "2" && _requestId != null && _isProvider == true)
                 Builder(
                   builder: (context) => BlocBuilder<RequestsBloc, RequestsState>(
                     builder: (context, state) {
