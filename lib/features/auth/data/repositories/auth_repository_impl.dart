@@ -133,4 +133,25 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> verifyIdentity({
+    required String documentType,
+    required File documentImage,
+  }) async {
+    try {
+      await remoteDataSource.verifyIdentity(
+        documentType: documentType,
+        documentImage: documentImage,
+      );
+      return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(
+        statusCode: e.statusCode,
+        message: e.message,
+      ));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

@@ -20,4 +20,8 @@ abstract class AuthRepository {
     required String birthDate,
     File? profilePicture,
   });
+  Future<Either<Failure, Unit>> verifyIdentity({
+    required String documentType,
+    required File documentImage,
+  });
 }

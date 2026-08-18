@@ -10,10 +10,14 @@ class DialogUtils {
     return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: builder,
-      ),
+      builder: (context) {
+        // Automatically adapt text direction based on the current locale
+        final isRtl = Localizations.localeOf(context).languageCode == 'ar';
+        return Directionality(
+          textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+          child: builder,
+        );
+      },
     );
   }
 

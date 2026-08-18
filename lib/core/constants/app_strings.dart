@@ -45,6 +45,7 @@
   static String userProfileUrl(int userId) => 'users/$userId';
   static const String updateProfileUrl = 'profile';
   static const String topPerformersUrl = 'servings/top-performers';
+  static const String verifyIdentityUrl = 'identity/verify';
 
   static const String wsHost = 'ali.ba-tech.tech';
   static const String wsKey = 'app-key';

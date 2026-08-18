@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
   final double? height;
   final double? fontSize;
   final Color color;
+  final bool isLoading;
 
   const CustomButton({
     super.key,
@@ -20,6 +21,7 @@ class CustomButton extends StatelessWidget {
     this.height,
     this.fontSize,
     required this.color,
+    this.isLoading = false,
   });
 
   @override
@@ -32,14 +34,23 @@ class CustomButton extends StatelessWidget {
       height: height ?? 50,
       child: isOutlined
           ? OutlinedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppColors.primaryColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: Text(
+        child: isLoading
+            ? const SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: AppColors.primaryColor,
+          ),
+        )
+            : Text(
           text,
           style: theme.textTheme.titleMedium?.copyWith(
             fontSize: fontSize ?? 16,
@@ -49,14 +60,23 @@ class CustomButton extends StatelessWidget {
         ),
       )
           : ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: Text(
+        child: isLoading
+            ? const SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: AppColors.whiteColor,
+          ),
+        )
+            : Text(
           text,
           style: theme.textTheme.titleMedium?.copyWith(
             fontSize: fontSize ?? 16,

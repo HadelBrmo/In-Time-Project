@@ -22,6 +22,10 @@ abstract class AuthRemoteDataSource {
     required String birthDate,
     File? profilePicture,
   });
+  Future<Unit> verifyIdentity({
+    required String documentType,
+    required File documentImage,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -162,5 +166,44 @@ if(response.statusCode == 200 || response.statusCode == 201) {
     message: 'حدث خطأ غير متوقع أثناء التسجيل',
   );
 }
+}
+
+@override
+Future<Unit> verifyIdentity({
+  required String documentType,
+  required File documentImage,
+}) async {
+  try {
+    final formData = FormData.fromMap({
+      "document_type": documentType,
+      "document_image": await MultipartFile.fromFile(
+        documentImage.path,
+        filename: documentImage.path.split('/').last,
+      ),
+    });
+
+    final response = await dio.post(
+      ApiStringConstants.verifyIdentityUrl,
+      data: formData,
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return unit;
+    } else {
+      throw ServerExceptionWithDetails(
+        statusCode: response.statusCode,
+        message: response.data['message'] ?? 'فشل إرسال طلب التحقق',
+      );
+    }
+  } on DioException catch (e) {
+    throw ServerExceptionWithDetails(
+      statusCode: e.response?.statusCode,
+      message: e.response?.data['message'] ?? 'تأكد من الاتصال بالشبكة وأعد المحاولة',
+    );
+  } catch (e) {
+    throw ServerExceptionWithDetails(
+      message: 'حدث خطأ غير متوقع أثناء إرسال طلب التحقق',
+    );
+  }
 }
 }

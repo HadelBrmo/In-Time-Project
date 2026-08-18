@@ -63,11 +63,13 @@ import 'core/network/decorators/logging_interceptor.dart';
 // Auth Features 🚀
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
+import 'features/auth/domain/usecases/verify_identity_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
+import 'features/auth/presentation/bloc/identity_verification/identity_verification_cubit.dart';
 
 // Servings Feature 🛠️
 import 'features/servings/data/datasources/comment_remote_data_source.dart';
@@ -278,6 +280,7 @@ Future<void> init() async {
     updateProfileUseCase: sl(),
   ));
   sl.registerFactory(() => PortfolioBloc(getPortfolioUseCase: sl()));
+  sl.registerFactory(() => IdentityVerificationCubit(sl()));
 
   sl.registerLazySingleton(() => NotificationsBloc(
     getMyNotificationsUseCase: sl(),
@@ -319,6 +322,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SendOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
+  sl.registerLazySingleton(() => VerifyIdentityUseCase(sl()));
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
   sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
