@@ -11,9 +11,11 @@ import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_text_form_field.dart';
 import '../../data/models/user_profile_model.dart';
-import '../bloc/profile_bloc.dart';
-import '../bloc/profile_event.dart';
-import '../bloc/profile_state.dart';
+import '../../domain/entities/profile_entity.dart';
+import '../bloc/profile/profile_bloc.dart';
+import '../bloc/profile/profile_event.dart';
+import '../bloc/profile/profile_state.dart';
+
 
 class EditProfilePage extends StatefulWidget {
   final UserProfile profile;

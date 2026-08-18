@@ -10,6 +10,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       : super(SettingsState(animationsEnabled: localDataSource.isAnimationsEnabled())) {
     
     on<ToggleAnimationsEvent>((event, emit) async {
+      print("🔄 Toggling animations to: ${event.enabled}");
       await localDataSource.cacheAnimationsEnabled(event.enabled);
       emit(state.copyWith(animationsEnabled: event.enabled));
     });

@@ -37,6 +37,7 @@ import 'features/home/data/datasources/home_local_datasource.dart';
 import 'features/home/data/repositories/home_repository_impl.dart' hide HomeRemoteDataSourceImpl;
 import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/domain/usecases/get_nearby_servings_use_case.dart';
+import 'features/home/domain/usecases/get_proposed_servings_use_case.dart';
 import 'features/home/domain/usecases/search_services_usecase.dart';
 import 'features/home/domain/usecases/update_availability_use_case.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
@@ -106,16 +107,26 @@ import 'features/complaints/presentation/bloc/complaint_bloc.dart';
 
 // Profile Feature 👤
 import 'features/profile/data/datasources/profile_remote_data_source.dart';
+import 'features/profile/data/datasources/profile_local_data_source.dart';
 import 'features/profile/data/repositories/profile_repository_impl.dart';
 import 'features/profile/domain/repositories/i_profile_repository.dart';
 import 'features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
+import 'features/profile/domain/usecases/get_portfolio_usecase.dart';
 import 'features/servings/domain/usecases/service/rate_serving_usecase.dart';
-import 'features/profile/presentation/bloc/profile_bloc.dart';
+import 'features/profile/presentation/bloc/profile/profile_bloc.dart';
+import 'features/profile/presentation/bloc/protfilo/portfolio_bloc.dart';
 import 'features/theme/data/datasource/theme_local_data_source.dart';
 import 'features/theme/presentation/bloc/theme_bloc.dart';
 import 'features/settings/data/datasources/settings_local_data_source.dart';
 import 'features/settings/presentation/bloc/settings_bloc.dart';
+
+// Rewards Feature 🏆
+import 'features/rewards/data/datasources/leaderboard_remote_data_source.dart';
+import 'features/rewards/data/repositories/leaderboard_repository_impl.dart';
+import 'features/rewards/domain/repositories/leaderboard_repository.dart';
+import 'features/rewards/domain/usecases/get_leaderboard_usecase.dart';
+import 'features/rewards/presentation/bloc/leaderboard_bloc.dart';
 
 // Saved Services 📑
 import 'features/servings/data/datasources/saved_services_local_datasource.dart';
@@ -219,7 +230,9 @@ Future<void> init() async {
   sl.registerFactory(() => SignUpBloc(registerUseCase: sl()));
   sl.registerFactory(() => HomeBloc(
     searchServingsUseCase: sl(),
-    getNearbyServingsUseCase: sl(), updateAvailabilityUseCase: sl(),
+    getNearbyServingsUseCase: sl(),
+    getProposedServingsUseCase: sl(),
+    updateAvailabilityUseCase: sl(),
   ));
   sl.registerFactory(() => CommentBloc(
     getCommentsUseCase: sl(),
@@ -264,6 +277,7 @@ Future<void> init() async {
     getUserProfileUseCase: sl(),
     updateProfileUseCase: sl(),
   ));
+  sl.registerFactory(() => PortfolioBloc(getPortfolioUseCase: sl()));
 
   sl.registerLazySingleton(() => NotificationsBloc(
     getMyNotificationsUseCase: sl(),
@@ -275,6 +289,8 @@ Future<void> init() async {
 
   sl.registerFactory(() => SavedServicesBloc(repository: sl()));
 
+  sl.registerFactory(() => LeaderboardBloc(getLeaderboardUseCase: sl()));
+
   // 🌟 حقن البلوك الخاص باللغة
   sl.registerFactory(() => LocaleBloc(localDataSource: sl()));
 
@@ -282,7 +298,7 @@ Future<void> init() async {
   sl.registerFactory(() => ThemeBloc(localDataSource: sl()));
 
   // 🌟 حقن البلوك الخاص بالإعدادات
-  sl.registerFactory(() => SettingsBloc(localDataSource: sl()));
+  sl.registerLazySingleton(() => SettingsBloc(localDataSource: sl()));
 
   // ==================== 2. Use Cases (LazySingleton) ====================
   sl.registerLazySingleton(() => GetChatsUseCase(sl()));
@@ -311,6 +327,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RateServingUseCase(sl()));
   sl.registerLazySingleton(() => SearchServingsUseCase(sl()));
   sl.registerLazySingleton(() => GetNearbyServingsUseCase(sl()));
+  sl.registerLazySingleton(() => GetProposedServingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateAvailabilityUseCase(sl()));
   sl.registerLazySingleton(() => GetCommentsForServingUseCase(sl()));
   sl.registerLazySingleton(() => AddCommentOnServingUseCase(sl()));
@@ -339,9 +356,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(() => GetPortfolioUseCase(sl()));
 
   // Notifications Use Cases
   sl.registerLazySingleton(() => GetMyNotificationsUseCase(sl()));
+  sl.registerLazySingleton(() => GetLeaderboardUseCase(sl()));
   sl.registerLazySingleton(() => MarkNotificationAsReadUseCase(sl()));
   sl.registerLazySingleton(() => MarkAllNotificationsAsReadUseCase(sl()));
   sl.registerLazySingleton(() => GetUnreadNotificationsCountUseCase(sl()));
@@ -358,12 +377,15 @@ Future<void> init() async {
   sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(
     remoteDataSource: sl(),
-    sharedPreferences: sl(),
+    localDataSource: sl(),
   ));
   sl.registerLazySingleton<SavedServicesRepository>(() => SavedServicesRepositoryImpl(localDataSource: sl()));
 
   sl.registerLazySingleton<NotificationRepository>(
       () => NotificationRepositoryImpl(remoteDataSource: sl()));
+
+  sl.registerLazySingleton<LeaderboardRepository>(
+      () => LeaderboardRepositoryImpl(remoteDataSource: sl()));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
@@ -379,11 +401,15 @@ Future<void> init() async {
   sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ComplaintRemoteDataSource>(() => ComplaintRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ProfileLocalDataSource>(() => ProfileLocalDataSourceImpl(sharedPreferences: sl()));
 
   sl.registerLazySingleton<SavedServicesLocalDataSource>(() => SavedServicesLocalDataSourceImpl(sharedPreferences: sl()));
 
   sl.registerLazySingleton<NotificationRemoteDataSource>(
       () => NotificationRemoteDataSourceImpl(dio: sl()));
+
+  sl.registerLazySingleton<LeaderboardRemoteDataSource>(
+      () => LeaderboardRemoteDataSourceImpl(dio: sl()));
 
   sl.registerLazySingleton<LocaleLocalDataSource>(() => LocaleLocalDataSourceImpl(box: sl<Box>()));
   sl.registerLazySingleton<ThemeLocalDataSource>(() => ThemeLocalDataSourceImpl(box: sl<Box>()));

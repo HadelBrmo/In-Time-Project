@@ -62,6 +62,19 @@ class FetchNearbyServingsEvent extends HomeEvent {
   List<Object?> get props => [lat, lng, skip, take, isRefresh];
 }
 
+class FetchProposedServingsEvent extends HomeEvent {
+  final int skip;
+  final int take;
+
+  const FetchProposedServingsEvent({
+    required this.skip,
+    required this.take,
+  });
+
+  @override
+  List<Object?> get props => [skip, take];
+}
+
 class UpdateServiceAvailabilityEvent extends HomeEvent {
   final int serviceId;
   final Map<String, dynamic> slotsData;

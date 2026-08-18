@@ -11,6 +11,8 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/responsive_layout.dart';
+import '../../../settings/presentation/bloc/settings_bloc.dart';
+import '../../../settings/presentation/bloc/settings_state.dart';
 import 'package:in_time/features/requests/presentation/pages/received_requests_view.dart';
 import 'package:in_time/features/requests/presentation/pages/pending_confirmations_view.dart';
 import '../bloc/request_bloc.dart';
@@ -27,21 +29,37 @@ class MyRequestsPage extends StatefulWidget {
   State<MyRequestsPage> createState() => _MyRequestsPageState();
 }
 
-class _MyRequestsPageState extends State<MyRequestsPage> {
+class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProviderStateMixin {
   String searchQuery = "";
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   RequestStatus? selectedStatus;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_handleTabSelection);
     context.read<RequestsBloc>().add(const FetchMyRequestsEvent());
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) return;
+    
+    // إعادة جلب البيانات المناسبة لكل تابة عند الضغط عليها
+    if (_tabController.index == 0) {
+      context.read<RequestsBloc>().add(FetchMyRequestsEvent(status: selectedStatus));
+    } else if (_tabController.index == 2) {
+      context.read<RequestsBloc>().add(FetchPendingConfirmationsEvent());
+    }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _tabController.removeListener(_handleTabSelection);
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -53,59 +71,55 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: DefaultTabController(
-        length: 3,
-        initialIndex: 0,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(
-            title: isSearching
-                ? TextField(
-              controller: _searchController,
-              autofocus: true,
-              style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 16.sp),
-              decoration: InputDecoration(
-                hintText: context.tr('search_for_service'),
-                hintStyle: const TextStyle(color: Colors.white70),
-                border: InputBorder.none,
-              ),
-              onChanged: (value) {
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          title: isSearching
+              ? TextField(
+            controller: _searchController,
+            autofocus: true,
+            style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 16.sp),
+            decoration: InputDecoration(
+              hintText: context.tr('search_for_service'),
+              hintStyle: const TextStyle(color: Colors.white70),
+              border: InputBorder.none,
+            ),
+            onChanged: (value) {
+              setState(() {
+                searchQuery = value;
+              });
+            },
+          )
+              : Text(context.tr('activity_history')),
+          actions: [
+            IconButton(
+              icon: Icon(isSearching ? Icons.close : Icons.search, color: AppColors.whiteColor),
+              onPressed: () {
                 setState(() {
-                  searchQuery = value;
+                  if (isSearching) {
+                    isSearching = false;
+                    searchQuery = "";
+                    _searchController.clear();
+                  } else {
+                    isSearching = true;
+                  }
                 });
               },
             )
-                : Text(context.tr('activity_history')),
-            actions: [
-              IconButton(
-                icon: Icon(isSearching ? Icons.close : Icons.search, color: AppColors.whiteColor),
-                onPressed: () {
-                  setState(() {
-                    if (isSearching) {
-                      isSearching = false;
-                      searchQuery = "";
-                      _searchController.clear();
-                    } else {
-                      isSearching = true;
-                    }
-                  });
-                },
-              )
-            ],
-          ),
-          body: ResponsiveLayout(
-            mobileBody: _buildContent(media, theme, isDarkMode),
-            tabletBody: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: _buildContent(media, theme, isDarkMode),
-              ),
+          ],
+        ),
+        body: ResponsiveLayout(
+          mobileBody: _buildContent(media, theme, isDarkMode),
+          tabletBody: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: _buildContent(media, theme, isDarkMode),
             ),
-            desktopBody: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1000),
-                child: _buildContent(media, theme, isDarkMode),
-              ),
+          ),
+          desktopBody: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1000),
+              child: _buildContent(media, theme, isDarkMode),
             ),
           ),
         ),
@@ -114,20 +128,28 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
   }
 
   Widget _buildContent(MediaQueryHelper media, ThemeData theme, bool isDarkMode) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: media.width * 0.05,
-            vertical: media.height * 0.03,
-          ),
-          child: Container(
-            height: media.height * 0.055,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: TabBar(
-              dividerColor: Colors.transparent,
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, settingsState) {
+        final animationsEnabled = settingsState.animationsEnabled;
+        
+        return Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: media.width * 0.05,
+                vertical: media.height * 0.03,
+              ),
+              child: Container(
+                height: 60.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  dividerColor: Colors.transparent,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.center,
+                  labelPadding: EdgeInsets.symmetric(horizontal: 16.w),
               unselectedLabelColor: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
               labelColor: AppColors.whiteColor,
               indicatorSize: TabBarIndicatorSize.tab,
@@ -141,15 +163,12 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.assignment_outlined, size: 18),
-                      SizedBox(width: media.width * 0.02),
-                      Flexible(
-                        child: Text(
-                          context.tr('my_requests'),
-                          style: const TextStyle(fontWeight: FontWeight.bold,
-                              fontFamily: 'Arial',
-                          fontSize: 18
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                      SizedBox(width: 8.w),
+                      Text(
+                        context.tr('my_requests'),
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                            fontFamily: 'Arial',
+                        fontSize: 14.sp
                         ),
                       ),
                     ],
@@ -160,14 +179,11 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.move_to_inbox_outlined, size: 18),
-                      SizedBox(width: media.width * 0.02),
-                      Flexible(
-                        child: Text(
-                          context.tr('received_requests'),
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
-                          fontSize: 18,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                      SizedBox(width: 8.w),
+                      Text(
+                        context.tr('received_requests'),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
+                        fontSize: 14.sp,
                         ),
                       ),
                     ],
@@ -178,14 +194,11 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.fact_check_outlined, size: 18),
-                      SizedBox(width: media.width * 0.02),
-                      Flexible(
-                        child: Text(
-                          "تأكيدات",
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
-                            fontSize: 18,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                      SizedBox(width: 8.w),
+                      Text(
+                        "Confirmations",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
+                          fontSize: 14.sp,
                         ),
                       ),
                     ],
@@ -198,6 +211,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
         _buildStatusFilter(media, theme, isDarkMode),
         Expanded(
           child: TabBarView(
+            controller: _tabController,
             children: [
               BlocListener<RequestsBloc, RequestsState>(
                 listener: (context, state) {
@@ -209,6 +223,10 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                   }
                 },
                 child: BlocBuilder<RequestsBloc, RequestsState>(
+                  buildWhen: (previous, current) => 
+                    current is RequestsLoadingState || 
+                    current is RequestsLoadedState || 
+                    current is RequestsErrorState,
                   builder: (context, state) {
                     if (state is RequestsLoadingState) {
                       return const LoadingWidget();
@@ -236,7 +254,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                                 ),
                               ),
                             ],
-                          ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
+                          ).animate(target: animationsEnabled ? 1 : 0).fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
                         );
                       }
 
@@ -248,7 +266,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                         itemCount: filteredRequests.length,
                         itemBuilder: (context, index) {
                           final request = filteredRequests[index];
-                          return buildRequestCard(
+                          final card = buildRequestCard(
                             context: context,
                             request: request,
                             media: media,
@@ -263,7 +281,11 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
                             onLongPress: () {
                               showDeleteDialog(context, request.id);
                             },
-                          )
+                          );
+
+                          if (!animationsEnabled) return card;
+
+                          return card
                               .animate()
                               .fadeIn(duration: 350.ms, delay: (index * 80).ms)
                               .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad);
@@ -289,7 +311,8 @@ class _MyRequestsPageState extends State<MyRequestsPage> {
         ),
       ],
     );
-  }
+  });
+}
 
   Widget _buildStatusFilter(MediaQueryHelper media, ThemeData theme, bool isDarkMode) {
     return Container(

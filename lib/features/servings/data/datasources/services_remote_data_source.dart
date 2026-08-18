@@ -147,7 +147,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   @override
   Future<ServiceModel> getServiceDetails(int serviceId) async {
     try {
-      final response = await dio.get('/servings/$serviceId');
+      final response = await dio.get('servings/$serviceId');
       if (response.statusCode == 200) {
         return ServiceModel.fromJson(response.data['data']);
       } else {
@@ -168,7 +168,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   @override
   Future<List<dynamic>> getAvailabilitySlots(int serviceId) async {
     try {
-      final response = await dio.get('/servings/$serviceId/availability-slots');
+      final response = await dio.get('servings/$serviceId/availability-slots');
       if (response.statusCode == 200) {
         return response.data['data'] as List<dynamic>;
       } else {
@@ -190,7 +190,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   Future<List<ServiceModel>> getMyServings() async {
     try {
       final response = await dio.post(
-        '/servings/my',
+        'servings/my',
         data: {
           'skip': 0,
           'take': 20,
@@ -224,7 +224,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   }) async {
     try {
       final response = await dio.put(
-        '/servings/update-paid/$id',
+        'servings/update-paid/$id',
         data: {
           'title': title,
           'description': description,
@@ -253,9 +253,10 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   @override
   Future<void> toggleServingStatus(int id, bool isActive) async {
     try {
-      if (isActive) return;
-
-      final endpoint = '/servings/$id/deactivate';
+      final endpoint = isActive 
+          ? ApiStringConstants.activateServingUrl(id) 
+          : ApiStringConstants.deactivateServingUrl(id);
+          
       final response = await dio.post(endpoint);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return;
@@ -279,7 +280,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   Future<void> rateServing(int serviceId, double rating) async {
     try {
       final response = await dio.post(
-        '/servings/$serviceId/rate',
+        'servings/$serviceId/rate',
         data: {'rating': rating},
       );
       if (response.statusCode == 200 || response.statusCode == 201) {

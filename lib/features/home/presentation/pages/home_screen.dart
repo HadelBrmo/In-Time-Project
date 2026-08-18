@@ -39,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _selectedTypeName;
   int _currentSkip = 0;
   int _currentTake = 5;
+  bool _isNearbyMode = false;
+  LatLng? _lastNearbyLocation;
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -55,18 +58,35 @@ class _HomeScreenState extends State<HomeScreen> {
   void _triggerFetch({bool isRefresh = false}) {
     if (isRefresh) {
       _currentSkip = 0;
+      setState(() => _isLoadingMore = false);
+      context.read<HomeBloc>().add(const FetchProposedServingsEvent(skip: 0, take: 10));
+    } else {
+      setState(() => _isLoadingMore = true);
     }
-    final query = _searchController.text.trim();
-    context.read<HomeBloc>().add(
-      FetchHomeServingsEvent(
-        name: query.isEmpty ? null : query,
-        paymentUnitId: _selectedPaymentUnitId,
-        servingTypeId: _selectedServingTypeId,
-        skip: _currentSkip,
-        take: _currentTake,
-        isRefresh: isRefresh,
-      ),
-    );
+
+    if (_isNearbyMode && _lastNearbyLocation != null) {
+      context.read<HomeBloc>().add(
+        FetchNearbyServingsEvent(
+          lat: _lastNearbyLocation!.latitude,
+          lng: _lastNearbyLocation!.longitude,
+          skip: _currentSkip,
+          take: _currentTake,
+          isRefresh: isRefresh,
+        ),
+      );
+    } else {
+      final query = _searchController.text.trim();
+      context.read<HomeBloc>().add(
+        FetchHomeServingsEvent(
+          name: query.isEmpty ? null : query,
+          paymentUnitId: _selectedPaymentUnitId,
+          servingTypeId: _selectedServingTypeId,
+          skip: _currentSkip,
+          take: _currentTake,
+          isRefresh: isRefresh,
+        ),
+      );
+    }
   }
 
   void _resetAndFetchAll() {
@@ -77,6 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedServingTypeId = null;
       _selectedTypeName = null;
       _currentSkip = 0;
+      _isNearbyMode = false;
+      _lastNearbyLocation = null;
     });
     _triggerFetch(isRefresh: true);
   }
@@ -204,12 +226,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   SnackBarUtils.showSuccess(context, "${context.tr('searching_near')} $address");
 
+                  setState(() {
+                    _isNearbyMode = true;
+                    _lastNearbyLocation = position;
+                    _currentSkip = 0;
+                  });
+
                   context.read<HomeBloc>().add(
                     FetchNearbyServingsEvent(
                       lat: position.latitude,
                       lng: position.longitude,
                       skip: 0,
-                      take: 20,
+                      take: _currentTake,
                       isRefresh: true,
                     ),
                   );
@@ -383,37 +411,44 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             Expanded(
-              child: BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  if (state is HomeLoadingState) {
-                    return const Center(child: LoadingWidget());
-                  } else if (state is HomeErrorState) {
-                    return Center(
-                      child: CustomErrorView(
-                        message: state.message,
-                        onRetry: () => _triggerFetch(isRefresh: true),
-                      ),
-                    );
-                  } else if (state is HomeSuccessState) {
-                    if (state.servings.isEmpty) {
+              child: BlocListener<HomeBloc, HomeState>(
+                listener: (context, state) {
+                  if (state is HomeSuccessState || state is HomeErrorState) {
+                    setState(() => _isLoadingMore = false);
+                  }
+                },
+                child: BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomeLoadingState) {
+                      return const Center(child: LoadingWidget());
+                    } else if (state is HomeErrorState) {
                       return Center(
-                        child: Text(
-                          context.tr('no_services_available'),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
-                          ),
+                        child: CustomErrorView(
+                          message: state.message,
+                          onRetry: () => _triggerFetch(isRefresh: true),
                         ),
                       );
+                    } else if (state is HomeSuccessState) {
+                      if (state.servings.isEmpty) {
+                        return Center(
+                          child: Text(
+                            context.tr('no_services_available'),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                            ),
+                          ),
+                        );
+                      }
+
+                      return ResponsiveLayout(
+                        mobileBody: _buildServiceList(state.servings, state.proposedServings, theme, isDarkMode, screenWidth, screenHeight, 1, state.hasReachedMax),
+                        tabletBody: _buildServiceList(state.servings, state.proposedServings, theme, isDarkMode, screenWidth, screenHeight, 2, state.hasReachedMax),
+                        desktopBody: _buildServiceList(state.servings, state.proposedServings, theme, isDarkMode, screenWidth, screenHeight, 3, state.hasReachedMax),
+                      );
                     }
-                    
-                    return ResponsiveLayout(
-                      mobileBody: _buildServiceList(state.servings, theme, isDarkMode, screenWidth, screenHeight, 1),
-                      tabletBody: _buildServiceList(state.servings, theme, isDarkMode, screenWidth, screenHeight, 2),
-                      desktopBody: _buildServiceList(state.servings, theme, isDarkMode, screenWidth, screenHeight, 3),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+                    return const SizedBox.shrink();
+                  },
+                ),
               ),
             ),
           ],
@@ -422,51 +457,120 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildServiceList(List servings, ThemeData theme, bool isDarkMode, double width, double height, int crossAxisCount) {
+  Widget _buildServiceList(List servings, List proposedServings, ThemeData theme, bool isDarkMode, double width, double height, int crossAxisCount, bool hasReachedMax) {
     if (crossAxisCount == 1) {
       return ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-        itemCount: servings.length + 1,
+        itemCount: servings.length + (proposedServings.isNotEmpty ? 1 : 0) + (hasReachedMax ? 0 : 1),
         itemBuilder: (context, index) {
-          if (index == servings.length) {
+          if (index < servings.length) {
+            final serving = servings[index];
+            return buildServiceCard(context, serving, width, height)
+                .animate()
+                .fade(duration: 450.ms)
+                .slideY(begin: 0.15, end: 0, curve: Curves.easeOutQuad);
+          }
+
+          final remainingIndex = index - servings.length;
+
+          if (proposedServings.isNotEmpty && remainingIndex == 0) {
+            return _buildProposedServicesSection(proposedServings, width, height, isDarkMode, theme);
+          }
+
+          final footerIndex = proposedServings.isNotEmpty ? 1 : 0;
+          if (remainingIndex == footerIndex) {
             return _buildFooter(theme, isDarkMode);
           }
-          final serving = servings[index];
-          return buildServiceCard(context, serving, width, height)
-              .animate()
-              .fade(duration: 450.ms, delay: (index * 80).ms)
-              .slideY(begin: 0.15, end: 0, curve: Curves.easeOutQuad, delay: (index * 80).ms);
+
+          return const SizedBox.shrink();
         },
       );
     } else {
-      return GridView.builder(
-        padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          mainAxisExtent: 140, // Increased slightly for grid
-        ),
-        itemCount: servings.length + 1,
-        itemBuilder: (context, index) {
-          if (index == servings.length) {
-            return _buildFooter(theme, isDarkMode);
-          }
-          final serving = servings[index];
-          // For grid, we might want to pass a different width to buildServiceCard if it uses hardcoded fractions
-          // But buildServiceCard uses width * 0.25 etc. which is fine for list. 
-          // For grid, width passed should be the column width ideally.
-          final columnWidth = (width - (crossAxisCount + 1) * 16) / crossAxisCount;
-          return buildServiceCard(context, serving, columnWidth, height)
-              .animate()
-              .fade(duration: 450.ms, delay: (index * 80).ms)
-              .slideY(begin: 0.15, end: 0, curve: Curves.easeOutQuad, delay: (index * 80).ms);
-        },
+      return Column(
+        children: [
+          Expanded(
+            child: GridView.builder(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.04),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                mainAxisExtent: 140,
+              ),
+              itemCount: servings.length + (hasReachedMax ? 0 : 1),
+              itemBuilder: (context, index) {
+                if (index == servings.length) {
+                  return _buildFooter(theme, isDarkMode);
+                }
+                final serving = servings[index];
+                final columnWidth = (width - (crossAxisCount + 1) * 16) / crossAxisCount;
+                return buildServiceCard(context, serving, columnWidth, height)
+                    .animate()
+                    .fade(duration: 450.ms)
+                    .slideY(begin: 0.15, end: 0, curve: Curves.easeOutQuad);
+              },
+            ),
+          ),
+          if (proposedServings.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.04),
+              child: _buildProposedServicesSection(proposedServings, width, height, isDarkMode, theme),
+            ),
+        ],
       );
     }
   }
 
+  Widget _buildProposedServicesSection(List proposedServings, double width, double height, bool isDarkMode, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            context.tr('proposed_services'),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 130,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: proposedServings.length,
+            itemBuilder: (context, index) {
+              final serving = proposedServings[index];
+              return Container(
+                width: width * 0.85,
+                margin: const EdgeInsets.only(right: 12),
+                child: buildServiceCard(context, serving, width * 0.85, height, padding: EdgeInsets.zero),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 14),
+        Divider(color: AppColors.greyColor.withOpacity(0.2)),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
   Widget _buildFooter(ThemeData theme, bool isDarkMode) {
+    if (_isLoadingMore) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Center(
+          child: SizedBox(
+            width: 30,
+            height: 30,
+            child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor),
+          ),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Column(

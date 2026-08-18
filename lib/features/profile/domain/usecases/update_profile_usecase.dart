@@ -1,12 +1,13 @@
-﻿import '../repositories/i_profile_repository.dart';
-import '../../data/models/user_profile_model.dart';
+﻿import '../../../../core/network/api_result.dart';
+import '../entities/profile_entity.dart';
+import '../repositories/i_profile_repository.dart';
 
 class UpdateProfileUseCase {
   final IProfileRepository repository;
 
   UpdateProfileUseCase(this.repository);
 
-  Future<UserProfile> call(Map<String, dynamic> profileData) async {
+  Future<ApiResult<UserProfile>> call(Map<String, dynamic> profileData) async {
     return await repository.updateProfile(profileData);
   }
 }

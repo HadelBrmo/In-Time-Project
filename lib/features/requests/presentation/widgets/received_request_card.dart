@@ -9,6 +9,7 @@ class ReceivedRequestCard extends StatelessWidget {
   final String servingTitle;
   final VoidCallback? onAccept;
   final VoidCallback? onReject;
+  final VoidCallback? onComplete;
 
   const ReceivedRequestCard({
     super.key,
@@ -16,6 +17,7 @@ class ReceivedRequestCard extends StatelessWidget {
     required this.servingTitle,
     required this.onAccept,
     required this.onReject,
+    this.onComplete,
   });
 
   String _formatTime(String createdAtString) {
@@ -114,22 +116,40 @@ class ReceivedRequestCard extends StatelessWidget {
 
   Widget _buildActionButtons(MediaQueryHelper media) {
     if (request.status == 'accepted') {
-      return SizedBox(
-        width: double.infinity,
-        height: media.height * 0.045,
-        child: ElevatedButton(
-          onPressed: null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green.withOpacity(0.12),
-            disabledBackgroundColor: Colors.green.withOpacity(0.12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            elevation: 0,
+      return Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: media.height * 0.045,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                "الطلب مقبول",
+                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 13),
+              ),
+            ),
           ),
-          child: const Text(
-            "تم قبول الطلب",
-            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+          SizedBox(width: media.width * 0.03),
+          InkWell(
+            onTap: onComplete,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              height: media.height * 0.045,
+              width: media.height * 0.045,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2)),
+                ],
+              ),
+              child: const Icon(Icons.check_circle_outline, color: Colors.white, size: 22),
+            ),
           ),
-        ),
+        ],
       );
     }
 

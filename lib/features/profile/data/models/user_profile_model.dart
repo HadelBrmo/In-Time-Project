@@ -1,38 +1,24 @@
-import 'package:equatable/equatable.dart';
+import '../../domain/entities/profile_entity.dart';
 
-class UserProfile extends Equatable {
-  final int id;
-  final String fullName;
-  final String email;
-  final String? phoneNumber;
-  final String? currentJob;
-  final String? address;
-  final String gender;
-  final String? birthDate;
-  final String? profilePicture;
-  final String role;
-  final bool isActive;
-  final String createdAt;
-  final String updatedAt;
-
-  const UserProfile({
-    required this.id,
-    required this.fullName,
-    required this.email,
-    this.phoneNumber,
-    this.currentJob,
-    this.address,
-    required this.gender,
-    this.birthDate,
-    this.profilePicture,
-    required this.role,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
+class UserProfileModel extends UserProfile {
+  const UserProfileModel({
+    required super.id,
+    required super.fullName,
+    required super.email,
+    super.phoneNumber,
+    super.currentJob,
+    super.address,
+    required super.gender,
+    super.birthDate,
+    super.profilePicture,
+    required super.role,
+    required super.isActive,
+    required super.createdAt,
+    required super.updatedAt,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) {
-    return UserProfile(
+  factory UserProfileModel.fromJson(Map<String, dynamic> json) {
+    return UserProfileModel(
       id: json['id'] as int,
       fullName: json['full_name'] as String? ?? '',
       email: json['email'] as String? ?? '',
@@ -48,21 +34,4 @@ class UserProfile extends Equatable {
       updatedAt: json['updated_at'] as String? ?? '',
     );
   }
-
-  @override
-  List<Object?> get props => [
-        id,
-        fullName,
-        email,
-        phoneNumber,
-        currentJob,
-        address,
-        gender,
-        birthDate,
-        profilePicture,
-        role,
-        isActive,
-        createdAt,
-        updatedAt,
-      ];
 }

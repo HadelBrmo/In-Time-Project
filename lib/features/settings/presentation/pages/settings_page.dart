@@ -168,7 +168,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
             title: context.tr('app_animations'),
             icon: Icons.animation,
             child: BlocBuilder<SettingsBloc, SettingsState>(
-              builder: (context, settingsState) {
+              builder: (blocContext, settingsState) {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -182,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       value: settingsState.animationsEnabled,
                       activeTrackColor: AppColors.primaryColor,
                       onChanged: (value) {
-                        context.read<SettingsBloc>().add(ToggleAnimationsEvent(value));
+                        blocContext.read<SettingsBloc>().add(ToggleAnimationsEvent(value));
                       },
                     ),
                   ],
@@ -196,40 +196,55 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
             context: context,
             title: context.tr('appearance'),
             icon: Icons.palette_outlined,
-            child: BlocBuilder<ThemeBloc, ThemeState>(
-              builder: (context, themeState) {
-                final isDarkMode = themeState.themeMode == ThemeMode.dark;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      isDarkMode ? context.tr('dark_mode') : context.tr('light_mode'),
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (isDarkMode) {
-                          _controller.animateTo(0.5, duration: const Duration(milliseconds: 500));
-                        } else {
-                          _controller.animateTo(0.0, duration: const Duration(milliseconds: 500));
-                        }
-                        context.read<ThemeBloc>().add(ToggleThemeEvent());
-                      },
-                      child: SizedBox(
-                        height: 50.h,
-                        width: 80.w,
-                        child: Lottie.asset(
-                          'assets/animations/Dark Mode Animation.json',
-                          controller: _controller,
-                          onLoaded: (composition) {
-                            _controller.duration = composition.duration;
-                          },
+            child: BlocBuilder<SettingsBloc, SettingsState>(
+              builder: (context, settingsState) {
+                return BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, themeState) {
+                    final isDarkMode = themeState.themeMode == ThemeMode.dark;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          isDarkMode ? context.tr('dark_mode') : context.tr('light_mode'),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
+                        GestureDetector(
+                          onTap: () {
+                            if (settingsState.animationsEnabled) {
+                              if (isDarkMode) {
+                                _controller.animateTo(0.5, duration: const Duration(milliseconds: 500));
+                              } else {
+                                _controller.animateTo(0.0, duration: const Duration(milliseconds: 500));
+                              }
+                            } else {
+                              // تحديث فوري للقيمة بدون حركة
+                              _controller.value = isDarkMode ? 0.5 : 0.0;
+                            }
+                            context.read<ThemeBloc>().add(ToggleThemeEvent());
+                          },
+                          child: SizedBox(
+                            height: 50.h,
+                            width: 80.w,
+                            child: settingsState.animationsEnabled 
+                              ? Lottie.asset(
+                                  'assets/animations/Dark Mode Animation.json',
+                                  controller: _controller,
+                                  onLoaded: (composition) {
+                                    _controller.duration = composition.duration;
+                                  },
+                                )
+                              : Icon(
+                                  isDarkMode ? Icons.nightlight_round : Icons.wb_sunny_rounded,
+                                  color: isDarkMode ? Colors.amberAccent : Colors.orange,
+                                  size: 30.sp,
+                                ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),

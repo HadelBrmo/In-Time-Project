@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../servings/domain/entity/service_entity.dart';
 import '../../domain/usecases/get_nearby_servings_use_case.dart';
+import '../../domain/usecases/get_proposed_servings_use_case.dart';
 import '../../domain/usecases/search_services_usecase.dart';
 import '../../domain/usecases/update_availability_use_case.dart';
 import 'home_event.dart';
@@ -9,11 +10,13 @@ import 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final SearchServingsUseCase searchServingsUseCase;
   final GetNearbyServingsUseCase getNearbyServingsUseCase;
+  final GetProposedServingsUseCase getProposedServingsUseCase;
   final UpdateAvailabilityUseCase updateAvailabilityUseCase;
 
   HomeBloc({
     required this.searchServingsUseCase,
     required this.getNearbyServingsUseCase,
+    required this.getProposedServingsUseCase,
     required this.updateAvailabilityUseCase,
   }) : super(HomeInitialState()) {
 
@@ -40,7 +43,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final activeNewServings = newServings.where((s) => s.status == 'active' || s.status == null).toList();
 
         final fullList = event.isRefresh ? activeNewServings : [...oldServings, ...activeNewServings];
-        emit(HomeSuccessState(servings: fullList));
+        
+        emit(HomeSuccessState(
+          servings: fullList,
+          proposedServings: state is HomeSuccessState ? (state as HomeSuccessState).proposedServings : [],
+          hasReachedMax: activeNewServings.isEmpty,
+          timestamp: DateTime.now(),
+        ));
       } catch (e) {
         emit(HomeErrorState(message: e.toString()));
       }
@@ -68,7 +77,41 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             (newServings) {
           final activeNewServings = newServings.where((s) => s.status == 'active' || s.status == null).toList();
           final fullList = event.isRefresh ? activeNewServings : [...oldServings, ...activeNewServings];
-          emit(HomeSuccessState(servings: fullList));
+          
+          emit(HomeSuccessState(
+            servings: fullList,
+            proposedServings: state is HomeSuccessState ? (state as HomeSuccessState).proposedServings : [],
+            hasReachedMax: activeNewServings.isEmpty,
+            timestamp: DateTime.now(),
+          ));
+        },
+      );
+    });
+
+    on<FetchProposedServingsEvent>((event, emit) async {
+      final currentState = state;
+      List<ServiceEntity> currentServings = [];
+      if (currentState is HomeSuccessState) {
+        currentServings = currentState.servings;
+      }
+
+      final failureOrData = await getProposedServingsUseCase(
+        skip: event.skip,
+        take: event.take,
+      );
+
+      failureOrData.fold(
+            (failure) => null, // Silently fail for proposed services or handle as needed
+            (proposedServings) {
+          final activeProposed = proposedServings.where((s) => s.status == 'active' || s.status == null).toList();
+          if (state is HomeSuccessState) {
+            emit((state as HomeSuccessState).copyWith(proposedServings: activeProposed));
+          } else {
+            emit(HomeSuccessState(
+              servings: currentServings,
+              proposedServings: activeProposed,
+            ));
+          }
         },
       );
     });
@@ -82,7 +125,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           return serving;
         }).toList();
-        emit(HomeSuccessState(servings: updatedServings));
+        final updatedProposed = currentState.proposedServings.map((serving) {
+          if (serving.id == event.serviceId) {
+            return _cloneServiceWithRequestedStatus(serving, true);
+          }
+          return serving;
+        }).toList();
+        emit(currentState.copyWith(
+          servings: updatedServings,
+          proposedServings: updatedProposed,
+        ));
       }
     });
 
@@ -95,7 +147,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           return serving;
         }).toList();
-        emit(HomeSuccessState(servings: updatedServings));
+        final updatedProposed = currentState.proposedServings.map((serving) {
+          if (serving.id == event.serviceId) {
+            return _cloneServiceWithRequestedStatus(serving, false);
+          }
+          return serving;
+        }).toList();
+        emit(currentState.copyWith(
+          servings: updatedServings,
+          proposedServings: updatedProposed,
+        ));
       }
     });
 
@@ -141,6 +202,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       isRequested: newStatus,
       isOwner: old.isOwner,
       status: old.status,
+      reason: old.reason,
+      score: old.score,
       availabilitySlots: old.availabilitySlots,
       createdAt: old.createdAt,
     );

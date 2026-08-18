@@ -19,6 +19,11 @@ abstract class HomeRemoteDataSource {
     required int take,
   });
 
+  Future<List<ServiceModel>> getProposedServings({
+    required int skip,
+    required int take,
+  });
+
   Future<void> updateServiceAvailability({
     required int serviceId,
     required Map<String, dynamic> data,
@@ -40,16 +45,16 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     int? take,
   }) async {
     final Map<String, dynamic> requestBody = {
-      'serving_type_id': servingTypeId,
-      'payment_unit_id': paymentUnitId,
-      'serving_category_id': servingCategoryId,
-      'name': (name != null && name.trim().isNotEmpty) ? name : null,
-      'skip': skip,
-      'take': take,
+      if (servingTypeId != null) 'serving_type_id': servingTypeId,
+      if (paymentUnitId != null) 'payment_unit_id': paymentUnitId,
+      if (servingCategoryId != null) 'serving_category_id': servingCategoryId,
+      if (name != null && name.trim().isNotEmpty) 'name': name,
+      if (skip != null) 'skip': skip,
+      if (take != null) 'take': take,
     };
 
     final response = await dio.post(
-      '/servings/search',
+      ApiStringConstants.searchServingsUrl,
       data: requestBody,
     );
 
@@ -69,10 +74,31 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     required int take,
   }) async {
     final response = await dio.post(
-      '/servings/nearby',
+      'servings/nearby',
       data: {
         'lat': lat,
         'lng': lng,
+        'skip': skip,
+        'take': take,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = response.data['data'];
+      return responseData.map((json) => ServiceModel.fromJson(json)).toList();
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<List<ServiceModel>> getProposedServings({
+    required int skip,
+    required int take,
+  }) async {
+    final response = await dio.get(
+      ApiStringConstants.proposedServingsUrl,
+      queryParameters: {
         'skip': skip,
         'take': take,
       },

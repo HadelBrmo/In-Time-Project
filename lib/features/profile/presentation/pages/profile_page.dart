@@ -10,12 +10,18 @@ import '../../../../core/widgets/custom_drawer.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../injection_container.dart';
 import '../../data/models/user_profile_model.dart';
-import '../bloc/profile_bloc.dart';
-import '../bloc/profile_event.dart';
-import '../bloc/profile_state.dart';
+import '../../domain/entities/profile_entity.dart';
+import '../bloc/profile/profile_bloc.dart';
+import '../bloc/profile/profile_event.dart';
+
+import '../bloc/profile/profile_state.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_info_row.dart';
+import '../widgets/portfolio_action_button.dart';
+import '../bloc/protfilo/portfolio_bloc.dart';
+import '../bloc/protfilo/portfolio_event.dart';
 import 'edit_profile_page.dart';
+import 'portfolio_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -180,7 +186,108 @@ class ProfileView extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: media.height * 0.03),
+          _buildPortfolioSection(context, media, theme, isDarkMode, containerColor, shadowColor),
           SizedBox(height: media.height * 0.05),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPortfolioSection(
+    BuildContext context,
+    MediaQueryHelper media,
+    ThemeData theme,
+    bool isDarkMode,
+    Color containerColor,
+    Color shadowColor,
+  ) {
+    final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: media.width * 0.05),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'أضف معرض أعمالك',
+            style: theme.textTheme.titleSmall?.copyWith(color: textColor, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: media.height * 0.015),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(media.width * 0.04),
+            decoration: BoxDecoration(
+              color: containerColor,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(color: shadowColor, blurRadius: 12, offset: const Offset(0, 4)),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: PortfolioActionButton(
+                        title: 'صورة',
+                        icon: Icons.image_outlined,
+                        onTap: () {
+
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: PortfolioActionButton(
+                        title: 'ملف',
+                        icon: Icons.folder_outlined,
+                        onTap: () {
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: PortfolioActionButton(
+                        title: 'رابط',
+                        icon: Icons.link_rounded,
+                        onTap: () {
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: media.height * 0.015),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PortfolioPage(
+                          userId: userId,
+                          bloc: sl<PortfolioBloc>()..add(FetchPortfolio(userId)),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'عرض الكل',
+                    style: TextStyle(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: media.height * 0.01),
+          Center(
+            child: Text(
+              'معرض أعمالك يزيد من فرص طلب خدماتك',
+              style: theme.textTheme.bodySmall?.copyWith(color: AppColors.greyColor),
+            ),
+          ),
         ],
       ),
     );

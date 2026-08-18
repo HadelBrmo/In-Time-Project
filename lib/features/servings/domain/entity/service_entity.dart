@@ -24,6 +24,8 @@ class ServiceEntity extends Equatable {
   final bool isRequested;
   final bool? isOwner;
   final String? status;
+  final String? reason;
+  final String? score;
   final List<dynamic>? availabilitySlots;
   final String? createdAt;
 
@@ -49,6 +51,8 @@ class ServiceEntity extends Equatable {
     this.isRequested = false,
     this.isOwner = false,
     this.status,
+    this.reason,
+    this.score,
     this.availabilitySlots = const [],
     this.createdAt,
   });
@@ -75,6 +79,8 @@ class ServiceEntity extends Equatable {
     bool? isRequested,
     bool? isOwner,
     String? status,
+    String? reason,
+    String? score,
     List<dynamic>? availabilitySlots,
     String? createdAt,
   }) {
@@ -100,6 +106,8 @@ class ServiceEntity extends Equatable {
       isRequested: isRequested ?? this.isRequested,
       isOwner: isOwner ?? this.isOwner,
       status: status ?? this.status,
+      reason: reason ?? this.reason,
+      score: score ?? this.score,
       availabilitySlots: availabilitySlots ?? this.availabilitySlots,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -128,6 +136,8 @@ class ServiceEntity extends Equatable {
     isRequested,
     isOwner,
     status,
+    reason,
+    score,
     availabilitySlots,
     createdAt,
   ];

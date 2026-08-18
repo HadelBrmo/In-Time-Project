@@ -17,4 +17,8 @@ abstract class HomeRepository {
     required int skip,
     required int take,
   });
+  Future<Either<Failure, List<ServiceEntity>>> getProposedServings({
+    required int skip,
+    required int take,
+  });
   Future<Either<Failure, void>> updateServiceAvailability({required int serviceId, required Map<String, dynamic> data});}

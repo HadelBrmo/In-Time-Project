@@ -34,6 +34,8 @@ class _MyServingsViewState extends State<MyServingsView> {
           if (state is UpdateServingSuccessState) {
             SnackBarUtils.showSuccess(context, context.tr('update_success'));
             context.read<MyServingsBloc>().add(FetchMyServingsEvent());
+          } else if (state is UpdateServingErrorState) {
+            SnackBarUtils.showError(context, state.message);
           }
         },
         builder: (context, state) {

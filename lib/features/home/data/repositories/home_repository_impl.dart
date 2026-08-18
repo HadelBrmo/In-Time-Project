@@ -72,6 +72,22 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
+  Future<Either<Failure, List<ServiceEntity>>> getProposedServings({
+    required int skip,
+    required int take,
+  }) async {
+    try {
+      final remoteData = await remoteDataSource.getProposedServings(
+        skip: skip,
+        take: take,
+      );
+      return Right(remoteData);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> updateServiceAvailability({
     required int serviceId,
     required Map<String, dynamic> data,

@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_profile_model.dart';
+import '../../domain/entities/profile_entity.dart';
 
 abstract class ProfileLocalDataSource {
   Future<void> saveProfile(UserProfile profile);
