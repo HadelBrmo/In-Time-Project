@@ -226,5 +226,13 @@
   "date_label": "التاريخ",
   "time_label": "الوقت",
   "dark_mode": "الوضع الداكن",
-  "light_mode": "الوضع الفاتح"
+  "light_mode": "الوضع الفاتح",
+  "add_to_portfolio": "أضف معرض أعمالك",
+  "image": "صورة",
+  "file": "ملف",
+  "link": "رابط",
+  "portfolio_benefit_hint": "معرض أعمالك يزيد من فرص طلب خدماتك",
+  "portfolio": "معرض الأعمال",
+  "no_portfolio_items": "لا يوجد أعمال مضافة بعد",
+  "add_portfolio_hint": "أضف صورة أو ملف أو رابط من صفحة الملف الشخصي"
 }

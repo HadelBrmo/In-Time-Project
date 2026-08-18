@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/media_query.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../domain/entities/portfolio_item_entity.dart';
@@ -37,7 +38,7 @@ class _PortfolioView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: CustomAppBar(
-        title: const Text('معرض الأعمال'),
+        title: Text(context.tr('portfolio')),
       ),
       body: BlocBuilder<PortfolioBloc, PortfolioState>(
         builder: (context, state) {
@@ -52,7 +53,7 @@ class _PortfolioView extends StatelessWidget {
             );
           } else if (state is PortfolioLoaded) {
             if (state.items.isEmpty) {
-              return _buildEmptyState(media, theme);
+              return _buildEmptyState(media, theme, context);
             }
             return GridView.builder(
               padding: EdgeInsets.all(media.width * 0.04),
@@ -74,7 +75,7 @@ class _PortfolioView extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(MediaQueryHelper media, ThemeData theme) {
+  Widget _buildEmptyState(MediaQueryHelper media, ThemeData theme, BuildContext context) {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: media.width * 0.1),
@@ -84,13 +85,13 @@ class _PortfolioView extends StatelessWidget {
             Icon(Icons.work_outline_rounded, size: media.width * 0.18, color: AppColors.greyColor),
             SizedBox(height: media.height * 0.02),
             Text(
-              'لا يوجد أعمال مضافة بعد',
+              context.tr('no_portfolio_items'),
               style: theme.textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: media.height * 0.01),
             Text(
-              'أضف صورة أو ملف أو رابط من صفحة الملف الشخصي',
+              context.tr('add_portfolio_hint'),
               style: theme.textTheme.bodySmall?.copyWith(color: AppColors.greyColor),
               textAlign: TextAlign.center,
             ),

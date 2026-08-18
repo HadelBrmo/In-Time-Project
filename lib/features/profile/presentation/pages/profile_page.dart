@@ -210,7 +210,7 @@ class ProfileView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'أضف معرض أعمالك',
+            context.tr('add_to_portfolio'),
             style: theme.textTheme.titleSmall?.copyWith(color: textColor, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: media.height * 0.015),
@@ -230,7 +230,7 @@ class ProfileView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: PortfolioActionButton(
-                        title: 'صورة',
+                        title: context.tr('image'),
                         icon: Icons.image_outlined,
                         onTap: () {
 
@@ -240,7 +240,7 @@ class ProfileView extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: PortfolioActionButton(
-                        title: 'ملف',
+                        title: context.tr('file'),
                         icon: Icons.folder_outlined,
                         onTap: () {
                         },
@@ -249,7 +249,7 @@ class ProfileView extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: PortfolioActionButton(
-                        title: 'رابط',
+                        title: context.tr('link'),
                         icon: Icons.link_rounded,
                         onTap: () {
                         },
@@ -271,7 +271,7 @@ class ProfileView extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    'عرض الكل',
+                    context.tr('view_all'),
                     style: TextStyle(
                       color: AppColors.primaryColor,
                       fontWeight: FontWeight.bold,
@@ -284,8 +284,8 @@ class ProfileView extends StatelessWidget {
           SizedBox(height: media.height * 0.01),
           Center(
             child: Text(
-              'معرض أعمالك يزيد من فرص طلب خدماتك',
-              style: theme.textTheme.bodySmall?.copyWith(color: AppColors.greyColor),
+              context.tr('portfolio_benefit_hint'),
+              style: theme.textTheme.headlineSmall?.copyWith(color: AppColors.greyColor),
             ),
           ),
         ],

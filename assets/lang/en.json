@@ -254,5 +254,13 @@
   "date_label": "Date",
   "time_label": "Time",
   "dark_mode": "Dark Mode",
-  "light_mode": "Light Mode"
+  "light_mode": "Light Mode",
+  "add_to_portfolio": "Add to your portfolio",
+  "image": "Image",
+  "file": "File",
+  "link": "Link",
+  "portfolio_benefit_hint": "Your portfolio increases your chances of being requested",
+  "portfolio": "Portfolio",
+  "no_portfolio_items": "No items added yet",
+  "add_portfolio_hint": "Add an image, file, or link from the profile page"
 }
