@@ -7,9 +7,9 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../domain/entities/portfolio_item_entity.dart';
-import '../bloc/protfilo/portfolio_bloc.dart';
-import '../bloc/protfilo/portfolio_event.dart';
-import '../bloc/protfilo/portfolio_state.dart';
+import '../bloc/portfolio/portfolio_bloc.dart';
+import '../bloc/portfolio/portfolio_event.dart';
+import '../bloc/portfolio/portfolio_state.dart';
 
 
 class PortfolioPage extends StatelessWidget {

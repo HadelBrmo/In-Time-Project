@@ -1,0 +1,9 @@
+- [x] Create `PortfolioRemoteDataSource` and its implementation
+- [x] Add upload methods to `IProfileRepository`
+- [x] Update `ProfileRepositoryImpl` with upload logic
+- [x] Create Use Cases for uploading portfolio items
+- [x] Register new dependencies in `injection_container.dart`
+- [x] Rename `protfilo` directory to `portfolio` and fix imports
+- [x] Update `PortfolioBloc` to handle upload events
+- [x] Refactor `ProfilePage` to use `PortfolioBloc` for uploads
+- [x] Verify compilation

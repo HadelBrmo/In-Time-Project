@@ -56,7 +56,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   @override
   Future<List<PortfolioItemModel>> getPortfolio(int userId) async {
     try {
-      final response = await dio.get("profile/portfolio/$userId");
+      final response = await dio.get("work-gallery/user/$userId");
       if (response.statusCode == 200) {
         final List data = response.data['data'];
         return data.map((json) => PortfolioItemModel.fromJson(json)).toList();

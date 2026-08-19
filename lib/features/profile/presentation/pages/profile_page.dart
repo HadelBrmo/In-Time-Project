@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/media_query.dart';
@@ -9,17 +11,16 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_drawer.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../injection_container.dart';
-import '../../data/models/user_profile_model.dart';
 import '../../domain/entities/profile_entity.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
-
 import '../bloc/profile/profile_state.dart';
+import '../bloc/portfolio/portfolio_bloc.dart';
+import '../bloc/portfolio/portfolio_event.dart';
+import '../bloc/portfolio/portfolio_state.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_info_row.dart';
 import '../widgets/portfolio_action_button.dart';
-import '../bloc/protfilo/portfolio_bloc.dart';
-import '../bloc/protfilo/portfolio_event.dart';
 import 'edit_profile_page.dart';
 import 'portfolio_page.dart';
 
@@ -31,8 +32,11 @@ class ProfilePage extends StatelessWidget {
     final prefs = sl<SharedPreferences>();
     final userId = prefs.getInt('user_id') ?? 0;
 
-    return BlocProvider(
-      create: (context) => sl<ProfileBloc>()..add(FetchProfile(userId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<ProfileBloc>()..add(FetchProfile(userId))),
+        BlocProvider(create: (context) => sl<PortfolioBloc>()),
+      ],
       child: ProfileView(userId: userId),
     );
   }
@@ -47,74 +51,99 @@ class ProfileView extends StatelessWidget {
     final profileBloc = BlocProvider.of<ProfileBloc>(context);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      drawer: ResponsiveLayout.isMobile(context) ? const CustomDrawer() : null,
-      appBar: CustomAppBar(
-        title: Text(
-          context.tr('profile'),
-          style: theme.textTheme.titleSmall,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              final state = profileBloc.state;
-              if (state is ProfileLoaded) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider.value(
-                      value: profileBloc,
-                      child: EditProfilePage(profile: state.userProfile),
-                    ),
-                  ),
-                ).then((_) {
-                  profileBloc.add(FetchProfile(userId));
-                });
-              }
-            },
-            icon: const Icon(Icons.edit_outlined, color: AppColors.whiteColor),
+    return BlocListener<PortfolioBloc, PortfolioState>(
+      listener: (context, state) {
+        if (state is PortfolioUploading) {
+          _showLoading(context);
+        } else if (state is PortfolioUploadSuccess) {
+          _hideLoading(context);
+          _showMessage(context, 'تم رفع العنصر إلى السيرفر بنجاح');
+        } else if (state is PortfolioUploadError) {
+          _hideLoading(context);
+          _showMessage(context, state.message, isError: true);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        drawer: ResponsiveLayout.isMobile(context) ? const CustomDrawer() : null,
+        appBar: CustomAppBar(
+          title: Text(
+            context.tr('profile'),
+            style: theme.textTheme.titleSmall,
           ),
-        ],
-      ),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProfileLoaded) {
-            return ResponsiveLayout(
-              mobileBody: _buildProfileContent(context, state.userProfile),
-              tabletBody: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: _buildProfileContent(context, state.userProfile),
-                ),
-              ),
-              desktopBody: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 700),
-                  child: _buildProfileContent(context, state.userProfile),
-                ),
-              ),
-            );
-          } else if (state is ProfileError) {
-            return CustomErrorView(
-              message: state.message,
-              onRetry: () {
-                profileBloc.add(FetchProfile(userId));
+          actions: [
+            IconButton(
+              onPressed: () {
+                final state = profileBloc.state;
+                if (state is ProfileLoaded) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                        value: profileBloc,
+                        child: EditProfilePage(profile: state.userProfile),
+                      ),
+                    ),
+                  ).then((_) {
+                    profileBloc.add(FetchProfile(userId));
+                  });
+                }
               },
-            );
-          } else {
-            return Center(
-              child: Text(
-                context.tr('click_to_load'),
-                style: theme.textTheme.titleMedium,
-              ),
-            );
-          }
-        },
+              icon: const Icon(Icons.edit_outlined, color: AppColors.whiteColor),
+            ),
+          ],
+        ),
+        body: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is ProfileLoaded) {
+              return ResponsiveLayout(
+                mobileBody: _buildProfileContent(context, state.userProfile),
+                tabletBody: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: _buildProfileContent(context, state.userProfile),
+                  ),
+                ),
+                desktopBody: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 700),
+                    child: _buildProfileContent(context, state.userProfile),
+                  ),
+                ),
+              );
+            } else if (state is ProfileError) {
+              return CustomErrorView(
+                message: state.message,
+                onRetry: () {
+                  profileBloc.add(FetchProfile(userId));
+                },
+              );
+            } else {
+              return Center(
+                child: Text(
+                  context.tr('click_to_load'),
+                  style: theme.textTheme.titleMedium,
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
+  }
+
+  void _showLoading(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  void _hideLoading(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   Widget _buildProfileContent(BuildContext context, UserProfile profile) {
@@ -194,15 +223,192 @@ class ProfileView extends StatelessWidget {
     );
   }
 
+
+  Future<void> _uploadImage(BuildContext context) async {
+    try {
+      final picker = sl<ImagePicker>();
+      final image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
+      );
+
+      if (image == null || !context.mounted) return;
+
+      final title = await _askTitle(context, 'عنوان الصورة', image.name);
+      if (!context.mounted || title == null) return;
+
+      context.read<PortfolioBloc>().add(UploadPortfolioImage(
+        userId: userId,
+        image: image,
+        title: title,
+      ));
+    } catch (e) {
+      if (context.mounted) _showMessage(context, _errorText(e), isError: true);
+    }
+  }
+
+  Future<void> _uploadFile(BuildContext context) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        withData: true,
+      );
+
+      if (result == null || result.files.isEmpty || !context.mounted) return;
+
+      final file = result.files.first;
+      final title = await _askTitle(context, 'عنوان الملف', file.name);
+      if (!context.mounted || title == null) return;
+
+      context.read<PortfolioBloc>().add(UploadPortfolioFile(
+        userId: userId,
+        file: file,
+        title: title,
+      ));
+    } catch (e) {
+      if (context.mounted) _showMessage(context, _errorText(e), isError: true);
+    }
+  }
+
+  Future<void> _uploadLink(BuildContext context) async {
+    final result = await _askLink(context);
+    if (!context.mounted || result == null) return;
+
+    try {
+      context.read<PortfolioBloc>().add(UploadPortfolioLink(
+        userId: userId,
+        url: result.url,
+        title: result.title,
+      ));
+    } catch (e) {
+      if (context.mounted) _showMessage(context, _errorText(e), isError: true);
+    }
+  }
+
+  Future<String?> _askTitle(
+      BuildContext context,
+      String label,
+      String fallback,
+      ) async {
+    final controller = TextEditingController(text: fallback);
+
+    final value = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(label),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textDirection: TextDirection.rtl,
+          decoration: const InputDecoration(
+            hintText: 'اكتب عنواناً',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('إلغاء'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, controller.text.trim()),
+            child: const Text('رفع'),
+          ),
+        ],
+      ),
+    );
+
+    controller.dispose();
+    if (value == null) return null;
+    return value.trim().isEmpty ? fallback : value.trim();
+  }
+
+  Future<_LinkUploadData?> _askLink(BuildContext context) async {
+    final titleController = TextEditingController();
+    final urlController = TextEditingController();
+
+    final value = await showDialog<_LinkUploadData>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('إضافة رابط'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              textDirection: TextDirection.rtl,
+              decoration: const InputDecoration(
+                labelText: 'عنوان الرابط',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: urlController,
+              keyboardType: TextInputType.url,
+              decoration: const InputDecoration(
+                labelText: 'الرابط',
+                hintText: 'https://example.com',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('إلغاء'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final url = urlController.text.trim();
+              final uri = Uri.tryParse(url);
+              if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
+                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                  const SnackBar(content: Text('أدخل رابطاً صحيحاً يبدأ بـ http أو https')),
+                );
+                return;
+              }
+              Navigator.pop(
+                dialogContext,
+                _LinkUploadData(
+                  title: titleController.text.trim().isEmpty ? url : titleController.text.trim(),
+                  url: url,
+                ),
+              );
+            },
+            child: const Text('إضافة'),
+          ),
+        ],
+      ),
+    );
+
+    titleController.dispose();
+    urlController.dispose();
+    return value;
+  }
+
+  void _showMessage(BuildContext context, String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  String _errorText(Object error) {
+    final text = error.toString();
+    return text.startsWith('Exception: ') ? text.substring(11) : text;
+  }
+
   Widget _buildPortfolioSection(
-    BuildContext context,
-    MediaQueryHelper media,
-    ThemeData theme,
-    bool isDarkMode,
-    Color containerColor,
-    Color shadowColor,
-  ) {
+      BuildContext context,
+      MediaQueryHelper media,
+      ThemeData theme,
+      bool isDarkMode,
+      Color containerColor,
+      Color shadowColor,
+      ) {
     final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
+    final portfolioBloc = BlocProvider.of<PortfolioBloc>(context);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: media.width * 0.05),
@@ -232,9 +438,7 @@ class ProfileView extends StatelessWidget {
                       child: PortfolioActionButton(
                         title: context.tr('image'),
                         icon: Icons.image_outlined,
-                        onTap: () {
-
-                        },
+                        onTap: () => _uploadImage(context),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -242,8 +446,7 @@ class ProfileView extends StatelessWidget {
                       child: PortfolioActionButton(
                         title: context.tr('file'),
                         icon: Icons.folder_outlined,
-                        onTap: () {
-                        },
+                        onTap: () => _uploadFile(context),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -251,8 +454,7 @@ class ProfileView extends StatelessWidget {
                       child: PortfolioActionButton(
                         title: context.tr('link'),
                         icon: Icons.link_rounded,
-                        onTap: () {
-                        },
+                        onTap: () => _uploadLink(context),
                       ),
                     ),
                   ],
@@ -265,7 +467,7 @@ class ProfileView extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => PortfolioPage(
                           userId: userId,
-                          bloc: sl<PortfolioBloc>()..add(FetchPortfolio(userId)),
+                          bloc: portfolioBloc..add(FetchPortfolio(userId)),
                         ),
                       ),
                     );
@@ -292,4 +494,11 @@ class ProfileView extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LinkUploadData {
+  final String title;
+  final String url;
+
+  const _LinkUploadData({required this.title, required this.url});
 }

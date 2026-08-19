@@ -109,15 +109,19 @@ import 'features/complaints/presentation/bloc/complaint_bloc.dart';
 
 // Profile Feature 👤
 import 'features/profile/data/datasources/profile_remote_data_source.dart';
+import 'features/profile/data/datasources/portfolio_remote_data_source.dart';
 import 'features/profile/data/datasources/profile_local_data_source.dart';
 import 'features/profile/data/repositories/profile_repository_impl.dart';
 import 'features/profile/domain/repositories/i_profile_repository.dart';
 import 'features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
 import 'features/profile/domain/usecases/get_portfolio_usecase.dart';
+import 'features/profile/domain/usecases/upload_portfolio_image_usecase.dart';
+import 'features/profile/domain/usecases/upload_portfolio_file_usecase.dart';
+import 'features/profile/domain/usecases/upload_portfolio_link_usecase.dart';
 import 'features/servings/domain/usecases/service/rate_serving_usecase.dart';
 import 'features/profile/presentation/bloc/profile/profile_bloc.dart';
-import 'features/profile/presentation/bloc/protfilo/portfolio_bloc.dart';
+import 'features/profile/presentation/bloc/portfolio/portfolio_bloc.dart';
 import 'features/theme/data/datasource/theme_local_data_source.dart';
 import 'features/theme/presentation/bloc/theme_bloc.dart';
 import 'features/settings/data/datasources/settings_local_data_source.dart';
@@ -279,7 +283,12 @@ Future<void> init() async {
     getUserProfileUseCase: sl(),
     updateProfileUseCase: sl(),
   ));
-  sl.registerFactory(() => PortfolioBloc(getPortfolioUseCase: sl()));
+  sl.registerFactory(() => PortfolioBloc(
+    getPortfolioUseCase: sl(),
+    uploadPortfolioImageUseCase: sl(),
+    uploadPortfolioFileUseCase: sl(),
+    uploadPortfolioLinkUseCase: sl(),
+  ));
   sl.registerFactory(() => IdentityVerificationCubit(sl()));
 
   sl.registerLazySingleton(() => NotificationsBloc(
@@ -361,6 +370,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
   sl.registerLazySingleton(() => GetPortfolioUseCase(sl()));
+  sl.registerLazySingleton(() => UploadPortfolioImageUseCase(sl()));
+  sl.registerLazySingleton(() => UploadPortfolioFileUseCase(sl()));
+  sl.registerLazySingleton(() => UploadPortfolioLinkUseCase(sl()));
 
   // Notifications Use Cases
   sl.registerLazySingleton(() => GetMyNotificationsUseCase(sl()));
@@ -381,6 +393,7 @@ Future<void> init() async {
   sl.registerLazySingleton<IComplaintRepository>(() => ComplaintRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<IProfileRepository>(() => ProfileRepositoryImpl(
     remoteDataSource: sl(),
+    portfolioRemoteDataSource: sl(),
     localDataSource: sl(),
   ));
   sl.registerLazySingleton<SavedServicesRepository>(() => SavedServicesRepositoryImpl(localDataSource: sl()));
@@ -405,6 +418,7 @@ Future<void> init() async {
   sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ComplaintRemoteDataSource>(() => ComplaintRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<PortfolioRemoteDataSource>(() => PortfolioRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ProfileLocalDataSource>(() => ProfileLocalDataSourceImpl(sharedPreferences: sl()));
 
   sl.registerLazySingleton<SavedServicesLocalDataSource>(() => SavedServicesLocalDataSourceImpl(sharedPreferences: sl()));
