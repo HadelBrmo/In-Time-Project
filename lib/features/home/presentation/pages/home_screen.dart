@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_routes.dart';
@@ -495,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                mainAxisExtent: 140,
+                mainAxisExtent: 165.h,
               ),
               itemCount: servings.length + (hasReachedMax ? 0 : 1),
               itemBuilder: (context, index) {
@@ -536,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         SizedBox(
-          height: 130,
+          height: 165.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: proposedServings.length,

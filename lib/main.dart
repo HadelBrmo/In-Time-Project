@@ -25,6 +25,8 @@ import 'package:in_time/features/auth/presentation/bloc/sign_up_bloc/sign_up_blo
 import 'package:in_time/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
 import 'package:in_time/features/servings/presentation/bloc/saved_services/saved_services_bloc.dart';
+import 'package:in_time/features/wallet/presentation/bloc/wallet_bloc.dart';
+import 'package:in_time/features/wallet/presentation/bloc/wallet_event.dart';
 import 'features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'features/notifications/presentation/bloc/notifications_event.dart';
 import 'core/services/pusher_service.dart';
@@ -105,6 +107,9 @@ class _MyAppState extends State<MyApp> {
             ),
             BlocProvider<SettingsBloc>(
               create: (context) => sl<SettingsBloc>()..add(GetSavedSettingsEvent()),
+            ),
+            BlocProvider<WalletBloc>(
+              create: (context) => sl<WalletBloc>()..add(GetMyWalletsEvent()),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(

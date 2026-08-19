@@ -258,7 +258,7 @@ Future<void> init() async {
     acceptRequestUseCase: sl(),
     rejectRequestUseCase: sl(),
   ));
-  sl.registerFactory(() => WalletBloc(getMyWalletsUseCase: sl()));
+  sl.registerLazySingleton(() => WalletBloc(getMyWalletsUseCase: sl()));
   sl.registerFactory(() => MyServingsBloc(
     getMyServingsUseCase: sl(),
     updateServingUseCase: sl(),

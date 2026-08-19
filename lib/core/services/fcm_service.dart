@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../features/notifications/presentation/bloc/notifications_bloc.dart';
 import '../../features/notifications/presentation/bloc/notifications_event.dart';
+import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import '../../features/wallet/presentation/bloc/wallet_event.dart';
 import '../../injection_container.dart';
 import '../constants/app_routes.dart';
 import 'notification_service.dart';
@@ -48,6 +50,10 @@ class FCMService {
       if (sl.isRegistered<NotificationsBloc>()) {
         sl<NotificationsBloc>().add(GetMyNotificationsEvent());
         sl<NotificationsBloc>().add(GetUnreadNotificationsCountEvent());
+      }
+
+      if (sl.isRegistered<WalletBloc>()) {
+        sl<WalletBloc>().add(GetMyWalletsEvent());
       }
 
       processMessage(message);
