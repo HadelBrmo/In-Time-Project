@@ -10,12 +10,12 @@ class RewardsRepositoryImpl implements RewardsRepository {
   RewardsRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<ApiResult<List<RewardEntity>>> getMyRewards() async {
+  Future<ApiResult<(List<RewardEntity>, int)>> getMyRewards() async {
     try {
-      final remoteRewards = await remoteDataSource.getMyRewards();
-      return Success(remoteRewards);
+      final result = await remoteDataSource.getMyRewards();
+      return Success(result);
     } catch (e) {
-      return const FailureResult(ServerFailure('Failed to fetch rewards'));
+      return FailureResult(ServerFailure('Failed to fetch rewards'));
     }
   }
 }

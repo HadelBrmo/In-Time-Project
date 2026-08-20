@@ -1,101 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/assets_image.dart';
+import '../../../../core/constants/app_routes.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../bloc/rewards_bloc.dart';
-import '../bloc/rewards_event.dart';
 import '../bloc/rewards_state.dart';
-import 'reward_card.dart';
 
 class RewardsSection extends StatelessWidget {
   const RewardsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildHeader(context),
-        const SizedBox(height: 20),
-        BlocBuilder<RewardsBloc, RewardsState>(
-          builder: (context, state) {
-            if (state is RewardsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is RewardsError) {
-              return Center(child: Text(state.message));
-            }
-            
-            // Define static rewards as seen in screenshot
-            final List<Map<String, dynamic>> staticRewards = [
-              {
-                'id': 'verification',
-                'title': context.tr('reward_reason_verification'),
-                'image': AssetsImage.accountVerification,
-                'status': 'not_achieved',
-              },
-              {
-                'id': 'honor_board',
-                'title': context.tr('reward_reason_honor_board'),
-                'image': AssetsImage.rankOnTheHonorBoard,
-                'status': 'in_progress',
-              },
-              {
-                'id': 'free_hours',
-                'title': context.tr('reward_reason_free_hours'),
-                'image': AssetsImage.tenFreeHours,
-                'status': 'earned',
-              },
-            ];
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
-            // If we have actual rewards from API, we could update the status of static ones
-            if (state is RewardsLoaded) {
-              // Logic to update status based on earned rewards
-              // For now, we just show the static ones to match the screenshot perfectly
-            }
+    return BlocBuilder<RewardsBloc, RewardsState>(
+      builder: (context, state) {
+        if (state is RewardsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        
+        int totalHours = 0;
+        if (state is RewardsLoaded) {
+          totalHours = state.totalHoursAdded;
+        }
 
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: staticRewards.map((reward) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: RewardCard(
-                      title: reward['title'],
-                      imagePath: reward['image'],
-                      status: reward['status'],
-                      onViewConditions: () {
-                        // TODO: Show conditions dialog
-                      },
-                    ),
-                  );
-                }).toList(),
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDarkMode 
+                ? [const Color(0xFF2A2A2A), const Color(0xFF1A1A1A)]
+                : [AppColors.primaryColor, AppColors.primaryColor.withOpacity(0.8)],
+            ),
+            borderRadius: BorderRadius.circular(30.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryColor.withOpacity(0.3),
+                blurRadius: 20.r,
+                offset: Offset(0, 10.h),
               ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Center(
-        child: Text(
-          context.tr('rewards'),
-          style: const TextStyle(
-            color: AppColors.whiteColor,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+            ],
           ),
-        ),
-      ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.tr('rewards'),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        context.tr('total_hours_earned'),
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.timer, color: AppColors.yellowColor, size: 20.r),
+                        SizedBox(width: 8.w),
+                        Text(
+                          "$totalHours",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 24.h),
+              InkWell(
+                onTap: () => Navigator.pushNamed(context, AppRoutes.myRewardsPage),
+                child: Container(
+                  width: double.infinity,
+                  height: 55.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10.r,
+                        offset: Offset(0, 5.h),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          context.tr('view_my_rewards'),
+                          style: TextStyle(
+                            color: AppColors.primaryColor,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Icon(Icons.arrow_forward_ios, color: AppColors.primaryColor, size: 16.r),
+                      ],
+                    ),
+                  ),
+                ),
+              ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+               .shimmer(duration: 2000.ms, color: AppColors.primaryColor.withOpacity(0.1))
+               .scale(begin: const Offset(0.98, 0.98), end: const Offset(1.02, 1.02), duration: 1500.ms),
+            ],
+          ),
+        );
+      },
     );
   }
 }

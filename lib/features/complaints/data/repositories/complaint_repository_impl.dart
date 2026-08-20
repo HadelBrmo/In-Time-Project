@@ -18,4 +18,9 @@ class ComplaintRepositoryImpl implements IComplaintRepository {
   Future<ComplaintResponse> submitComplaint(ComplaintRequest request) async {
     return await remoteDataSource.submitComplaint(request);
   }
+
+  @override
+  Future<void> uploadComplaintDocuments(int complaintId, List<String> filePaths) async {
+    return await remoteDataSource.uploadComplaintDocuments(complaintId, filePaths);
+  }
 }

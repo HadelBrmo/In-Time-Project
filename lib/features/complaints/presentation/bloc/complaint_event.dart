@@ -9,10 +9,11 @@ abstract class ComplaintEvent extends Equatable {
 
 class SubmitComplaintEvent extends ComplaintEvent {
   final ComplaintRequest request;
+  final List<String> documentPaths;
 
-  const SubmitComplaintEvent(this.request);
+  const SubmitComplaintEvent(this.request, {this.documentPaths = const []});
   @override
-  List<Object?> get props => [request];
+  List<Object?> get props => [request, documentPaths];
 }
 
 // ✅ الإضافة الجديدة التي كانت تسبب الخطأ

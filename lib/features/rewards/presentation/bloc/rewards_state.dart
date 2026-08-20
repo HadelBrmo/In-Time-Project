@@ -14,11 +14,12 @@ class RewardsLoading extends RewardsState {}
 
 class RewardsLoaded extends RewardsState {
   final List<RewardEntity> rewards;
+  final int totalHoursAdded;
 
-  const RewardsLoaded(this.rewards);
+  const RewardsLoaded(this.rewards, this.totalHoursAdded);
 
   @override
-  List<Object> get props => [rewards];
+  List<Object> get props => [rewards, totalHoursAdded];
 }
 
 class RewardsError extends RewardsState {

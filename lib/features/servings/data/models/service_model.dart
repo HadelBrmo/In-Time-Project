@@ -45,8 +45,14 @@ class ServiceModel extends ServiceEntity {
       'serving_type_name': servingTypeName,
       'unit_name': unitName,
       'category_name': categoryName,
+      'user_id': userId,
       'user_full_name': userFullName,
+      'user_email': userEmail,
       'image_url': imageUrl,
+      'requested': isRequested,
+      'is_owner': isOwner,
+      'availability_slots': availabilitySlots,
+      'created_at': createdAt,
     };
   }
 
@@ -61,6 +67,9 @@ class ServiceModel extends ServiceEntity {
     } else if (json['servingTypeName'] != null) {
       typeName = json['servingTypeName'].toString();
     }
+
+    final userJson = json['user'] is Map ? json['user'] : null;
+    final userIdValue = json['user_id'] ?? userJson?['id'];
 
     return ServiceModel(
       id: idValue is int ? idValue : int.tryParse(idValue?.toString() ?? ''),
@@ -78,9 +87,9 @@ class ServiceModel extends ServiceEntity {
           : 0.0,
       meetingType: json['meeting_type']?.toString(),
       imageUrl: json['image_url']?.toString(),
-      userId: json['user_id'] is int ? json['user_id'] : int.tryParse(json['user_id']?.toString() ?? ''),
-      userFullName: json['user_full_name']?.toString() ?? json['userFullName'],
-      userEmail: json['user_email']?.toString() ?? json['userEmail'],
+      userId: userIdValue is int ? userIdValue : int.tryParse(userIdValue?.toString() ?? ''),
+      userFullName: json['user_full_name']?.toString() ?? json['userFullName'] ?? userJson?['full_name'],
+      userEmail: json['user_email']?.toString() ?? json['userEmail'] ?? userJson?['email'],
       categoryName: json['category_name']?.toString() ?? json['categoryName'],
       unitName: json['unit_name']?.toString() ?? json['unitName'],
       servingTypeName: typeName,

@@ -6,8 +6,8 @@ import '../models/complaint_model.dart';
 
 abstract class ComplaintRemoteDataSource {
   Future<ComplaintResponse> submitComplaint(ComplaintRequest request);
-  // ✅ تم إضافة الدالة هنا في المكان الصحيح
-  Future<List<dynamic>> getMyComplaints(); 
+  Future<List<dynamic>> getMyComplaints();
+  Future<void> uploadComplaintDocuments(int complaintId, List<String> filePaths);
 }
 
 class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
@@ -30,23 +30,54 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
   }
 
   @override
-  Future<ComplaintResponse> submitComplaint(ComplaintRequest request) async {
+  Future<void> uploadComplaintDocuments(int complaintId, List<String> filePaths) async {
     try {
-      dynamic data;
-      
-      if (request.attachmentPath != null && request.attachmentPath!.isNotEmpty) {
-        data = FormData.fromMap({
-          'serving_id': request.servingId,
-          'accused_user_id': request.accusedUserId,
-          'reason': request.reason,
-          'description': request.description,
-          'attachment': await MultipartFile.fromFile(request.attachmentPath!),
-        });
-      } else {
-        data = request.toJson();
+      final List<MultipartFile> files = [];
+      for (final path in filePaths) {
+        files.add(await MultipartFile.fromFile(path));
       }
 
-      final response = await dio.post(ApiStringConstants.complaintsUrl, data: data);
+      final formData = FormData.fromMap({
+        'documents[]': files,
+      });
+
+      final response = await dio.post(
+        ApiStringConstants.uploadComplaintDocumentsUrl(complaintId),
+        data: formData,
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw ServerException();
+      }
+    } catch (e) {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<ComplaintResponse> submitComplaint(ComplaintRequest request) async {
+    try {
+      final Map<String, dynamic> dataMap = {
+        'serving_id': request.servingId,
+        'accused_user_id': request.accusedUserId,
+        'reason': request.reason,
+        'description': request.description,
+      };
+
+      if (request.documentPaths.isNotEmpty) {
+        final List<MultipartFile> files = [];
+        for (final path in request.documentPaths) {
+          files.add(await MultipartFile.fromFile(path));
+        }
+        dataMap['documents[]'] = files;
+      }
+
+      final formData = FormData.fromMap(dataMap);
+
+      final response = await dio.post(
+        ApiStringConstants.complaintsUrl,
+        data: formData,
+      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return ComplaintResponse.fromJson(response.data);
@@ -54,6 +85,7 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
         throw ServerException();
       }
     } on DioException catch (e) {
+      print("DEBUG: Dio Error response: ${e.response?.data}");
       throw ServerException();
     } catch (e) {
       throw ServerException();

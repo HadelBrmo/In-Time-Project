@@ -7,7 +7,7 @@ class GetRewardsUseCase {
 
   GetRewardsUseCase(this.repository);
 
-  Future<ApiResult<List<RewardEntity>>> call() async {
+  Future<ApiResult<(List<RewardEntity>, int)>> call() async {
     return await repository.getMyRewards();
   }
 }

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_time/core/constants/app_colors.dart';
 import 'package:in_time/core/constants/app_routes.dart';
 import '../../features/about_app/presentation/pages/about_app_page.dart';
+import '../../features/home/presentation/widgets/home_widget/draw_item.dart';
 import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.dart';
 import '../../features/servings/presentation/pages/my_servings/my_servings_view.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';

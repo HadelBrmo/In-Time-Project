@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../bloc/rewards_bloc.dart';
-import '../bloc/rewards_event.dart';
 import '../bloc/rewards_state.dart';
 import '../widgets/reward_card.dart';
 
@@ -25,7 +25,7 @@ class MyRewardsPage extends StatelessWidget {
         appBar: CustomAppBar(
           title: Text(
             context.tr('view_my_rewards'),
-            style: theme.textTheme.titleSmall?.copyWith(color: AppColors.whiteColor),
+            style: theme.textTheme.titleSmall?.copyWith(color: AppColors.whiteColor, fontSize: 18.sp),
           ),
           backgroundColor: Colors.transparent,
         ),
@@ -41,6 +41,7 @@ class MyRewardsPage extends StatelessWidget {
           ),
           child: BlocBuilder<RewardsBloc, RewardsState>(
             builder: (context, state) {
+              print("🎨 [MyRewardsPage] Current state: $state");
               if (state is RewardsLoading) {
                 return const LoadingWidget();
               } else if (state is RewardsError) {
@@ -50,7 +51,7 @@ class MyRewardsPage extends StatelessWidget {
                   return Center(
                     child: Text(
                       context.tr('no_rewards_yet'),
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white, fontSize: 18.sp),
                     ),
                   );
                 }
@@ -59,29 +60,34 @@ class MyRewardsPage extends StatelessWidget {
                   slivers: [
                     SliverToBoxAdapter(
                       child: Container(
-                        height: 250,
-                        padding: const EdgeInsets.only(top: 100),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top + kToolbarHeight + 20.h,
+                          bottom: 30.h,
+                        ),
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.stars, color: AppColors.yellowColor, size: 60)
+                            Icon(Icons.stars, color: AppColors.yellowColor, size: 60.r)
                                 .animate(onPlay: (controller) => controller.repeat())
                                 .shimmer(duration: 1200.ms, color: Colors.white)
                                 .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 1000.ms, curve: Curves.easeInOut),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                             Text(
                               context.tr('total_hours_earned'),
-                              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w300),
+                              style: TextStyle(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w300),
                             ),
-                            Text(
-                              "${state.totalHoursAdded}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 48,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(color: AppColors.yellowColor, blurRadius: 20),
-                                ],
+                            FittedBox(
+                              child: Text(
+                                "${state.totalHoursAdded}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 48.sp,
+                                  fontWeight: FontWeight.bold,
+                                  shadows: [
+                                    Shadow(color: AppColors.yellowColor, blurRadius: 20.r),
+                                  ],
+                                ),
                               ),
                             ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
                           ],
@@ -89,13 +95,13 @@ class MyRewardsPage extends StatelessWidget {
                       ),
                     ),
                     SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final reward = state.rewards[index];
                             return Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
+                              padding: EdgeInsets.only(bottom: 20.h),
                               child: RewardCard(
                                 title: reward.reason,
                                 rewardType: reward.type,

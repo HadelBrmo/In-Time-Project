@@ -1,6 +1,9 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/snackbar_utils.dart';
@@ -59,12 +62,31 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String? selectedComplaintType;
-  String? attachmentPath;
+  List<String> selectedFiles = [];
 
   @override
   void dispose() {
     descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickFiles(FileType type) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: type,
+      allowMultiple: true,
+    );
+
+    if (result != null) {
+      setState(() {
+        selectedFiles.addAll(result.paths.whereType<String>());
+      });
+    }
+  }
+
+  void _removeFile(int index) {
+    setState(() {
+      selectedFiles.removeAt(index);
+    });
   }
 
   void _submitComplaint(BuildContext context) {
@@ -88,7 +110,7 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
         accusedUserId: widget.accusedUserId,
         reason: reasonKey,
         description: descriptionController.text.trim(),
-        attachmentPath: attachmentPath,
+        documentPaths: selectedFiles,
       );
 
       context.read<ComplaintBloc>().add(SubmitComplaintEvent(request));
@@ -118,7 +140,7 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
             descriptionController.clear();
             setState(() {
               selectedComplaintType = null;
-              attachmentPath = null;
+              selectedFiles = [];
             });
           } else if (state is ComplaintError) {
             SnackBarUtils.showError(context, '${context.tr('error')}: ${state.message}');
@@ -209,6 +231,62 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
                     : null,
               ),
             ).animate().fade(delay: 200.ms).slideY(begin: 0.1, end: 0),
+            const SizedBox(height: 24),
+            buildLabel(context, context.tr('upload_image_or_file')),
+            const SizedBox(height: 8),
+            DottedBorder(
+              options: RoundedRectDottedBorderOptions(
+                color: AppColors.greyColor.withOpacity(0.5),
+                strokeWidth: 1,
+                dashPattern: const [6, 3],
+                radius: const Radius.circular(12),
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildUploadButton(
+                      icon: Icons.description_outlined,
+                      label: context.tr('file'),
+                      onTap: () => _pickFiles(FileType.any),
+                    ),
+                    _buildUploadButton(
+                      icon: Icons.image_outlined,
+                      label: context.tr('image'),
+                      onTap: () => _pickFiles(FileType.image),
+                    ),
+                  ],
+                ),
+              ),
+            ).animate().fade(delay: 250.ms).slideY(begin: 0.1, end: 0),
+            if (selectedFiles.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: selectedFiles.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final path = entry.value;
+                  final fileName = path.split('/').last;
+                  return Chip(
+                    label: Text(
+                      fileName,
+                      style: theme.textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onDeleted: () => _removeFile(index),
+                    deleteIcon: const Icon(Icons.close, size: 18),
+                    backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: AppColors.primaryColor.withOpacity(0.2)),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
@@ -223,8 +301,37 @@ class _SubmitComplaintViewState extends State<SubmitComplaintView> {
                   onPressed: () => _submitComplaint(context),
                 ),
               ),
-            ).animate().fade(delay: 250.ms).scale(begin: const Offset(0.98, 0.98)),
+            ).animate().fade(delay: 300.ms).scale(begin: const Offset(0.98, 0.98)),
             const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUploadButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 8),
+            Icon(icon, color: Colors.white, size: 20),
           ],
         ),
       ),

@@ -8,6 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final bool centerTitle;
+  final Color? backgroundColor;
 
   const CustomAppBar({
     super.key,
@@ -15,6 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.actions,
     this.centerTitle = true,
+    this.backgroundColor,
   });
 
   @override
@@ -24,12 +26,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withOpacity(isDarkMode ? 0.78 : 0.94),
-        borderRadius: BorderRadius.only(
+        color: backgroundColor ?? AppColors.primaryColor.withOpacity(isDarkMode ? 0.78 : 0.94),
+        borderRadius: backgroundColor == Colors.transparent ? null : BorderRadius.only(
           bottomLeft: Radius.circular(30.r),
           bottomRight: Radius.circular(30.r),
         ),
-        boxShadow: [
+        boxShadow: backgroundColor == Colors.transparent ? null : [
           BoxShadow(
             color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
             blurRadius: 8,

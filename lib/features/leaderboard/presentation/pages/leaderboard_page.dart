@@ -11,6 +11,7 @@ import '../bloc/leaderboard_bloc.dart';
 import '../bloc/leaderboard_event.dart';
 import '../bloc/leaderboard_state.dart';
 import '../widgets/leaderboard_item.dart';
+import '../../../../core/widgets/build_animated_item.dart';
 
 class LeaderboardPage extends StatelessWidget {
   const LeaderboardPage({super.key});
@@ -165,47 +166,53 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-            child: InkWell(
-              onTap: () => _openFilterSheet(context),
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  color: isDarkMode ? const Color(0xFF2C2C2C) : Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: isDarkMode ? Border.all(color: Colors.white.withOpacity(0.1)) : null,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+          buildAnimatedItem(
+            delayFactor: 0,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+              child: InkWell(
+                onTap: () => _openFilterSheet(context),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: isDarkMode ? Colors.white.withOpacity(0.15) : Colors.transparent,
+                      width: isDarkMode ? 1 : 0,
                     ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _getFilterText(context),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: theme.primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDarkMode ? 0.4 : 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _getFilterText(context),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(0.1),
-                        shape: BoxShape.circle,
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.filter_list, color: theme.primaryColor, size: 20),
                       ),
-                      child: Icon(Icons.filter_list, color: theme.primaryColor, size: 20),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -299,12 +306,22 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       physics: const BouncingScrollPhysics(),
       children: [
-        if (top3.isNotEmpty) 
-          Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 30),
-            child: _buildPodium(top3),
+        if (top3.isNotEmpty)
+          buildAnimatedItem(
+            delayFactor: 0,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 30),
+              child: _buildPodium(top3),
+            ),
           ),
-        ...rest.map((u) => LeaderboardItem(user: u)),
+        ...rest.asMap().entries.map((entry) {
+          final index = entry.key;
+          final user = entry.value;
+          return buildAnimatedItem(
+            delayFactor: index + 2,
+            child: LeaderboardItem(user: user),
+          );
+        }),
         const SizedBox(height: 80),
       ],
     );
@@ -372,63 +389,131 @@ class _PodiumSlot extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.withOpacity(0.3), width: 2),
-            ),
-            child: CircleAvatar(
-              radius: isFirst ? 42 : 32,
-              backgroundColor: theme.primaryColor.withOpacity(0.1),
-              backgroundImage: (user.profilePicture != null && user.profilePicture!.isNotEmpty)
-                  ? NetworkImage(user.profilePicture!)
-                  : null,
-              child: (user.profilePicture == null || user.profilePicture!.isEmpty)
-                  ? Icon(
-                      Icons.person,
-                      color: theme.primaryColor,
-                      size: isFirst ? 42 : 32,
-                    )
-                  : null,
-            ),
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isFirst ? theme.primaryColor.withOpacity(0.5) : Colors.grey.withOpacity(0.3),
+                    width: isFirst ? 3 : 2,
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: isFirst ? 42 : 32,
+                  backgroundColor: theme.primaryColor.withOpacity(0.1),
+                  backgroundImage: (user.profilePicture != null && user.profilePicture!.isNotEmpty)
+                      ? NetworkImage(user.profilePicture!)
+                      : null,
+                  child: (user.profilePicture == null || user.profilePicture!.isEmpty)
+                      ? Icon(
+                          Icons.person,
+                          color: theme.primaryColor,
+                          size: isFirst ? 42 : 32,
+                        )
+                      : null,
+                ),
+              ),
+              if (isFirst)
+                Positioned(
+                  top: -5,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.8, end: 1.2),
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: Transform.rotate(
+                          angle: -0.1,
+                          child: const Icon(
+                            Icons.workspace_premium,
+                            color: Colors.amber,
+                            size: 28,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 8),
-          Text(
-            user.fullName,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: isFirst ? 14 : 12,
-              color: isDarkMode ? Colors.white : Colors.black87,
+          buildAnimatedItem(
+            delayFactor: isFirst ? 1 : 2,
+            child: Text(
+              user.fullName,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: isFirst ? 14 : 12,
+                color: isDarkMode ? Colors.white : Colors.black87,
+              ),
             ),
           ),
           const SizedBox(height: 12),
-          Container(
-            height: height,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '${user.rank}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 48,
-                  ),
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0, end: height),
+            duration: const Duration(milliseconds: 1200),
+            curve: Curves.elasticOut,
+            builder: (context, val, child) {
+              return Container(
+                height: val,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  boxShadow: [
+                    if (val > height * 0.8)
+                      BoxShadow(
+                        color: color.withOpacity(0.4),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                        offset: const Offset(0, -2),
+                      ),
+                  ],
                 ),
-              ],
-            ),
+                child: val > height * 0.5
+                    ? FadeInWidget(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${user.rank}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: isFirst ? 52 : 40,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              );
+            },
           ),
         ],
       ),
+    );
+  }
+}
+
+class FadeInWidget extends StatelessWidget {
+  final Widget child;
+  const FadeInWidget({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 500),
+      builder: (context, value, child) => Opacity(opacity: value, child: child),
+      child: child,
     );
   }
 }

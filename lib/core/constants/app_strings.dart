@@ -41,11 +41,13 @@
   static String typingUrl(int chatId) => 'chats/$chatId/typing';
   static String stopTypingUrl(int chatId) => 'chats/$chatId/stop-typing';
   static const String complaintsUrl = 'complaints';
+  static String uploadComplaintDocumentsUrl(int id) => 'complaints/$id/upload-documents';
   static const String myComplaintsUrl = 'my-complaints';
   static String userProfileUrl(int userId) => 'users/$userId';
   static const String updateProfileUrl = 'profile';
   static const String topPerformersUrl = 'servings/top-performers';
   static const String verifyIdentityUrl = 'identity/verify';
+  static const String myRewardsUrl = 'my-rewards';
 
   static const String wsHost = 'ali.ba-tech.tech';
   static const String wsKey = 'app-key';

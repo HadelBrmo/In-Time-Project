@@ -5,6 +5,7 @@ import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/constants/assets_image.dart';
 import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/theme/glowing_border.dart';
+import '../../../../../../core/widgets/custom_image_view.dart';
 import '../../../../servings/domain/entity/service_entity.dart';
 import '../../../../servings/presentation/bloc/saved_services/saved_services_bloc.dart';
 import '../../pages/service_details_page.dart';
@@ -85,9 +86,10 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.r),
-                      child: serving.imageUrl != null && serving.imageUrl!.isNotEmpty
-                          ? Image.network(serving.imageUrl!, fit: BoxFit.cover)
-                          : Image.asset(AssetsImage.constantImageForService, fit: BoxFit.cover),
+                      child: CustomImageView(
+                        imageUrl: serving.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Positioned(

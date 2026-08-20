@@ -73,7 +73,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<RemoveMemberEvent>(_onRemoveMember);
     on<UpdateGroupEvent>(_onUpdateGroup);
     on<LeaveGroupEvent>(_onLeaveGroup);
-    on<ClearMessagesEvent>((event, emit) => emit(ChatInitial()));
+    on<ClearMessagesEvent>((event, emit) => emit(const ChatInitial()));
 
     on<LoadChatDraftEvent>(_onLoadChatDraft);
     on<SaveChatDraftEvent>(_onSaveChatDraft);
@@ -125,36 +125,39 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> _onGetChats(GetChatsEvent event, Emitter<ChatState> emit) async {
     if (!event.isSilent && state is! ChatsLoaded) {
-      emit(ChatsLoading());
+      emit(ChatsLoading(totalUnreadCount: state.totalUnreadCount));
     }
     final failureOrChats = await getChatsUseCase();
     failureOrChats.fold(
-          (failure) => emit(const ChatsError("Failed to fetch chats")),
-          (chats) => emit(ChatsLoaded(chats)),
+          (failure) => emit(ChatsError("Failed to fetch chats", totalUnreadCount: state.totalUnreadCount)),
+          (chats) {
+        final totalUnread = chats.fold(0, (sum, chat) => sum + chat.unreadCount);
+        emit(ChatsLoaded(chats, totalUnreadCount: totalUnread));
+      },
     );
   }
 
   Future<void> _onGetMessages(GetMessagesEvent event, Emitter<ChatState> emit) async {
     if (!event.isSilent) {
-      emit(MessagesLoading());
+      emit(MessagesLoading(totalUnreadCount: state.totalUnreadCount));
     }
     final failureOrMessages = await getMessagesUseCase(event.chatId);
     failureOrMessages.fold(
           (failure) {
         if (!event.isSilent) {
-          emit(const MessagesError("Failed to fetch messages"));
+          emit(MessagesError("Failed to fetch messages", totalUnreadCount: state.totalUnreadCount));
         }
       },
-          (messages) => emit(MessagesLoaded(messages)),
+          (messages) => emit(MessagesLoaded(messages, totalUnreadCount: state.totalUnreadCount)),
     );
   }
 
   Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
     final failureOrMessage = await sendMessageUseCase(chatId: event.chatId, content: event.content);
     failureOrMessage.fold(
-          (failure) => emit(const ChatsError("Failed to send message")),
+          (failure) => emit(ChatsError("Failed to send message", totalUnreadCount: state.totalUnreadCount)),
           (message) {
-        emit(MessageSent(message));
+        emit(MessageSent(message, totalUnreadCount: state.totalUnreadCount));
         add(GetMessagesEvent(event.chatId, isSilent: true));
       },
     );
@@ -178,25 +181,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           userId: int.tryParse(data['user_id'].toString()) ?? 0,
           userName: data['user_name'],
           isTyping: data['is_typing'] ?? false,
+          totalUnreadCount: state.totalUnreadCount,
         ));
       }
     }
   }
 
   Future<void> _onCreatePersonalChat(CreatePersonalChatEvent event, Emitter<ChatState> emit) async {
-    emit(ChatsLoading());
+    emit(ChatsLoading(totalUnreadCount: state.totalUnreadCount));
     final failureOrChat = await createPersonalChatUseCase(receiverId: event.receiverId, content: event.content);
     failureOrChat.fold(
-          (failure) => emit(const ChatsError("Failed to create chat")),
+          (failure) => emit(ChatsError("Failed to create chat", totalUnreadCount: state.totalUnreadCount)),
           (chat) {
-        emit(ChatCreated(chat));
+        emit(ChatCreated(chat, totalUnreadCount: state.totalUnreadCount));
         add(const GetChatsEvent(isSilent: true));
       },
     );
   }
 
   Future<void> _onCreateGroupChat(CreateGroupChatEvent event, Emitter<ChatState> emit) async {
-    emit(ChatsLoading());
+    emit(ChatsLoading(totalUnreadCount: state.totalUnreadCount));
 
     final failureOrChat = await createGroupChatUseCase(
       name: event.name,
@@ -204,9 +208,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
 
     failureOrChat.fold(
-          (failure) => emit(const ChatsError("Failed to create group chat")),
+          (failure) => emit(ChatsError("Failed to create group chat", totalUnreadCount: state.totalUnreadCount)),
           (chat) {
-        emit(ChatCreated(chat));
+        emit(ChatCreated(chat, totalUnreadCount: state.totalUnreadCount));
         add(const GetChatsEvent(isSilent: true));
       },
     );
@@ -225,45 +229,45 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onGetMembers(GetMembersEvent event, Emitter<ChatState> emit) async {
-    emit(MembersLoading());
+    emit(MembersLoading(totalUnreadCount: state.totalUnreadCount));
     final result = await getMembersUseCase(event.chatId);
     result.fold(
-          (failure) => emit(const ChatsError("Failed to fetch members")),
-          (members) => emit(MembersLoaded(members)),
+          (failure) => emit(ChatsError("Failed to fetch members", totalUnreadCount: state.totalUnreadCount)),
+          (members) => emit(MembersLoaded(members, totalUnreadCount: state.totalUnreadCount)),
     );
   }
 
   Future<void> _onAddMembers(AddMembersEvent event, Emitter<ChatState> emit) async {
-    emit(MembersLoading());
+    emit(MembersLoading(totalUnreadCount: state.totalUnreadCount));
     final result = await addMembersUseCase(event.chatId, event.userIds);
     result.fold(
-          (failure) => emit(const ChatsError("Failed to add members")),
+          (failure) => emit(ChatsError("Failed to add members", totalUnreadCount: state.totalUnreadCount)),
           (unit) {
-        emit(const MemberActionSuccess("Member(s) added successfully"));
+        emit(MemberActionSuccess("Member(s) added successfully", totalUnreadCount: state.totalUnreadCount));
         add(GetMembersEvent(event.chatId));
       },
     );
   }
 
   Future<void> _onRemoveMember(RemoveMemberEvent event, Emitter<ChatState> emit) async {
-    emit(MembersLoading());
+    emit(MembersLoading(totalUnreadCount: state.totalUnreadCount));
     final result = await removeMemberUseCase(event.chatId, event.userId);
     result.fold(
-          (failure) => emit(const ChatsError("Failed to remove member")),
+          (failure) => emit(ChatsError("Failed to remove member", totalUnreadCount: state.totalUnreadCount)),
           (unit) {
-        emit(const MemberActionSuccess("Member removed successfully"));
+        emit(MemberActionSuccess("Member removed successfully", totalUnreadCount: state.totalUnreadCount));
         add(GetMembersEvent(event.chatId));
       },
     );
   }
 
   Future<void> _onUpdateGroup(UpdateGroupEvent event, Emitter<ChatState> emit) async {
-    emit(MembersLoading());
+    emit(MembersLoading(totalUnreadCount: state.totalUnreadCount));
     final result = await updateGroupUseCase(event.chatId, event.name);
     result.fold(
-          (failure) => emit(const ChatsError("Failed to update group")),
+          (failure) => emit(ChatsError("Failed to update group", totalUnreadCount: state.totalUnreadCount)),
           (unit) {
-        emit(const MemberActionSuccess("Group updated successfully"));
+        emit(MemberActionSuccess("Group updated successfully", totalUnreadCount: state.totalUnreadCount));
         add(const GetChatsEvent(isSilent: true));
         add(GetMembersEvent(event.chatId));
       },
@@ -271,12 +275,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onLeaveGroup(LeaveGroupEvent event, Emitter<ChatState> emit) async {
-    emit(MembersLoading());
+    emit(MembersLoading(totalUnreadCount: state.totalUnreadCount));
     final result = await leaveGroupUseCase(event.chatId);
     result.fold(
-          (failure) => emit(const ChatsError("Failed to leave group")),
+          (failure) => emit(ChatsError("Failed to leave group", totalUnreadCount: state.totalUnreadCount)),
           (unit) {
-        emit(const MemberActionSuccess("You left the group"));
+        emit(MemberActionSuccess("You left the group", totalUnreadCount: state.totalUnreadCount));
         add(const GetChatsEvent(isSilent: false));
       },
     );
@@ -284,7 +288,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> _onLoadChatDraft(LoadChatDraftEvent event, Emitter<ChatState> emit) async {
     final draft = await chatRepository.getChatDraft(event.chatId);
-    emit(ChatDraftLoaded(draft));
+    emit(ChatDraftLoaded(draft, totalUnreadCount: state.totalUnreadCount));
   }
 
   Future<void> _onSaveChatDraft(SaveChatDraftEvent event, Emitter<ChatState> emit) async {

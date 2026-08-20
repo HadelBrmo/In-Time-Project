@@ -21,6 +21,7 @@ import '../../features/requests/domain/entity/request_entity.dart';
 import '../../features/requests/presentation/bloc/request_bloc.dart';
 import '../../features/requests/presentation/pages/my_requests_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/rewards/presentation/pages/my_rewards_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/servings/presentation/pages/services/paid_strategy.dart';
 import '../../features/notifications/presentation/pages/notifications_page.dart';
@@ -48,6 +49,7 @@ class AppRoutes {
   static const String profilePage = '/profilePage';
   static const String videoCallPage = '/videoCallPage';
   static const String notificationsPage = '/notificationsPage';
+  static const String myRewardsPage = '/myRewardsPage';
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -160,6 +162,12 @@ class AppRoutes {
       case notificationsPage:
         return _buildPageRoute(
           page: const NotificationsPage(),
+          settings: settings,
+        );
+
+      case myRewardsPage:
+        return _buildPageRoute(
+          page: const MyRewardsPage(),
           settings: settings,
         );
 

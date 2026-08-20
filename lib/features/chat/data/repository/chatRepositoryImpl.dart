@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/exceptions.dart';
-import '../../domain/entities/chatEntity.dart';
+import '../../domain/entities/chat_entity.dart';
 import '../../domain/entities/message_entity.dart';
 import '../../domain/repository/chatRepository.dart';
 import '../datasources/chatRemoteDataSource.dart';

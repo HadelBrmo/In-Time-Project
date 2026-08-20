@@ -41,6 +41,7 @@ class ServiceModel extends ServiceEntity {
       'location_lng': locationLng,
       if (meetingType != null) 'meeting_type': meetingType!,
       if (imageUrl != null) 'image_url': imageUrl,
+      'user_id': userId,
       'user_full_name': userFullName,
       'user_email': userEmail,
       'category_name': categoryName,
@@ -56,6 +57,9 @@ class ServiceModel extends ServiceEntity {
   }
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
+    final userJson = json['user'] is Map ? json['user'] : null;
+    final userIdValue = json['user_id'] ?? userJson?['id'];
+
     return ServiceModel(
       id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? ''),
       title: json['title'] ?? '',
@@ -71,9 +75,9 @@ class ServiceModel extends ServiceEntity {
 
       meetingType: json['meeting_type'],
       imageUrl: json['image_url'],
-      userId: json['user_id'] is int ? json['user_id'] : int.tryParse(json['user_id']?.toString() ?? ''),
-      userFullName: json['user_full_name'] ?? json['userFullName'],
-      userEmail: json['user_email'] ?? json['userEmail'],
+      userId: userIdValue is int ? userIdValue : int.tryParse(userIdValue?.toString() ?? ''),
+      userFullName: json['user_full_name'] ?? json['userFullName'] ?? userJson?['full_name'],
+      userEmail: json['user_email'] ?? json['userEmail'] ?? userJson?['email'],
       unitName: json['unit_name'] ?? json['unitName'],
       servingTypeName: json['serving_type_name'] ?? json['servingTypeName'],
       categoryName: json['category_name'] ?? json['categoryName'],

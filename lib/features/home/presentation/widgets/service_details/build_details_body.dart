@@ -10,6 +10,7 @@ import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../../core/utils/auth_utils.dart';
 import '../../../../../core/widgets/build_animated_item.dart';
 import '../../../../../core/widgets/loading_widget.dart';
+import '../../../../../core/widgets/custom_image_view.dart';
 import '../../../../../injection_container.dart';
 
 import '../../../../chat/presentation/bloc/chat_bloc/bloc_event.dart';
@@ -202,9 +203,10 @@ Widget buildDetailsBody(
                       borderRadius: BorderRadius.circular(20),
                       child: Hero(
                         tag: 'service-img-${service.id ?? 0}',
-                        child: service.imageUrl != null && service.imageUrl!.isNotEmpty
-                            ? Image.network(service.imageUrl!, fit: BoxFit.cover)
-                            : Image.asset(AssetsImage.constantImageForService, fit: BoxFit.cover),
+                        child: CustomImageView(
+                          imageUrl: service.imageUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

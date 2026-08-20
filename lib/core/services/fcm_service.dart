@@ -32,6 +32,10 @@ class FCMService {
       print("FCM Token: $token");
     }
 
+    if (token != null && sl.isRegistered<NotificationsBloc>()) {
+      sl<NotificationsBloc>().add(UpdateFcmTokenEvent(token));
+    }
+
     _subscribeToInitialTopics();
 
     _messaging.onTokenRefresh.listen((newToken) {

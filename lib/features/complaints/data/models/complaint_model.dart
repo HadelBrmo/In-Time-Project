@@ -46,12 +46,15 @@ class ComplaintData extends Equatable {
   });
 
   factory ComplaintData.fromJson(Map<String, dynamic> json) {
+    final rawId = json['id'] ?? json['complaint_id'];
+    final idValue = rawId is int ? rawId : int.tryParse(rawId?.toString() ?? '');
+
     return ComplaintData(
       servingId: json['serving_id'] ?? 0,
       accusedUserId: json['accused_user_id'] ?? 0,
       reason: json['reason'] ?? '',
       description: json['description'] ?? '',
-      complaintId: json['complaint_id'] ?? 0,
+      complaintId: idValue ?? 0,
       attachmentUrl: json['attachment_url'],
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
       updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),

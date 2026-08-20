@@ -4,4 +4,5 @@ import '../../data/models/complaint_model.dart';
 abstract class IComplaintRepository {
   Future<List<dynamic>> getMyComplaints();
   Future<ComplaintResponse> submitComplaint(ComplaintRequest request);
+  Future<void> uploadComplaintDocuments(int complaintId, List<String> filePaths);
 }

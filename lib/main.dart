@@ -27,6 +27,8 @@ import 'package:in_time/features/servings/presentation/bloc/service/services_blo
 import 'package:in_time/features/servings/presentation/bloc/saved_services/saved_services_bloc.dart';
 import 'package:in_time/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:in_time/features/wallet/presentation/bloc/wallet_event.dart';
+import 'package:in_time/features/rewards/presentation/bloc/rewards_bloc.dart';
+import 'package:in_time/features/rewards/presentation/bloc/rewards_event.dart';
 import 'features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'features/notifications/presentation/bloc/notifications_event.dart';
 import 'core/services/pusher_service.dart';
@@ -89,7 +91,7 @@ class _MyAppState extends State<MyApp> {
               create: (context) => sl<SignUpBloc>(),
             ),
             BlocProvider<ChatBloc>(
-              create: (context) => sl<ChatBloc>(),
+              create: (context) => sl<ChatBloc>()..add(const GetChatsEvent(isSilent: true)),
             ),
             BlocProvider<LocaleBloc>(
               create: (context) => sl<LocaleBloc>()..add(const GetSavedLocaleEvent()),
@@ -110,6 +112,9 @@ class _MyAppState extends State<MyApp> {
             ),
             BlocProvider<WalletBloc>(
               create: (context) => sl<WalletBloc>()..add(GetMyWalletsEvent()),
+            ),
+            BlocProvider<RewardsBloc>(
+              create: (context) => sl<RewardsBloc>()..add(GetMyRewardsEvent()),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
