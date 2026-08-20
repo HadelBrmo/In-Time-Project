@@ -49,13 +49,20 @@ class ComplaintData extends Equatable {
     final rawId = json['id'] ?? json['complaint_id'];
     final idValue = rawId is int ? rawId : int.tryParse(rawId?.toString() ?? '');
 
+    // التحويل الآمن للمعريفات
+    int parseId(dynamic val) {
+      if (val is int) return val;
+      if (val is String) return int.tryParse(val) ?? 0;
+      return 0;
+    }
+
     return ComplaintData(
-      servingId: json['serving_id'] ?? 0,
-      accusedUserId: json['accused_user_id'] ?? 0,
-      reason: json['reason'] ?? '',
-      description: json['description'] ?? '',
+      servingId: parseId(json['serving_id']),
+      accusedUserId: parseId(json['accused_user_id']),
+      reason: json['reason']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       complaintId: idValue ?? 0,
-      attachmentUrl: json['attachment_url'],
+      attachmentUrl: json['attachment_url']?.toString(),
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
       updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
     );

@@ -40,7 +40,8 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    final prevMonthDate = DateTime(now.year, now.month - 1);
+    _selectedMonth = '${prevMonthDate.year}-${prevMonthDate.month.toString().padLeft(2, '0')}';
     
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<LeaderboardBloc>().add(

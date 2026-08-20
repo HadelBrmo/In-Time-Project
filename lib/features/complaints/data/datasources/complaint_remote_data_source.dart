@@ -87,7 +87,9 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
     } on DioException catch (e) {
       print("DEBUG: Dio Error response: ${e.response?.data}");
       throw ServerException();
-    } catch (e) {
+    } catch (e, stack) {
+      print("DEBUG: Parsing Error in submitComplaint: $e");
+      print("DEBUG: StackTrace: $stack");
       throw ServerException();
     }
   }

@@ -23,11 +23,11 @@ class LeaderboardRemoteDataSourceImpl implements LeaderboardRemoteDataSource {
       final response = await dio.post(
         ApiStringConstants.topPerformersUrl,
         data: {
-          if (servingTypeId != null) 'serving_type_id': servingTypeId,
+          'serving_type_id': servingTypeId,
           'month': month,
         },
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final dynamic responseData = response.data['data'];
         if (responseData == null || !(responseData is List)) {
           return [];
