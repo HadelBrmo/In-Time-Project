@@ -1,5 +1,5 @@
 ﻿class ApiStringConstants {
-  static const String baseUrl = 'http://ali.ba-tech.tech/api/';
+  static const String baseUrl = 'https://ali.ba-tech.tech/api/';
   static const String baseStorageUrl = 'http://ali.ba-tech.tech/storage/';
    static const String addPaidServiceUrl = 'servings/add-paid';
   static const String addVoluntaryServiceUrl = 'servings/add-voluntary';

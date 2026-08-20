@@ -33,7 +33,7 @@ class _LeaderboardView extends StatefulWidget {
 }
 
 class _LeaderboardViewState extends State<_LeaderboardView> {
-  int? _selectedServingTypeId = 1;
+  int _selectedServingTypeId = 1; // Default to Voluntary (1)
   late String _selectedMonth;
 
   @override
@@ -51,7 +51,7 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
   }
 
   void _openFilterSheet(BuildContext context) {
-    int? tempServingTypeId = _selectedServingTypeId;
+    int tempServingTypeId = _selectedServingTypeId;
     String tempMonth = _selectedMonth;
     final now = DateTime.now();
     final prevMonthDate = DateTime(now.year, now.month - 1);
@@ -65,6 +65,8 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (sheetContext, setSheetState) {
+            bool isCustomMonth = tempMonth != currentMonth && tempMonth != prevMonth;
+
             return Padding(
               padding: EdgeInsets.only(
                 left: 20, right: 20, top: 20,
@@ -84,19 +86,14 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
                   ),
                   const SizedBox(height: 8),
                   _FilterRadioTile(
-                    label: context.tr('all_departments'),
-                    selected: tempServingTypeId == null,
-                    onTap: () => setSheetState(() => tempServingTypeId = null),
-                  ),
-                  _FilterRadioTile(
-                    label: context.tr('reciprocal_department'),
+                    label: context.tr('voluntary_department'),
                     selected: tempServingTypeId == 1,
                     onTap: () => setSheetState(() => tempServingTypeId = 1),
                   ),
                   _FilterRadioTile(
-                    label: context.tr('voluntary_department'),
-                    selected: tempServingTypeId == 2,
-                    onTap: () => setSheetState(() => tempServingTypeId = 2),
+                    label: context.tr('paid_department'),
+                    selected: tempServingTypeId == 3,
+                    onTap: () => setSheetState(() => tempServingTypeId = 3),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -117,6 +114,24 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
                     label: context.tr('last_month'),
                     selected: tempMonth == prevMonth,
                     onTap: () => setSheetState(() => tempMonth = prevMonth),
+                  ),
+                  _FilterRadioTile(
+                    label: isCustomMonth ? '${context.tr('month')}: $tempMonth' : context.tr('select_month'),
+                    selected: isCustomMonth,
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: now,
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2100),
+                        helpText: context.tr('select_month'),
+                      );
+                      if (picked != null) {
+                        setSheetState(() {
+                          tempMonth = '${picked.year}-${picked.month.toString().padLeft(2, '0')}';
+                        });
+                      }
+                    },
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -200,7 +215,7 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
                           style: TextStyle(
                             color: theme.primaryColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -251,21 +266,24 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
 
   String _getFilterText(BuildContext context) {
     String dept = '';
-    if (_selectedServingTypeId == null) {
-      dept = context.tr('all_departments');
-    } else if (_selectedServingTypeId == 1) {
-      dept = context.tr('reciprocal_department');
-    } else {
+    if (_selectedServingTypeId == 1) {
       dept = context.tr('voluntary_department');
+    } else if (_selectedServingTypeId == 3) {
+      dept = context.tr('paid_department');
     }
 
     String period = '';
     final now = DateTime.now();
+    final prevMonthDate = DateTime(now.year, now.month - 1);
     final currentMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    final lastMonth = '${prevMonthDate.year}-${prevMonthDate.month.toString().padLeft(2, '0')}';
+
     if (_selectedMonth == currentMonth) {
       period = context.tr('current_month');
-    } else {
+    } else if (_selectedMonth == lastMonth) {
       period = context.tr('last_month');
+    } else {
+      period = _selectedMonth;
     }
 
     return '$dept ${context.tr('in')} $period';
