@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_routes.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/services/fcm_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../domain/entities/notification_entity.dart';
@@ -129,7 +131,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
           if (!notification.isRead) {
             context.read<NotificationsBloc>().add(MarkNotificationAsReadEvent(notification.id));
           }
-          // Optionally handle navigation based on notification data
+
+          if (notification.data != null && notification.data!.isNotEmpty) {
+            FCMService.handleNavigation(notification.data!);
+            return;
+          }
+
+          Navigator.pushNamed(context, AppRoutes.notificationsPage);
         },
       ),
     );

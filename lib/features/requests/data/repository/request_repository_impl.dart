@@ -21,7 +21,12 @@ class RequestRepositoryImpl implements RequestRepository {
       final remoteRequests = await remoteDataSource.getMyRequests(status: status?.name);
       return Right(remoteRequests);
     } on DioException catch (e) {
-      return Left(ServerFailure());
+      final details = ServerExceptionWithDetails.fromDioException(e);
+      return Left(ServerFailureWithDetails(statusCode: details.statusCode, message: details.message));
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -40,8 +45,10 @@ class RequestRepositoryImpl implements RequestRepository {
         automaticallyCancelAfter: automaticallyCancelAfter,
       );
       return Right(resultMessage);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -53,7 +60,12 @@ class RequestRepositoryImpl implements RequestRepository {
       final resultMessage = await remoteDataSource.deleteRequest(requestId);
       return Right(resultMessage);
     } on DioException catch (e) {
-      return Left(ServerFailure());
+      final details = ServerExceptionWithDetails.fromDioException(e);
+      return Left(ServerFailureWithDetails(statusCode: details.statusCode, message: details.message));
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -65,7 +77,12 @@ class RequestRepositoryImpl implements RequestRepository {
       final result = await remoteDataSource.getReceivedRequests();
       return Right(result);
     } on DioException catch (e) {
-      return Left(ServerFailure());
+      final details = ServerExceptionWithDetails.fromDioException(e);
+      return Left(ServerFailureWithDetails(statusCode: details.statusCode, message: details.message));
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -76,8 +93,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       await remoteDataSource.acceptRequest(id);
       return const Right(unit);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -88,8 +107,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       await remoteDataSource.rejectRequest(id);
       return const Right(unit);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -100,6 +121,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       await remoteDataSource.requestCompletion(requestId);
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -110,6 +135,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       await remoteDataSource.confirmCompletion(requestId);
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -120,6 +149,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       await remoteDataSource.requestRevision(requestId, days);
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -130,6 +163,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       await remoteDataSource.disputeRequest(requestId);
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -140,6 +177,10 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       final result = await remoteDataSource.getPendingConfirmations();
       return Right(result);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }

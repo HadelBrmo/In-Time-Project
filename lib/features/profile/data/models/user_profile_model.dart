@@ -13,6 +13,7 @@ class UserProfileModel extends UserProfile {
     super.profilePicture,
     required super.role,
     required super.isActive,
+    required super.isVerified,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -30,6 +31,9 @@ class UserProfileModel extends UserProfile {
       profilePicture: json['profile_picture'] as String?,
       role: json['role'] as String? ?? 'user',
       isActive: json['is_active'] as bool? ?? false,
+      isVerified: json['is_identity_verified'] is bool
+          ? json['is_identity_verified']
+          : (json['is_identity_verified'] == 1 || json['is_identity_verified'] == true),
       createdAt: json['created_at'] as String? ?? '',
       updatedAt: json['updated_at'] as String? ?? '',
     );

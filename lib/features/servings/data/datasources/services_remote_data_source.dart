@@ -224,7 +224,7 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
   }) async {
     try {
       final response = await dio.put(
-        'servings/update-paid/$id',
+        '${ApiStringConstants.addPaidServiceUrl}/$id',
         data: {
           'title': title,
           'description': description,

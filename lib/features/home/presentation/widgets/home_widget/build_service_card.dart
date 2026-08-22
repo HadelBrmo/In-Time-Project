@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/constants/app_colors.dart';
-import '../../../../../../core/constants/assets_image.dart';
 import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/theme/glowing_border.dart';
 import '../../../../../../core/widgets/custom_image_view.dart';
-import '../../../../servings/domain/entity/service_entity.dart';
+import 'package:in_time/features/servings/domain/entity/service_entity.dart';
 import '../../../../servings/presentation/bloc/saved_services/saved_services_bloc.dart';
 import '../../pages/service_details_page.dart';
 
@@ -58,17 +57,17 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
         onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          height: 145.h,
-          padding: EdgeInsets.all(10.w),
+          height: 110.h,
+          padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
             color: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
             border: isDarkMode ? Border.all(color: const Color(0xFF3A3A3A), width: 1) : null,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: isDarkMode ? Colors.black.withOpacity(0.17) : AppColors.blackColor.withOpacity(0.06),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
+                color: isDarkMode ? Colors.black.withOpacity(0.2) : AppColors.blackColor.withOpacity(0.05),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -78,14 +77,14 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
               Stack(
                 children: [
                   Container(
-                    width: 100.w,
-                    height: 100.h,
+                    width: 85.w,
+                    height: 94.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      color: AppColors.secondaryColor.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: AppColors.secondaryColor.withOpacity(0.1),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(10.r),
                       child: CustomImageView(
                         imageUrl: serving.imageUrl,
                         fit: BoxFit.cover,
@@ -93,8 +92,8 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                     ),
                   ),
                   Positioned(
-                    top: 5,
-                    left: 7,
+                    top: 0,
+                    left: 0,
                     child: BlocBuilder<SavedServicesBloc, SavedServicesState>(
                       builder: (context, state) {
                         bool isSaved = false;
@@ -106,15 +105,18 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                             context.read<SavedServicesBloc>().add(ToggleSaveServiceEvent(serving));
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(2),
+                            padding: EdgeInsets.all(3.w),
                             decoration: BoxDecoration(
-                              color: Colors.black26,
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(12.r)),
+                              color: Colors.black.withOpacity(0.35),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.r),
+                                bottomRight: Radius.circular(10.r),
+                              ),
                             ),
                             child: Icon(
                               isSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
                               color: isSaved ? AppColors.yellowColor : Colors.white,
-                              size: 18.sp,
+                              size: 14.sp,
                             ),
                           ),
                         );
@@ -128,35 +130,48 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Text(
-                            serving.userFullName ?? context.tr('system_user'),
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.sp,
-                              color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  serving.userFullName ?? context.tr('system_user'),
+                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.5.sp,
+                                    color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (serving.isUserVerified == true) ...[
+                                SizedBox(width: 3.w),
+                                Icon(
+                                  Icons.verified,
+                                  color: Colors.blue,
+                                  size: 13.sp,
+                                ),
+                              ],
+                            ],
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h),
                           decoration: BoxDecoration(
                             color: serving.meetingType == 'online'
-                                ? AppColors.accentColor.withOpacity(0.15)
-                                : AppColors.primaryColor.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(6.r),
+                                ? AppColors.accentColor.withOpacity(0.1)
+                                : AppColors.primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: Text(
                             serving.meetingType == 'online' ? context.tr('online') : context.tr('direct'),
                             style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 10.sp,
+                              fontSize: 9.sp,
                               color: serving.meetingType == 'online'
                                   ? (isDarkMode ? const Color(0xFF64FFDA) : AppColors.accentColor)
                                   : (isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor),
@@ -166,30 +181,44 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                         ),
                       ],
                     ),
-
+                    SizedBox(height: 2.h),
                     Text(
-                      serving.title,
+                      serving.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: 13.sp,
-                        color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 12.sp,
+                        color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                        fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-
+                    if (serving.categoryName != null && serving.categoryName!.isNotEmpty) ...[
+                      SizedBox(height: 4.h),
+                      Row(
+                        children: [
+                          Icon(Icons.grid_view_rounded, size: 10.sp, color: AppColors.primaryColor),
+                          SizedBox(width: 4.w),
+                          Text(
+                            serving.categoryName!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 10.sp,
+                              color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                           decoration: BoxDecoration(
-                            color: typeColor.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(8.r),
-                            border: Border.all(
-                              color: typeColor.withOpacity(0.3),
-                              width: 1,
-                            ),
+                            color: typeColor.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(5.r),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -197,38 +226,35 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                               Icon(
                                 Icons.monetization_on_outlined,
                                 color: typeColor,
-                                size: 14.sp,
+                                size: 13.sp,
                               ),
-                              SizedBox(width: 4.w),
+                              SizedBox(width: 3.w),
                               Text(
                                 "${serving.costAmount} ${serving.unitName ?? ''}",
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: typeColor,
-                                  fontSize: 12.sp,
+                                  fontSize: 11.sp,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            displayAddress,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 11.sp,
-                              color: AppColors.greyColor,
+                        Row(
+                          children: [
+                            Text(
+                              displayAddress,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontSize: 10.sp,
+                                color: AppColors.greyColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            SizedBox(width: 3.w),
+                            Icon(Icons.location_on_outlined, color: AppColors.greyColor, size: 11.sp),
+                          ],
                         ),
-                        SizedBox(width: 4.w),
-                        Icon(Icons.location_on_outlined, color: AppColors.greyColor, size: 14.sp),
                       ],
                     ),
                   ],

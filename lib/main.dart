@@ -34,6 +34,8 @@ import 'features/notifications/presentation/bloc/notifications_event.dart';
 import 'core/services/pusher_service.dart';
 import 'core/services/fcm_service.dart';
 import 'core/services/notification_service.dart';
+import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/home/presentation/bloc/home_event.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
@@ -58,7 +60,7 @@ void main() async {
     sl<PusherService>().init();
   }
 
-  final String initialRoute = (token != null && token.isNotEmpty) ? '/home' : '/';
+  final String initialRoute = (token != null && token.isNotEmpty) ? '/homeScreen' : '/';
 
   runApp(MyApp(initialRoute: initialRoute));
 }
@@ -116,6 +118,9 @@ class _MyAppState extends State<MyApp> {
             BlocProvider<RewardsBloc>(
               create: (context) => sl<RewardsBloc>()..add(GetMyRewardsEvent()),
             ),
+            BlocProvider<HomeBloc>(
+              create: (context) => sl<HomeBloc>()..add(const FetchHomeServingsEvent(isRefresh: true)),
+            ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, themeState) {
@@ -161,7 +166,7 @@ class _MyAppState extends State<MyApp> {
                         ),
                       );
                     },
-                    initialRoute: '/',
+                    initialRoute: widget.initialRoute,
                     onGenerateRoute: AppRoutes.generateRoute,
                   );
                 },

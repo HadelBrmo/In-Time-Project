@@ -9,6 +9,7 @@ class LoginAuthModel extends LoginAuthEntity {
     required super.token,
     super.refreshToken,
     super.expiresIn,
+    super.isIdentityVerified,
   });
 
   factory LoginAuthModel.fromJson(Map<String, dynamic> json) {
@@ -19,6 +20,7 @@ class LoginAuthModel extends LoginAuthEntity {
       fullName: userData != null ? (userData['full_name'] ?? '') : '',
       email: userData != null ? (userData['email'] ?? '') : '',
       profilePicture: userData != null ? userData['profile_picture']?.toString() : null,
+      isIdentityVerified: userData != null ? (userData['is_identity_verified'] is bool ? userData['is_identity_verified'] : (userData['is_identity_verified'] == 1 || userData['is_identity_verified'] == true)) : false,
       token: json['token'] ?? json['access_token'] ?? '',
       refreshToken: json['refresh_token']?.toString(),
       expiresIn: json['expires_in'] is int
@@ -33,6 +35,7 @@ class LoginAuthModel extends LoginAuthEntity {
       'full_name': fullName,
       'email': email,
       'profile_picture': profilePicture,
+      'is_identity_verified': isIdentityVerified,
       'token': token,
       'refresh_token': refreshToken,
       'expires_in': expiresIn,

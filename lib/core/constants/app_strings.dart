@@ -43,6 +43,7 @@
   static const String complaintsUrl = 'complaints';
   static String uploadComplaintDocumentsUrl(int id) => 'complaints/$id/upload-documents';
   static const String myComplaintsUrl = 'my-complaints';
+  static const String complaintsAgainstMeUrl = 'complaints/against-me';
   static String userProfileUrl(int userId) => 'users/$userId';
   static const String updateProfileUrl = 'profile';
   static const String topPerformersUrl = 'servings/top-performers';

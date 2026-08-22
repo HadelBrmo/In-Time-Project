@@ -46,11 +46,22 @@ Widget buildChatTile(
           ? Icon(isGroup ? Icons.groups_rounded : Icons.person_rounded, color: theme.iconTheme.color, size: 28)
           : null,
     ),
-    title: Text(
-      chatTitle,
-      style: theme.textTheme.titleMedium?.copyWith(
-        fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
-      ),
+    title: Row(
+      children: [
+        Expanded(
+          child: Text(
+            chatTitle,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (!isGroup && chat.otherUser?.isVerified == true) ...[
+          const SizedBox(width: 4),
+          const Icon(Icons.verified, color: Colors.blue, size: 16),
+        ],
+      ],
     ),
     subtitle: Text(
       chat.latestMessage?.content ?? (isGroup ? context.tr('no_messages_yet') : ''),

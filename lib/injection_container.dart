@@ -105,6 +105,7 @@ import 'features/complaints/data/repositories/complaint_repository_impl.dart';
 import 'features/complaints/domain/repositories/i_complaint_repository.dart';
 import 'features/complaints/domain/usecases/submit_complaint_usecase.dart';
 import 'features/complaints/domain/usecases/get_complaint_status_usecase.dart';
+import 'features/complaints/domain/usecases/get_complaints_against_me_usecase.dart';
 import 'features/complaints/domain/usecases/upload_complaint_documents_usecase.dart';
 import 'features/complaints/presentation/bloc/complaint_bloc.dart';
 
@@ -285,6 +286,7 @@ Future<void> init() async {
       () => ComplaintBloc(
         submitComplaintUseCase: sl(),
         getComplaintStatusUseCase: sl(),
+        getComplaintsAgainstMeUseCase: sl(),
         uploadComplaintDocumentsUseCase: sl(),
       ),
     );
@@ -378,6 +380,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ToggleServingStatusUseCase(sl()));
   sl.registerLazySingleton(() => SubmitComplaintUseCase(sl()));
   sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
+  sl.registerLazySingleton(() => GetComplaintsAgainstMeUseCase(sl()));
   sl.registerLazySingleton(() => UploadComplaintDocumentsUseCase(sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));

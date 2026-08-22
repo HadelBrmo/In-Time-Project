@@ -7,6 +7,7 @@ import '../models/complaint_model.dart';
 abstract class ComplaintRemoteDataSource {
   Future<ComplaintResponse> submitComplaint(ComplaintRequest request);
   Future<List<dynamic>> getMyComplaints();
+  Future<List<dynamic>> getComplaintsAgainstMe();
   Future<void> uploadComplaintDocuments(int complaintId, List<String> filePaths);
 }
 
@@ -21,11 +22,37 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
       final response = await dio.get(ApiStringConstants.myComplaintsUrl);
       if (response.statusCode == 200) {
         return response.data['data'] as List<dynamic>;
-      } else {
-        throw ServerException();
       }
-    } catch (e) {
-      throw ServerException();
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل تحميل الشكاوى',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر تحميل الشكاوى',
+      );
+    }
+  }
+
+  @override
+  Future<List<dynamic>> getComplaintsAgainstMe() async {
+    try {
+      final response = await dio.get(ApiStringConstants.complaintsAgainstMeUrl);
+      if (response.statusCode == 200) {
+        return response.data['data'] as List<dynamic>;
+      }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل تحميل الشكاوى ضدك',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر تحميل الشكاوى ضدك',
+      );
     }
   }
 
@@ -47,10 +74,16 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        throw ServerException();
+        throw ServerExceptionWithDetails.fromResponse(
+          response,
+          fallback: 'فشل رفع مستندات الشكوى',
+        );
       }
-    } catch (e) {
-      throw ServerException();
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر رفع مستندات الشكوى',
+      );
     }
   }
 
@@ -81,16 +114,17 @@ class ComplaintRemoteDataSourceImpl implements ComplaintRemoteDataSource {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return ComplaintResponse.fromJson(response.data);
-      } else {
-        throw ServerException();
       }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل إرسال الشكوى',
+      );
     } on DioException catch (e) {
-      print("DEBUG: Dio Error response: ${e.response?.data}");
-      throw ServerException();
-    } catch (e, stack) {
-      print("DEBUG: Parsing Error in submitComplaint: $e");
-      print("DEBUG: StackTrace: $stack");
-      throw ServerException();
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر إرسال الشكوى',
+      );
     }
   }
 }

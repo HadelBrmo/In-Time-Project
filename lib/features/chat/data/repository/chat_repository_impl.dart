@@ -28,6 +28,9 @@ class ChatRepositoryImpl implements ChatRepository {
       if (localChats.isNotEmpty) {
         return Right(localChats);
       }
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+      }
       return Left(ServerFailure());
     }
   }
@@ -37,6 +40,10 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final chat = await remoteDataSource.createPersonalChat(receiverId, content);
       return Right(chat);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -47,6 +54,10 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final chat = await remoteDataSource.createGroupChat(name, memberIds);
       return Right(chat);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -57,7 +68,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.updateGroup(chatId, name);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -73,6 +88,9 @@ class ChatRepositoryImpl implements ChatRepository {
       if (localMessages.isNotEmpty) {
         return Right(localMessages);
       }
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+      }
       return Left(ServerFailure());
     }
   }
@@ -82,7 +100,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final message = await remoteDataSource.sendMessage(chatId, content);
       return Right(message);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -92,7 +114,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.markAsRead(chatId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -102,7 +128,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.markAsReceived(chatId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -112,7 +142,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final members = await remoteDataSource.getMembers(chatId);
       return Right(members);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -122,7 +156,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.addMembers(chatId, userIds);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -132,7 +170,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.removeMember(chatId, userId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -142,7 +184,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.leaveGroup(chatId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -152,7 +198,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.sendTypingIndicator(chatId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -162,7 +212,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.stopTypingIndicator(chatId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -172,7 +226,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final chats = await remoteDataSource.searchChats(query);
       return Right(chats);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -182,7 +240,11 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       await remoteDataSource.deleteChat(chatId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }

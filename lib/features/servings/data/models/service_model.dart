@@ -21,8 +21,10 @@ class ServiceModel extends ServiceEntity {
     super.categoryName,
     super.unitName,
     super.servingTypeName,
+    super.servingTypeId,
     super.isRequested,
     super.isOwner,
+    super.isUserVerified,
     super.status,
     super.availabilitySlots,
     super.createdAt,
@@ -51,6 +53,7 @@ class ServiceModel extends ServiceEntity {
       'image_url': imageUrl,
       'requested': isRequested,
       'is_owner': isOwner,
+      'is_user_verified': isUserVerified,
       'availability_slots': availabilitySlots,
       'created_at': createdAt,
     };
@@ -70,6 +73,8 @@ class ServiceModel extends ServiceEntity {
 
     final userJson = json['user'] is Map ? json['user'] : null;
     final userIdValue = json['user_id'] ?? userJson?['id'];
+    
+    final typeIdValue = json['serving_type_id'] ?? (json['serving_type'] is Map ? json['serving_type']['id'] : null);
 
     return ServiceModel(
       id: idValue is int ? idValue : int.tryParse(idValue?.toString() ?? ''),
@@ -93,8 +98,12 @@ class ServiceModel extends ServiceEntity {
       categoryName: json['category_name']?.toString() ?? json['categoryName'],
       unitName: json['unit_name']?.toString() ?? json['unitName'],
       servingTypeName: typeName,
+      servingTypeId: typeIdValue is int ? typeIdValue : int.tryParse(typeIdValue?.toString() ?? ''),
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1),
       isOwner: json['isOwner'] ?? json['is_owner'] ?? false,
+      isUserVerified: userJson?['is_identity_verified'] is bool
+          ? userJson!['is_identity_verified']
+          : (userJson?['is_identity_verified'] == 1),
       status: json['status']?.toString(),
       availabilitySlots: json['availability_slots'] ?? json['availabilitySlots'] ?? [],
       createdAt: json['created_at']?.toString(),

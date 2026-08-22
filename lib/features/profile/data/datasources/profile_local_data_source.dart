@@ -14,6 +14,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
   Future<void> saveProfile(UserProfile profile) async {
     await sharedPreferences.setString("full_name", profile.fullName);
     await sharedPreferences.setString("email", profile.email);
+    await sharedPreferences.setBool("is_identity_verified", profile.isVerified);
     if (profile.profilePicture != null) {
       await sharedPreferences.setString("profile_picture", profile.profilePicture!);
     }

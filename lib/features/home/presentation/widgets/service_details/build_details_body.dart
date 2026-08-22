@@ -120,9 +120,21 @@ Widget buildDetailsBody(
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              service.userFullName ?? context.tr('system_user'),
-                              style: theme.textTheme.titleMedium?.copyWith(fontSize: 17, fontWeight: FontWeight.bold, color: textColor),
+                            Row(
+                              children: [
+                                Text(
+                                  service.userFullName ?? context.tr('system_user'),
+                                  style: theme.textTheme.titleMedium?.copyWith(fontSize: 17, fontWeight: FontWeight.bold, color: textColor),
+                                ),
+                                if (service.isUserVerified == true) ...[
+                                  const SizedBox(width: 8),
+                                  const Icon(
+                                    Icons.verified,
+                                    color: Colors.blue,
+                                    size: 18,
+                                  ),
+                                ],
+                              ],
                             ),
                             if (service.userEmail != null && service.userEmail!.isNotEmpty)
                               Text(
@@ -133,7 +145,10 @@ Widget buildDetailsBody(
                         ),
                       ],
                     ),
-                    isOwner
+                    (isOwner ||
+                            service.servingTypeId == 1 ||
+                            service.servingTypeName?.toLowerCase() == 'paid' ||
+                            service.servingTypeName == 'مدفوعة')
                         ? const SizedBox.shrink()
                         : isAlreadyRequested
                         ? buildDisabledButton(media, isDarkMode, context.tr('requested'))
@@ -376,8 +391,13 @@ Widget buildDetailsBody(
                               String dayName = "";
                               if (slot['day_of_week'] != null) {
                                 final Map<int, String> numberToDayMap = {
-                                  1: context.tr('monday'), 2: context.tr('tuesday'), 3: context.tr('wednesday'),
-                                  4: context.tr('thursday'), 5: context.tr('friday'), 6: context.tr('saturday'), 7: context.tr('sunday')
+                                  0: context.tr('sunday'),
+                                  1: context.tr('monday'),
+                                  2: context.tr('tuesday'),
+                                  3: context.tr('wednesday'),
+                                  4: context.tr('thursday'),
+                                  5: context.tr('friday'),
+                                  6: context.tr('saturday'),
                                 };
                                 dayName = numberToDayMap[slot['day_of_week']] ?? "";
                               } else if (slot['date'] != null) {

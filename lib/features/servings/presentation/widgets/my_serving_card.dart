@@ -122,7 +122,7 @@ class MyServingCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    serving.title,
+                    serving.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontSize: media.width * 0.045,
                       color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,

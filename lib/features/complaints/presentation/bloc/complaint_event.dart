@@ -18,3 +18,5 @@ class SubmitComplaintEvent extends ComplaintEvent {
 
 // ✅ الإضافة الجديدة التي كانت تسبب الخطأ
 class FetchMyComplaintsEvent extends ComplaintEvent {}
+
+class FetchComplaintsAgainstMeEvent extends ComplaintEvent {}

@@ -12,6 +12,7 @@ class UserProfile extends Equatable {
   final String? profilePicture;
   final String role;
   final bool isActive;
+  final bool isVerified;
   final String createdAt;
   final String updatedAt;
 
@@ -27,6 +28,7 @@ class UserProfile extends Equatable {
     this.profilePicture,
     required this.role,
     required this.isActive,
+    required this.isVerified,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -44,6 +46,7 @@ class UserProfile extends Equatable {
         profilePicture,
         role,
         isActive,
+        isVerified,
         createdAt,
         updatedAt,
       ];

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/notification_entity.dart';
 import '../../domain/repositories/notification_repository.dart';
@@ -14,6 +15,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
     try {
       final notifications = await remoteDataSource.getMyNotifications();
       return Right(notifications);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -24,6 +27,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
     try {
       await remoteDataSource.markAsRead(id);
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -34,6 +39,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
     try {
       await remoteDataSource.markAllAsRead();
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -44,6 +51,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
     try {
       final count = await remoteDataSource.getUnreadCount();
       return Right(count);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -54,6 +63,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
     try {
       await remoteDataSource.updateFcmToken(token);
       return const Right(unit);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }

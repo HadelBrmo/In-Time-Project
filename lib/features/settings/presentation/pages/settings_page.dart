@@ -16,9 +16,10 @@ import '../../../theme/presentation/bloc/theme_state.dart';
 import '../bloc/settings_bloc.dart';
 import '../bloc/settings_event.dart';
 import '../bloc/settings_state.dart';
-import '../widgets/buildLanguageOption.dart';
-import '../widgets/buildSectionCard.dart';
-import '../widgets/buildSecurityActionRow.dart';
+
+import '../widgets/build_language_option.dart';
+import '../widgets/build_section_card.dart';
+import '../widgets/build_security_action_row.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

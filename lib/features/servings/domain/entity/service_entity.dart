@@ -1,4 +1,4 @@
-// features/services/domain/entities/service_entity.dart
+// features/services/domain/entities/service_entity.dart - Updated
 
 import 'package:equatable/equatable.dart';
 
@@ -23,6 +23,7 @@ class ServiceEntity extends Equatable {
   final int? servingTypeId;
   final bool isRequested;
   final bool? isOwner;
+  final bool? isUserVerified;
   final String? status;
   final String? reason;
   final String? score;
@@ -50,6 +51,7 @@ class ServiceEntity extends Equatable {
     this.servingTypeId,
     this.isRequested = false,
     this.isOwner = false,
+    this.isUserVerified = false,
     this.status,
     this.reason,
     this.score,
@@ -78,6 +80,7 @@ class ServiceEntity extends Equatable {
     int? servingTypeId,
     bool? isRequested,
     bool? isOwner,
+    bool? isUserVerified,
     String? status,
     String? reason,
     String? score,
@@ -105,6 +108,7 @@ class ServiceEntity extends Equatable {
       servingTypeId: servingTypeId ?? this.servingTypeId,
       isRequested: isRequested ?? this.isRequested,
       isOwner: isOwner ?? this.isOwner,
+      isUserVerified: isUserVerified ?? this.isUserVerified,
       status: status ?? this.status,
       reason: reason ?? this.reason,
       score: score ?? this.score,
@@ -135,6 +139,7 @@ class ServiceEntity extends Equatable {
     servingTypeId,
     isRequested,
     isOwner,
+    isUserVerified,
     status,
     reason,
     score,

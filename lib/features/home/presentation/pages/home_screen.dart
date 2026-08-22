@@ -60,7 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (isRefresh) {
       _currentSkip = 0;
       setState(() => _isLoadingMore = false);
-      context.read<HomeBloc>().add(const FetchProposedServingsEvent(skip: 0, take: 10));
+      
+      // Only fetch proposed services if we are refreshing the main feed (no active search query)
+      // or if it's the initial load.
+      if (_searchController.text.trim().isEmpty && !_isNearbyMode) {
+        context.read<HomeBloc>().add(const FetchProposedServingsEvent(skip: 0, take: 10));
+      }
     } else {
       setState(() => _isLoadingMore = true);
     }

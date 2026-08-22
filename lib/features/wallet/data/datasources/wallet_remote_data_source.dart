@@ -21,13 +21,21 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
 
         final List<dynamic> data = responseData['data'];
         return data.map((json) => WalletModel.fromJson(json)).toList();
-      } else {
-        throw ServerException();
       }
-    } on DioException {
-      throw ServerException();
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل تحميل المحفظة',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر تحميل المحفظة',
+      );
     } catch (e) {
-      throw ServerException();
+      throw ServerExceptionWithDetails(
+        message: 'حدث خطأ غير متوقع أثناء تحميل المحفظة',
+      );
     }
   }
 }

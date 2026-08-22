@@ -32,6 +32,7 @@ class CustomDrawer extends StatelessWidget {
     final String fullName = prefs.getString('full_name') ?? context.tr('guest');
     final String email = prefs.getString('email') ?? "guest@in-time.com";
     final String? profilePic = prefs.getString('profile_picture');
+    final bool isVerified = prefs.getBool('is_identity_verified') ?? false;
 
     final String? fullImageUrl = (profilePic != null && profilePic.isNotEmpty)
         ? (profilePic.startsWith('http')
@@ -68,12 +69,21 @@ class CustomDrawer extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10.h),
-                    Text(
-                      fullName,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: AppColors.whiteColor,
-                        fontSize: 20.sp,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          fullName,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            color: AppColors.whiteColor,
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                        if (isVerified) ...[
+                          SizedBox(width: 5.w),
+                          const Icon(Icons.verified, color: Colors.blueAccent, size: 20),
+                        ],
+                      ],
                     ),
                     Text(
                       email,

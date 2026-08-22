@@ -8,6 +8,7 @@ class LoginAuthEntity extends Equatable {
   final String token;
   final String? refreshToken;
   final int? expiresIn;
+  final bool isIdentityVerified;
 
   const LoginAuthEntity({
     required this.userId,
@@ -17,8 +18,9 @@ class LoginAuthEntity extends Equatable {
     required this.token,
     this.refreshToken,
     this.expiresIn,
+    this.isIdentityVerified = false,
   });
 
   @override
-  List<Object?> get props => [userId, fullName, email, profilePicture, token, refreshToken, expiresIn];
+  List<Object?> get props => [userId, fullName, email, profilePicture, token, refreshToken, expiresIn, isIdentityVerified];
 }

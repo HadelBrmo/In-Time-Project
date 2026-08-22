@@ -20,8 +20,10 @@ class ServiceModel extends ServiceEntity {
     super.categoryName,
     super.unitName,
     super.servingTypeName,
+    super.servingTypeId,
     super.isRequested,
     super.isOwner,
+    super.isUserVerified,
     super.status,
     super.reason,
     super.score,
@@ -49,6 +51,7 @@ class ServiceModel extends ServiceEntity {
       'serving_type_name': servingTypeName,
       'requested': isRequested,
       'isOwner': isOwner,
+      'is_user_verified': isUserVerified,
       if (status != null) 'status': status,
       if (reason != null) 'reason': reason,
       if (score != null) 'score': score,
@@ -80,10 +83,14 @@ class ServiceModel extends ServiceEntity {
       userEmail: json['user_email'] ?? json['userEmail'] ?? userJson?['email'],
       unitName: json['unit_name'] ?? json['unitName'],
       servingTypeName: json['serving_type_name'] ?? json['servingTypeName'],
+      servingTypeId: json['serving_type_id'] is int ? json['serving_type_id'] : int.tryParse(json['serving_type_id']?.toString() ?? ''),
       categoryName: json['category_name'] ?? json['categoryName'],
 
       isRequested: json['requested'] is bool ? json['requested'] : (json['requested'] == 1 || json['requested'] == true),
       isOwner: json['isOwner'] is bool ? json['isOwner'] : (json['isOwner'] == 1 || json['isOwner'] == true),
+      isUserVerified: userJson?['is_identity_verified'] is bool
+          ? userJson!['is_identity_verified']
+          : (userJson?['is_identity_verified'] == 1 || userJson?['is_identity_verified'] == true),
       status: json['status']?.toString(),
       reason: json['reason']?.toString(),
       score: json['score']?.toString(),

@@ -67,7 +67,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
         return Right(localData);
       }
       if (e is ServerExceptionWithDetails) {
-        return Left(ServerFailureWithDetails(message: e.message));
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
       }
       return Left(ServerFailure());
     }
@@ -85,7 +85,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
         return Right(localData);
       }
       if (e is ServerExceptionWithDetails) {
-        return Left(ServerFailureWithDetails(message: e.message));
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
       }
       return Left(ServerFailure());
     }
@@ -98,7 +98,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       return Right(result);
     } catch (e) {
       if (e is ServerExceptionWithDetails) {
-        return Left(ServerFailureWithDetails(message: e.message));
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
       }
       return Left(ServerFailure());
     }
@@ -116,7 +116,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
         return Right(localData);
       }
       if (e is ServerExceptionWithDetails) {
-        return Left(ServerFailureWithDetails(message: e.message));
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
       }
       return Left(ServerFailure());
     }
@@ -128,7 +128,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final result = await remoteDataSource.getAvailabilitySlots(serviceId);
       return Right(result);
     } on ServerExceptionWithDetails catch (e) {
-      return Left(ServerFailureWithDetails(message: e.message));
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -146,7 +146,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
         return Right(localData);
       }
       if (e is ServerExceptionWithDetails) {
-        return Left(ServerFailureWithDetails(message: e.message));
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
       }
       return Left(ServerFailure());
     }
@@ -170,7 +170,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       );
       return const Right(unit);
     } on ServerExceptionWithDetails catch (e) {
-      return Left(ServerFailureWithDetails(message: e.message));
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -182,7 +182,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       await remoteDataSource.toggleServingStatus(id, isActive);
       return const Right(unit);
     } on ServerExceptionWithDetails catch (e) {
-      return Left(ServerFailureWithDetails(message: e.message));
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }

@@ -69,7 +69,7 @@ Widget buildRequestCard({
                         children: [
                           Expanded(
                             child: Text(
-                              request.serving.title,
+                              request.serving.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
