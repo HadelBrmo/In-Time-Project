@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../../domain/entities/notification_entity.dart';
 
 class NotificationModel extends NotificationEntity {
@@ -11,13 +12,27 @@ class NotificationModel extends NotificationEntity {
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
+    Map<String, dynamic> data = {};
+    if (json['data'] is Map<String, dynamic>) {
+      data = Map<String, dynamic>.from(json['data']);
+    } else if (json['data'] is String) {
+      try {
+        data = jsonDecode(json['data']);
+      } catch (_) {}
+    }
+
+    // Ensure type is in data for easier navigation handling
+    if (json.containsKey('type') && !data.containsKey('type')) {
+      data['type'] = json['type'];
+    }
+
     return NotificationModel(
       id: json['id'],
       title: json['title'] ?? '',
       body: json['body'] ?? '',
       isRead: json['read_at'] != null,
       createdAt: DateTime.parse(json['created_at']),
-      data: json['data'] is Map<String, dynamic> ? json['data'] : null,
+      data: data.isNotEmpty ? data : null,
     );
   }
 

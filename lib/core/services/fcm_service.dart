@@ -20,20 +20,35 @@ class FCMService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static String normalizeNotificationType(String? rawType) {
-    final type = (rawType ?? '').trim().toLowerCase();
+    String type = (rawType ?? '').trim();
+
+    // Handle Laravel style class names (e.g., App\Notifications\NewMessage)
+    if (type.contains('\\')) {
+      type = type.split('\\').last;
+    } else if (type.contains('.')) {
+      type = type.split('.').last;
+    }
+
+    type = type.toLowerCase();
+
     const aliases = {
-      'request_completion': 'request_completion',
-      'completion_requested': 'request_completion',
-      'request_completed': 'request_completion',
-      'service_completed': 'request_completion',
+      // Chat Aliases
+      'chat': 'chat',
+      'new_chat': 'chat',
+      'message_received': 'chat',
+      'chat_message': 'chat',
+      'newmessage': 'chat',
+      'new_message': 'chat',
+      'newchatmessage': 'chat',
+
+      // Group Aliases
       'group_added': 'group_added',
       'added_to_group': 'group_added',
       'group_invite': 'group_added',
-      'comment_added': 'comment_added',
-      'service_commented': 'comment_added',
-      'comment_on_service': 'comment_added',
-      'new_comment': 'comment_added',
-      'comment_received': 'comment_added',
+      'addedtogroup': 'group_added',
+      'newgroupnotification': 'group_added',
+
+      // Complaint Aliases
       'complaint': 'complaint',
       'complaint_received': 'complaint',
       'complaint_status_updated': 'complaint',
@@ -43,16 +58,40 @@ class FCMService {
       'complaint_resolved': 'complaint',
       'complaint_processed': 'complaint',
       'complaint_created': 'complaint',
-      'chat': 'chat',
-      'new_chat': 'chat',
-      'message_received': 'chat',
-      'chat_message': 'chat',
+      'new_complaint': 'complaint',
+      'complaint_filed': 'complaint',
+      'complaint_against': 'complaint',
+      'complaint_against_you': 'complaint',
+      'documents_requested': 'complaint',
+      'complaintupdated': 'complaint',
+      'complaintcreated': 'complaint',
+
+      // Request Aliases
       'request_received': 'request_received',
       'request_accepted': 'request_accepted',
       'request_rejected': 'request_rejected',
       'request_cancelled': 'request_rejected',
       'request_pending': 'request_received',
       'request_status_updated': 'request_received',
+      'requestreceived': 'request_received',
+      'new_request': 'request_received',
+      'requestaccepted': 'request_accepted',
+      'requestrejected': 'request_rejected',
+
+      // Completion Aliases
+      'request_completion': 'request_completion',
+      'completion_requested': 'request_completion',
+      'request_completed': 'request_completion',
+      'service_completed': 'request_completion',
+      'requestcompletion': 'request_completion',
+
+      // Comment Aliases
+      'comment_added': 'comment_added',
+      'service_commented': 'comment_added',
+      'comment_on_service': 'comment_added',
+      'new_comment': 'comment_added',
+      'comment_received': 'comment_added',
+      'commentadded': 'comment_added',
     };
 
     return aliases[type] ?? type;
@@ -235,7 +274,13 @@ class FCMService {
   }
 
   static void handleNavigation(Map<String, dynamic> data) {
+    if (kDebugMode) {
+      print('FCMService.handleNavigation: Data=$data');
+    }
     final String type = normalizeNotificationType(data['type']?.toString());
+    if (kDebugMode) {
+      print('FCMService.handleNavigation: Normalized Type=$type');
+    }
     if (type.isEmpty) return;
 
     final context = AppRoutes.navigatorKey.currentContext;
@@ -243,7 +288,7 @@ class FCMService {
 
     switch (type) {
       case 'chat':
-        final chatId = int.tryParse(data['chat_id']?.toString() ?? '');
+        final chatId = _extractInt(data, ['chat_id', 'id', 'chatId']);
         if (sl.isRegistered<ChatBloc>()) {
           sl<ChatBloc>().add(const GetChatsEvent(isSilent: true));
         }
@@ -261,26 +306,29 @@ class FCMService {
         }
         break;
       case 'request_received':
+        final requestId = _extractInt(data, ['request_id', 'id', 'requestId']);
         Navigator.pushNamed(context, AppRoutes.myRequestsPage, arguments: {
           'initialTabIndex': 1,
-          'requestId': data['request_id'] ?? data['id'] ?? null,
+          'requestId': requestId,
         });
         return;
       case 'request_accepted':
       case 'request_rejected':
+        final requestId = _extractInt(data, ['request_id', 'id', 'requestId']);
         Navigator.pushNamed(context, AppRoutes.myRequestsPage, arguments: {
           'initialTabIndex': 0,
-          'requestId': data['request_id'] ?? data['id'] ?? null,
+          'requestId': requestId,
         });
         return;
       case 'request_completion':
+        final requestId = _extractInt(data, ['request_id', 'id', 'requestId']);
         Navigator.pushNamed(context, AppRoutes.myRequestsPage, arguments: {
           'initialTabIndex': 2,
-          'requestId': data['request_id'] ?? data['id'] ?? null,
+          'requestId': requestId,
         });
         return;
       case 'group_added':
-        final chatId = int.tryParse(data['chat_id']?.toString() ?? data['group_id']?.toString() ?? '');
+        final chatId = _extractInt(data, ['chat_id', 'group_id', 'id', 'groupId', 'chatId']);
         if (sl.isRegistered<ChatBloc>()) {
           sl<ChatBloc>().add(const GetChatsEvent(isSilent: true));
         }
@@ -314,6 +362,9 @@ class FCMService {
         _openComplaintDetails(context, data);
         return;
       default:
+        if (kDebugMode) {
+          print('FCMService.handleNavigation: Unknown type "$type", navigating to notificationsPage');
+        }
         Navigator.pushNamed(context, AppRoutes.notificationsPage);
     }
   }

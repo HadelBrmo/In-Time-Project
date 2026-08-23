@@ -305,6 +305,11 @@
   "friday": "الجمعة",
   "saturday": "السبت",
   "sunday": "الأحد",
+  "submit_rating": "إرسال التقييم",
+  "rating_success": "تم التقييم بنجاح، شكراً لك!",
+  "rate_service_title": "تقييم الخدمة",
+  "rate_service_desc": "كيف كانت تجربتك مع هذه الخدمة؟ تقييمك يساعد الآخرين",
+  "rate_service": "تقييم الخدمة",
   "from": "من",
   "to": "إلى"
 }

@@ -18,7 +18,6 @@ import '../utils/auth_utils.dart';
 import '../utils/dialog_utils.dart';
 import '../widgets/global_particles_wrapper.dart';
 import 'package:in_time/features/complaints/presentation/pages/complaint_status_list_page.dart';
-import 'package:in_time/features/complaints/presentation/pages/complaints_against_me_page.dart'; 
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -137,19 +136,6 @@ class CustomDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const ComplaintStatusListPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  drawerItem(
-                    icon: Icons.gavel_outlined,
-                    text: context.tr('complaints_against_me'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ComplaintsAgainstMePage(),
                         ),
                       );
                     },

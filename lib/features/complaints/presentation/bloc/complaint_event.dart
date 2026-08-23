@@ -19,8 +19,6 @@ class SubmitComplaintEvent extends ComplaintEvent {
 // ✅ الإضافة الجديدة التي كانت تسبب الخطأ
 class FetchMyComplaintsEvent extends ComplaintEvent {}
 
-class FetchComplaintsAgainstMeEvent extends ComplaintEvent {}
-
 class UploadComplaintDocumentsEvent extends ComplaintEvent {
   final int complaintId;
   final List<String> filePaths;

@@ -109,6 +109,7 @@ import 'features/complaints/domain/usecases/get_complaint_status_usecase.dart';
 import 'features/complaints/domain/usecases/get_complaints_against_me_usecase.dart';
 import 'features/complaints/domain/usecases/upload_complaint_documents_usecase.dart';
 import 'features/complaints/presentation/bloc/complaint_bloc.dart';
+import 'features/complaints/presentation/bloc/complaints_against_me_cubit.dart';
 
 // Profile Feature 👤
 import 'features/profile/data/datasources/profile_remote_data_source.dart';
@@ -289,6 +290,11 @@ Future<void> init() async {
         getComplaintStatusUseCase: sl(),
         getComplaintsAgainstMeUseCase: sl(),
         uploadComplaintDocumentsUseCase: sl(),
+      ),
+    );
+    sl.registerFactory(
+      () => ComplaintsAgainstMeCubit(
+        getComplaintsAgainstMeUseCase: sl(),
       ),
     );
   // sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));

@@ -41,16 +41,6 @@ class ComplaintBloc extends Bloc<ComplaintEvent, ComplaintState> {
       }
     });
 
-    on<FetchComplaintsAgainstMeEvent>((event, emit) async {
-      emit(ComplaintsAgainstMeLoading());
-      try {
-        final complaints = await getComplaintsAgainstMeUseCase();
-        emit(ComplaintsAgainstMeLoaded(complaints));
-      } catch (e) {
-        emit(ComplaintError(e.toString()));
-      }
-    });
-
     on<UploadComplaintDocumentsEvent>((event, emit) async {
       emit(ComplaintUploading());
       try {

@@ -9,9 +9,7 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../injection_container.dart';
-import '../bloc/complaint_bloc.dart';
-import '../bloc/complaint_event.dart';
-import '../bloc/complaint_state.dart';
+import '../bloc/complaints_against_me_cubit.dart';
 import '../widgets/status_badge.dart';
 import 'complaint_details_page.dart';
 
@@ -30,7 +28,7 @@ class ComplaintsAgainstMePage extends StatelessWidget {
     final textDarkColor = isDarkMode ? Colors.white70 : AppColors.greyColor;
 
     return BlocProvider(
-      create: (context) => sl<ComplaintBloc>()..add(FetchComplaintsAgainstMeEvent()),
+      create: (context) => sl<ComplaintsAgainstMeCubit>()..fetchComplaintsAgainstMe(),
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         appBar: CustomAppBar(
@@ -39,11 +37,11 @@ class ComplaintsAgainstMePage extends StatelessWidget {
             style: theme.textTheme.titleSmall,
           ),
         ),
-        body: BlocBuilder<ComplaintBloc, ComplaintState>(
+        body: BlocBuilder<ComplaintsAgainstMeCubit, ComplaintsAgainstMeState>(
           builder: (context, state) {
             if (state is ComplaintsAgainstMeLoading) {
               return const Center(child: LoadingWidget());
-            } else if (state is ComplaintError) {
+            } else if (state is ComplaintsAgainstMeError) {
               return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
             } else if (state is ComplaintsAgainstMeLoaded) {
               final complaints = state.complaints;

@@ -43,12 +43,3 @@ class MyComplaintsLoaded extends ComplaintState {
   @override
   List<Object?> get props => [complaints];
 }
-
-class ComplaintsAgainstMeLoading extends ComplaintState {}
-
-class ComplaintsAgainstMeLoaded extends ComplaintState {
-  final List<dynamic> complaints;
-  const ComplaintsAgainstMeLoaded(this.complaints);
-  @override
-  List<Object?> get props => [complaints];
-}

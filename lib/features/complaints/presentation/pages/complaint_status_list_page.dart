@@ -12,8 +12,10 @@ import '../../../../injection_container.dart';
 import '../bloc/complaint_bloc.dart';
 import '../bloc/complaint_event.dart';
 import '../bloc/complaint_state.dart';
+import '../bloc/complaints_against_me_cubit.dart';
 import '../widgets/status_badge.dart';
 import 'complaint_details_page.dart';
+import 'complaints_against_me_page.dart';
 
 class ComplaintStatusListPage extends StatelessWidget {
   const ComplaintStatusListPage({super.key});
@@ -29,8 +31,11 @@ class ComplaintStatusListPage extends StatelessWidget {
     final itemBorderColor = isDarkMode ? AppColors.greyColor.withOpacity(0.3) : AppColors.greyColor.withOpacity(0.2);
     final textDarkColor = isDarkMode ? Colors.white70 : AppColors.greyColor;
 
-    return BlocProvider(
-      create: (context) => sl<ComplaintBloc>()..add(FetchMyComplaintsEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<ComplaintBloc>()..add(FetchMyComplaintsEvent())),
+        BlocProvider(create: (context) => sl<ComplaintsAgainstMeCubit>()..fetchComplaintsAgainstMe()),
+      ],
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         appBar: CustomAppBar(
@@ -38,6 +43,63 @@ class ComplaintStatusListPage extends StatelessWidget {
             context.tr('complaint_status'),
             style: theme.textTheme.titleSmall,
           ),
+          actions: [
+            BlocBuilder<ComplaintsAgainstMeCubit, ComplaintsAgainstMeState>(
+              builder: (context, state) {
+                int count = 0;
+                final complaintsState = state;
+                if (complaintsState is ComplaintsAgainstMeLoaded) {
+                  count = complaintsState.complaints.length;
+                }
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.gavel_outlined, color: Colors.white),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ComplaintsAgainstMePage(),
+                          ),
+                        ).then((_) {
+                          // Refresh count when coming back
+                          context.read<ComplaintsAgainstMeCubit>().fetchComplaintsAgainstMe();
+                        });
+                      },
+                      tooltip: context.tr('complaints_against_me'),
+                    ),
+                    if (count > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            '$count',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(width: 8),
+          ],
         ),
         body: BlocBuilder<ComplaintBloc, ComplaintState>(
           builder: (context, state) {

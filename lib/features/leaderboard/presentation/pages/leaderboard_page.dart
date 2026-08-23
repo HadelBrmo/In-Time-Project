@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/media_query.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
@@ -174,6 +175,15 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: CustomAppBar(
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.homeScreen,
+              (route) => false,
+            );
+          },
+        ),
         title: Text(
           context.tr('leaderboard_nav'),
           style: theme.textTheme.titleSmall,

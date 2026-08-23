@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -128,16 +129,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
           ],
         ),
         onTap: () {
+          if (kDebugMode) {
+            print('Notification tapped: ID=${notification.id}, Type=${notification.data?['type']}, Data=${notification.data}');
+          }
           if (!notification.isRead) {
             context.read<NotificationsBloc>().add(MarkNotificationAsReadEvent(notification.id));
           }
 
           if (notification.data != null && notification.data!.isNotEmpty) {
             FCMService.handleNavigation(notification.data!);
-            return;
           }
-
-          Navigator.pushNamed(context, AppRoutes.notificationsPage);
         },
       ),
     );

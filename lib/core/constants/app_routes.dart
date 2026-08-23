@@ -16,6 +16,7 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
+import '../../features/servings/presentation/bloc/service/services_bloc.dart';
 import '../../features/requests/presentation/bloc/received_requests/received_requests_bloc.dart';
 import '../../features/requests/domain/entity/request_entity.dart';
 import '../../features/requests/presentation/bloc/request_bloc.dart';
@@ -121,6 +122,7 @@ class AppRoutes {
             providers: [
               BlocProvider(create: (context) => sl<RequestsBloc>()),
               BlocProvider(create: (context) => sl<ReceivedRequestsBloc>()),
+              BlocProvider(create: (context) => sl<ServicesBloc>()),
             ],
             child: const MyRequestsPage(),
           ),

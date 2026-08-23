@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/media_query.dart';
+import 'package:in_time/core/constants/app_routes.dart';
+import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_error_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
@@ -99,7 +100,16 @@ class _PendingConfirmationsViewState extends State<PendingConfirmationsView> {
             request: request,
             media: media,
             isDarkMode: isDarkMode,
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.serviceDetailsPage,
+                arguments: {
+                  'serviceId': request.serving.id ?? 0,
+                  'isFromRequests': true,
+                },
+              );
+            },
             onLongPress: () {},
           ),
           Padding(

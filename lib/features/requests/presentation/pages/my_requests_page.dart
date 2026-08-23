@@ -275,7 +275,10 @@ class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProvid
                               Navigator.pushNamed(
                                 context,
                                 AppRoutes.serviceDetailsPage,
-                                arguments: request.serving,
+                                arguments: {
+                                  'serviceId': request.serving.id ?? 0,
+                                  'isFromRequests': true,
+                                },
                               );
                             },
                             onLongPress: () {
