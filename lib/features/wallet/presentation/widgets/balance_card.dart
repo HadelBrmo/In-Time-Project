@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/app_routes.dart';
 import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/localization/app_localizations.dart';
 
@@ -127,7 +128,7 @@ class BalanceCard extends StatelessWidget {
               SizedBox(height: media.height * 0.03),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: Navigate to history
+                  Navigator.pushNamed(context, AppRoutes.myRequestsPage);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

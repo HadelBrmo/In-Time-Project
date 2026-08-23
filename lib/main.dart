@@ -1,5 +1,7 @@
 ﻿import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -61,7 +63,12 @@ void main() async {
 
   final String initialRoute = (token != null && token.isNotEmpty) ? '/homeScreen' : '/';
 
-  runApp(MyApp(initialRoute: initialRoute));
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(initialRoute: initialRoute),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -126,13 +133,14 @@ class _MyAppState extends State<MyApp> {
               return BlocBuilder<LocaleBloc, LocaleState>(
                 builder: (context, localeState) {
                   return MaterialApp(
+                    useInheritedMediaQuery: true,
                     localizationsDelegates: const [
                       AppLocalizations.delegate,
                       GlobalMaterialLocalizations.delegate,
                       GlobalWidgetsLocalizations.delegate,
                       GlobalCupertinoLocalizations.delegate,
                     ],
-                    locale: localeState.locale,
+                    locale: DevicePreview.locale(context),
                     supportedLocales: const [
                       Locale('ar', 'SA'),
                       Locale('en', 'US'),
@@ -143,6 +151,7 @@ class _MyAppState extends State<MyApp> {
                     themeMode: themeState.themeMode,
                     navigatorKey: AppRoutes.navigatorKey,
                     builder: (context, child) {
+                    //  child = DevicePreview.appBuilder(context, child);
                       final isDarkMode = themeState.themeMode == ThemeMode.dark;
                       final backgroundColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
 

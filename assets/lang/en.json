@@ -1,4 +1,6 @@
 {
+  "complaint_sent_success": "Your complaint has been sent successfully",
+  "complaint_review_message": "Your complaint will be reviewed by the administration",
   "please_select_complaint_type": "Please select complaint type",
   "submit_complaint": "Submit Complaint",
   "error": "Error",
@@ -8,6 +10,7 @@
   "complaint_description_hint": "Write the description of the complaint in detail here...",
   "please_enter_complaint_description": "Please enter complaint description",
   "send_complaint": "Send Complaint",
+  "send_documents": "Send Documents",
   "technical_problem": "Technical Problem",
   "service_delay": "Service Delay",
   "harassment": "Harassment",

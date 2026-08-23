@@ -549,9 +549,12 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final serving = proposedServings[index];
               return Container(
-                width: width * 0.85,
+                width: width * 0.75,
                 margin: const EdgeInsets.only(right: 12),
-                child: buildServiceCard(context, serving, width * 0.85, height, padding: EdgeInsets.zero),
+                child: buildServiceCard(context, serving, width * 0.75, height, padding: EdgeInsets.zero)
+                    .animate()
+                    .fade(duration: 450.ms)
+                    .slideY(begin: 0.15, end: 0, curve: Curves.easeOutQuad),
               );
             },
           ),

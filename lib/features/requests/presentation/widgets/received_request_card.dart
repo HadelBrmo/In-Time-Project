@@ -76,7 +76,7 @@ class ReceivedRequestCard extends StatelessWidget {
                     ),
                     SizedBox(height: media.height * 0.005),
                     Text(
-                      "طلب على خدمة: $servingTitle",
+                      "طلب على خدمة: ${servingTitle.trim().split(RegExp(r'\s+')).take(2).join(' ')}",
                       style: TextStyle(
                         fontSize: media.width * 0.041,
                         color: AppColors.primaryColor,

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/error/exceptions.dart';
 import 'complaint_event.dart';
 import 'complaint_state.dart';
 import '../../domain/usecases/submit_complaint_usecase.dart';
@@ -22,22 +23,20 @@ class ComplaintBloc extends Bloc<ComplaintEvent, ComplaintState> {
     on<SubmitComplaintEvent>((event, emit) async {
       emit(ComplaintSubmitting());
       try {
-        // يتم إرسال الشكوى مع الملفات في طلب واحد الآن
         final response = await submitComplaintUseCase(event.request);
         emit(ComplaintSuccess(response));
       } catch (e) {
-        emit(ComplaintError(e.toString()));
+        emit(ComplaintError(_mapExceptionToMessage(e)));
       }
     });
 
-    // ✅ الحدث الجديد لجلب الشكاوى الخاصة بي
     on<FetchMyComplaintsEvent>((event, emit) async {
       emit(MyComplaintsLoading());
       try {
         final complaints = await getComplaintStatusUseCase();
         emit(MyComplaintsLoaded(complaints));
       } catch (e) {
-        emit(ComplaintError(e.toString()));
+        emit(ComplaintError(_mapExceptionToMessage(e)));
       }
     });
 
@@ -47,8 +46,17 @@ class ComplaintBloc extends Bloc<ComplaintEvent, ComplaintState> {
         await uploadComplaintDocumentsUseCase(event.complaintId, event.filePaths);
         emit(ComplaintUploadSuccess(event.complaintId));
       } catch (e) {
-        emit(ComplaintError(e.toString()));
+        emit(ComplaintError(_mapExceptionToMessage(e)));
       }
     });
+  }
+
+  String _mapExceptionToMessage(dynamic e) {
+    if (e is ServerExceptionWithDetails) {
+      return e.message;
+    } else if (e is ServerException) {
+      return e.message;
+    }
+    return e.toString();
   }
 }

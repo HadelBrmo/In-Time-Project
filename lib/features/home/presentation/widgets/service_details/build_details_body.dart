@@ -200,24 +200,23 @@ Widget buildDetailsBody(
 
               buildAnimatedItem(
                 delayFactor: 1,
-                child: GlowingBorder(
-                  borderRadius: 20,
-                  glowColors: glowColors,
-                  child: Container(
-                    width: double.infinity,
-                    height: media.height * 0.26,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.17) ,
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                child: Center(
+                  child: GlowingBorder(
+                    shape: BoxShape.circle,
+                    glowColors: glowColors,
+                    child: Container(
+                      width: media.width * 0.45,
+                      height: media.width * 0.45,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.17),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
                       child: Hero(
                         tag: 'service-img-${service.id ?? 0}',
                         child: CustomImageView(
@@ -259,7 +258,7 @@ Widget buildDetailsBody(
                           children: [
                             Expanded(
                               child: Text(
-                                service.title,
+                                service.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
                                 style: theme.textTheme.headlineSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.bold, color: textColor),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,

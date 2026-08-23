@@ -1,4 +1,6 @@
 {
+  "complaint_sent_success": "تم إرسال شكوتك بنجاح",
+  "complaint_review_message": "سيتم مراجعة شكوتك من قبل الإدارة",
   "please_select_complaint_type": "يرجى اختيار نوع الشكوى",
   "submit_complaint": "تقديم شكوى",
   "error": "خطأ",
@@ -8,6 +10,7 @@
   "complaint_description_hint": "اكتب وصف الشكوى بالتفصيل هنا...",
   "please_enter_complaint_description": "يرجى إدخال وصف الشكوى",
   "send_complaint": "إرسال الشكوى",
+  "send_documents": "إرسال المستندات",
   "technical_problem": "مشكلة تقنية",
   "service_delay": "تأخير بالخدمة",
   "harassment": "إزعاج",

@@ -14,6 +14,7 @@ import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_event.dart';
 import '../../injection_container.dart';
 import '../constants/app_routes.dart';
+import '../localization/app_localizations.dart';
 import 'notification_service.dart';
 
 class FCMService {
@@ -257,13 +258,21 @@ class FCMService {
       return;
     }
 
+    final rawStatus = data['status']?.toString() ?? data['complaint_status']?.toString();
+    String statusText = context.tr('pending');
+    if (rawStatus == 'resolved') {
+      statusText = context.tr('resolved');
+    } else if (rawStatus == 'rejected') {
+      statusText = context.tr('rejected');
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ComplaintDetailsPage(
           complaintId: complaintId.toString(),
-          status: data['status']?.toString() ?? data['complaint_status']?.toString() ?? 'قيد المراجعة',
-          complaintType: data['complaint_type']?.toString() ?? data['reason']?.toString() ?? 'شكوى',
+          status: statusText,
+          complaintType: data['complaint_type']?.toString() ?? data['reason']?.toString() ?? context.tr('complaint'),
           complaintDescription: data['description']?.toString() ??
               data['complaint_description']?.toString() ??
               data['body']?.toString() ??
