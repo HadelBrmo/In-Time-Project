@@ -91,7 +91,7 @@ class _LeaderboardViewState extends State<_LeaderboardView> {
                     onTap: () => setSheetState(() => tempServingTypeId = 1),
                   ),
                   _FilterRadioTile(
-                    label: context.tr('paid_department'),
+                    label: context.tr('barter_department'),
                     selected: tempServingTypeId == 3,
                     onTap: () => setSheetState(() => tempServingTypeId = 3),
                   ),
