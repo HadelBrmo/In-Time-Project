@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../domain/entities/identity_status_entity.dart';
 import '../../domain/entities/login_auth_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
@@ -148,17 +149,28 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> verifyIdentity({
-    required String documentType,
-    required File documentImage,
-  }) async {
+  Future<Either<Failure, String>> verifyIdentity() async {
     try {
-      await remoteDataSource.verifyIdentity(
-        documentType: documentType,
-        documentImage: documentImage,
-      );
-      await sharedPreferences.setBool("is_identity_verified", true);
-      return const Right(unit);
+      final url = await remoteDataSource.verifyIdentity();
+      return Right(url);
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(
+        statusCode: e.statusCode,
+        message: e.message,
+      ));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, IdentityStatusEntity>> getIdentityStatus() async {
+    try {
+      final status = await remoteDataSource.getIdentityStatus();
+      if (status.isIdentityVerified) {
+        await sharedPreferences.setBool("is_identity_verified", true);
+      }
+      return Right(status);
     } on ServerExceptionWithDetails catch (e) {
       return Left(ServerFailureWithDetails(
         statusCode: e.statusCode,

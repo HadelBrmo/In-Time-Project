@@ -18,6 +18,6 @@ class ThemeLocalDataSourceImpl implements ThemeLocalDataSource {
 
   @override
   bool isDarkMode() {
-    return box.get(_themeKey, defaultValue: true);
+    return box.get(_themeKey, defaultValue: false);
   }
 }

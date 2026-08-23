@@ -8,13 +8,7 @@ class VerifyIdentityUseCase {
 
   VerifyIdentityUseCase(this.repository);
 
-  Future<Either<Failure, Unit>> call({
-    required String documentType,
-    required File documentImage,
-  }) async {
-    return await repository.verifyIdentity(
-      documentType: documentType,
-      documentImage: documentImage,
-    );
+  Future<Either<Failure, String>> call() async {
+    return await repository.verifyIdentity();
   }
 }

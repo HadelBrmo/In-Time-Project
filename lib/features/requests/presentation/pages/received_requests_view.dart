@@ -69,6 +69,7 @@ class _ReceivedRequestsViewState extends State<ReceivedRequestsView> {
           listener: (context, state) {
             if (state is RequestActionSuccessState) {
               SnackBarUtils.showSuccess(context, state.message);
+              // Refresh received requests when requester confirms completion
               context.read<ReceivedRequestsBloc>().add(FetchReceivedRequestsEvent());
             } else if (state is RequestActionErrorState) {
               SnackBarUtils.showError(context, state.message);

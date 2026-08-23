@@ -1,3 +1,4 @@
+import '../../../../core/constants/enums.dart';
 import '../../domain/entity/received_request_entity.dart';
 
 class ReceivedRequestGroupModel extends ReceivedRequestGroupEntity {
@@ -34,7 +35,7 @@ class ReceivedRequestItemModel extends ReceivedRequestItemEntity {
       requesterId: json['requester_id'] is int ? json['requester_id'] : int.tryParse(json['requester_id']?.toString() ?? '') ?? 0,
       requesterFullName: json['requester_full_name']?.toString() ?? json['requester_name']?.toString() ?? 'مستخدم غير معروف',
       message: json['message']?.toString() ?? '',
-      status: json['status']?.toString() ?? 'pending',
+      status: RequestStatus.fromString(json['status']?.toString()),
       createdAt: json['created_at']?.toString() ?? '',
     );
   }

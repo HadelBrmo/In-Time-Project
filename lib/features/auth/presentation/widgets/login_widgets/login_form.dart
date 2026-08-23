@@ -24,8 +24,6 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool isRememberMe = false;
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -84,10 +82,6 @@ class _LoginFormState extends State<LoginForm> {
                 validator: (value) => value == null || value.length < 6 ? context.tr('weak_password') : null,
               ),
 
-              SizedBox(height: media.height * 0.02),
-
-              _buildRememberMeRow(context, isDarkMode),
-
               SizedBox(height: media.height * 0.04),
 
               Center(
@@ -114,49 +108,6 @@ class _LoginFormState extends State<LoginForm> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildRememberMeRow(BuildContext context, bool isDarkMode) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextButton(
-          onPressed: () {},
-          child: Text(
-            context.tr('forgot_password'),
-            style: theme.textTheme.titleMedium?.copyWith(color: AppColors.primaryColor),
-          ),
-        ),
-        Row(
-          children: [
-            Checkbox(
-              value: isRememberMe,
-              onChanged: (val) => setState(() => isRememberMe = val!),
-              activeColor: AppColors.primaryColor,
-              fillColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return AppColors.primaryColor;
-                }
-                return isDarkMode ? const Color(0xFF2E2E2E) : AppColors.whiteColor;
-              }),
-              side: BorderSide(
-                color: isDarkMode ? Colors.white54 : AppColors.greyColor.withOpacity(0.5),
-                width: 1.5,
-              ),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            ),
-            Text(
-              context.tr('remember_me'),
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: AppColors.primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

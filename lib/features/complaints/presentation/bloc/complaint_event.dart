@@ -20,3 +20,13 @@ class SubmitComplaintEvent extends ComplaintEvent {
 class FetchMyComplaintsEvent extends ComplaintEvent {}
 
 class FetchComplaintsAgainstMeEvent extends ComplaintEvent {}
+
+class UploadComplaintDocumentsEvent extends ComplaintEvent {
+  final int complaintId;
+  final List<String> filePaths;
+
+  const UploadComplaintDocumentsEvent(this.complaintId, this.filePaths);
+
+  @override
+  List<Object?> get props => [complaintId, filePaths];
+}

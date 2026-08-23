@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/error/exceptions.dart';
+import '../models/identity_status_model.dart';
 import '../models/login_auth_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -22,10 +23,8 @@ abstract class AuthRemoteDataSource {
     required String birthDate,
     File? profilePicture,
   });
-  Future<Unit> verifyIdentity({
-    required String documentType,
-    required File documentImage,
-  });
+  Future<String> verifyIdentity();
+  Future<IdentityStatusModel> getIdentityStatus();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -189,26 +188,17 @@ if(response.statusCode == 200 || response.statusCode == 201) {
 }
 
 @override
-Future<Unit> verifyIdentity({
-  required String documentType,
-  required File documentImage,
-}) async {
+Future<String> verifyIdentity() async {
   try {
-    final formData = FormData.fromMap({
-      "document_type": documentType,
-      "document_image": await MultipartFile.fromFile(
-        documentImage.path,
-        filename: documentImage.path.split('/').last,
-      ),
-    });
-
     final response = await dio.post(
       ApiStringConstants.verifyIdentityUrl,
-      data: formData,
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return unit;
+      if (response.data['success'] == true && response.data['verification_url'] != null) {
+        return response.data['verification_url'];
+      }
+      throw ServerExceptionWithDetails(message: response.data['message'] ?? 'فشل إنشاء جلسة التحقق');
     } else {
       throw ServerExceptionWithDetails.fromResponse(
         response,
@@ -223,6 +213,36 @@ Future<Unit> verifyIdentity({
   } catch (e) {
     throw ServerExceptionWithDetails(
       message: 'حدث خطأ غير متوقع أثناء إرسال طلب التحقق',
+    );
+  }
+}
+
+@override
+Future<IdentityStatusModel> getIdentityStatus() async {
+  try {
+    final response = await dio.get(
+      ApiStringConstants.identityStatusUrl,
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['success'] == true && response.data['data'] != null) {
+        return IdentityStatusModel.fromJson(response.data['data']);
+      }
+      throw ServerExceptionWithDetails(message: response.data['message'] ?? 'فشل جلب حالة التحقق');
+    } else {
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: response.data['message'] ?? 'فشل جلب حالة التحقق',
+      );
+    }
+  } on DioException catch (e) {
+    throw ServerExceptionWithDetails.fromDioException(
+      e,
+      fallback: 'تأكد من الاتصال بالشبكة وأعد المحاولة',
+    );
+  } catch (e) {
+    throw ServerExceptionWithDetails(
+      message: 'حدث خطأ غير متوقع أثناء جلب حالة التحقق',
     );
   }
 }

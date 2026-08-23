@@ -61,6 +61,7 @@ import 'features/requests/presentation/bloc/received_requests/received_requests_
 import 'features/requests/presentation/bloc/request_bloc.dart';
 import 'core/network/decorators/logging_interceptor.dart';
 // Auth Features 🚀
+import 'features/auth/domain/usecases/get_identity_status_usecase.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/verify_identity_usecase.dart';
@@ -301,7 +302,7 @@ Future<void> init() async {
     uploadPortfolioFileUseCase: sl(),
     uploadPortfolioLinkUseCase: sl(),
   ));
-  sl.registerFactory(() => IdentityVerificationCubit(sl()));
+  sl.registerFactory(() => IdentityVerificationCubit(sl(), sl()));
 
   sl.registerLazySingleton(() => NotificationsBloc(
     getMyNotificationsUseCase: sl(),
@@ -345,6 +346,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerifyIdentityUseCase(sl()));
+  sl.registerLazySingleton(() => GetIdentityStatusUseCase(sl()));
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
   sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));

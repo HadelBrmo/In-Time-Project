@@ -48,6 +48,7 @@
   static const String updateProfileUrl = 'profile';
   static const String topPerformersUrl = 'servings/top-performers';
   static const String verifyIdentityUrl = 'identity/verify';
+  static const String identityStatusUrl = 'identity/status';
   static const String myRewardsUrl = 'my-rewards';
 
   static const String wsHost = 'ali.ba-tech.tech';

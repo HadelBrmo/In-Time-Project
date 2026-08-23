@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
+import '../entities/identity_status_entity.dart';
 import '../entities/login_auth_entity.dart';
 
 abstract class AuthRepository {
@@ -20,8 +21,6 @@ abstract class AuthRepository {
     required String birthDate,
     File? profilePicture,
   });
-  Future<Either<Failure, Unit>> verifyIdentity({
-    required String documentType,
-    required File documentImage,
-  });
+  Future<Either<Failure, String>> verifyIdentity();
+  Future<Either<Failure, IdentityStatusEntity>> getIdentityStatus();
 }
