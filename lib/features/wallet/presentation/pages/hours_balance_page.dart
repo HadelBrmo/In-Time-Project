@@ -1,0 +1,160 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/localization/app_localizations.dart';
+import '../../../rewards/presentation/bloc/rewards_bloc.dart';
+import '../../../rewards/presentation/bloc/rewards_event.dart';
+import '../../../rewards/presentation/widgets/rewards_section.dart';
+import '../../../../core/utils/auth_utils.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/loading_widget.dart';
+import '../../../../core/widgets/responsive_layout.dart';
+import '../../domain/entity/wallet_entity.dart';
+import '../bloc/wallet_bloc.dart';
+import '../bloc/wallet_state.dart';
+import '../widgets/balance_card.dart';
+
+class HoursBalancePage extends StatelessWidget {
+  const HoursBalancePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQueryHelper(context);
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (AuthUtils.isLoggedIn()) {
+        context.read<RewardsBloc>().add(GetMyRewardsEvent());
+      }
+    });
+
+    if (!AuthUtils.isLoggedIn()) {
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: Text(
+            context.tr('hours_balance'),
+            style: theme.textTheme.titleSmall,
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.lock_outline, size: 64, color: AppColors.greyColor),
+              const SizedBox(height: 16),
+              Text(
+                context.tr('login_required_balance'),
+                style: theme.textTheme.titleMedium,
+              ),
+              const SizedBox(height: 16),
+              CustomButton(
+                text: context.tr('login'),
+                color: AppColors.primaryColor,
+                onPressed: () => AuthUtils.showLoginPrompt(context),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final textColor = isDarkMode ? AppColors.whiteColor : AppColors.blackColor;
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
+          title: Text(
+            context.tr('hours_balance'),
+            style: theme.textTheme.titleSmall,
+          ),
+        ).animate().fade(duration: 500.ms),
+      ),
+      body: BlocBuilder<WalletBloc, WalletState>(
+        builder: (context, state) {
+          if (state is WalletLoading) {
+            return const LoadingWidget();
+          } else if (state is WalletError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: theme.textTheme.titleMedium?.copyWith(color: textColor, fontSize: 16),
+              ),
+            );
+          } else if (state is WalletLoaded) {
+            final hourWallets = state.wallets.where(
+              (wallet) => wallet.unitName.toLowerCase() == 'hour' || wallet.title.contains('Wallet'),
+            ).toList();
+
+            final WalletEntity hourWallet = hourWallets.isNotEmpty
+                ? hourWallets.first
+                : state.wallets.first;
+
+            return ResponsiveLayout(
+              mobileBody: _buildBalanceContent(context, media, hourWallet),
+              tabletBody: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: _buildBalanceContent(context, media, hourWallet),
+                ),
+              ),
+              desktopBody: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: _buildBalanceContent(context, media, hourWallet),
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Widget _buildBalanceContent(BuildContext context, MediaQueryHelper media, WalletEntity hourWallet) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(
+        horizontal: media.width * 0.05,
+        vertical: media.height * 0.02,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BalanceCard(
+            currentHours: hourWallet.balance.toInt(),
+          ).animate().slideY(begin: 0.1, end: 0, duration: 400.ms).fade(duration: 400.ms),
+          SizedBox(height: media.height * 0.04),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                const Icon(Icons.stars_rounded, color: AppColors.yellowColor),
+                const SizedBox(width: 8),
+                Text(
+                  context.tr('achievements_rewards'),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness == Brightness.dark 
+                        ? Colors.white 
+                        : Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: media.height * 0.02),
+          const RewardsSection().animate().slideY(begin: 0.2, end: 0, duration: 600.ms).fade(duration: 600.ms),
+          SizedBox(height: media.height * 0.05),
+        ],
+      ),
+    );
+  }
+}

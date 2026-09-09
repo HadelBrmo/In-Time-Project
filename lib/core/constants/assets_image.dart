@@ -22,4 +22,8 @@ class AssetsImage {
   // Complaints
   static const String submitComplaint = 'assets/images/complaints/submit_complaint.png';
 
+  //service
+  static const  constantImageForService = 'assets/images/service/constant_image_for_service.png';
+
+
 }

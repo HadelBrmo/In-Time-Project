@@ -7,13 +7,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:in_time/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:in_time/features/chat/data/repository/chat_repository_impl.dart';
+import 'package:in_time/features/chat/domain/usecases/get_chats_use_case.dart';
+import 'package:in_time/injection_container.dart' as di;
 import 'package:in_time/main.dart';
 
-void main() {
+void main() async{
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+
+    await di.init();
+    await tester.pumpWidget(MyApp(initialRoute: '/',
+
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
