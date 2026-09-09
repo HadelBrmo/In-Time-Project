@@ -11,6 +11,7 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_drawer.dart';
 import '../../../../core/widgets/custom_error_view.dart';
+import '../../../../core/widgets/custom_image_view.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/global_particles_wrapper.dart';
 import '../../../../core/widgets/responsive_layout.dart';
@@ -23,7 +24,6 @@ import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 import '../widgets/home_widget/build_service_card.dart';
 import '../widgets/home_widget/show_filter_bottom_sheet.dart';
-import '../widgets/home_widget/show_pagination_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int? _selectedServingTypeId;
   String? _selectedTypeName;
   int _currentSkip = 0;
-  int _currentTake = 5;
+  int _currentTake = 6;
   bool _isNearbyMode = false;
   LatLng? _lastNearbyLocation;
   bool _isLoadingMore = false;
@@ -60,7 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (isRefresh) {
       _currentSkip = 0;
       setState(() => _isLoadingMore = false);
-      context.read<HomeBloc>().add(const FetchProposedServingsEvent(skip: 0, take: 10));
+      
+      // Only fetch proposed services if we are refreshing the main feed (no active search query)
+      // or if it's the initial load.
+      if (_searchController.text.trim().isEmpty && !_isNearbyMode) {
+        context.read<HomeBloc>().add(const FetchProposedServingsEvent(skip: 0, take: 10));
+      }
     } else {
       setState(() => _isLoadingMore = true);
     }
@@ -131,21 +136,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _openPaginationDialog(BuildContext context, bool isDarkMode) {
-    DialogUtils.showCustomDialog(
-      context: context,
-      builder: PaginationDialog(
-        isDarkMode: isDarkMode,
-        currentTake: _currentTake,
-        onConfirm: (newTake) {
-          setState(() {
-            _currentSkip = _currentSkip + _currentTake;
-            _currentTake = newTake;
-          });
-          _triggerFetch(isRefresh: false);
-        },
-      ),
-    );
+  void _loadMore() {
+    setState(() {
+      _currentSkip = _currentSkip + _currentTake;
+    });
+    _triggerFetch(isRefresh: false);
   }
 
   @override
@@ -496,7 +491,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                mainAxisExtent: 165.h,
+                mainAxisExtent: 140.h,
               ),
               itemCount: servings.length + (hasReachedMax ? 0 : 1),
               itemBuilder: (context, index) {
@@ -527,37 +522,150 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            context.tr('proposed_services'),
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
-            ),
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Row(
+            children: [
+              Icon(Icons.auto_awesome_rounded, color: AppColors.yellowColor, size: 20.sp),
+              SizedBox(width: 8.w),
+              Text(
+                context.tr('proposed_services'),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15.sp,
+                  color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                ),
+              ),
+            ],
           ),
         ),
         SizedBox(
-          height: 165.h,
+          height: 210.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: proposedServings.length,
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.none,
             itemBuilder: (context, index) {
               final serving = proposedServings[index];
               return Container(
-                width: width * 0.85,
-                margin: const EdgeInsets.only(right: 12),
-                child: buildServiceCard(context, serving, width * 0.85, height, padding: EdgeInsets.zero),
-              );
+                width: width * 0.45,
+                margin: EdgeInsets.only(left: (context.isArabic ? 0 : 12.w), right: (context.isArabic ? 12.w : 0)),
+                decoration: BoxDecoration(
+                  color: isDarkMode ? const Color(0xFF1E1E1E) : AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(
+                    color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.15),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.serviceDetailsPage, arguments: serving.id),
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 100.h,
+                              width: double.infinity,
+                              color: AppColors.primaryColor.withOpacity(0.05),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: CustomImageView(
+                                  imageUrl: serving.imageUrl,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 8.h,
+                              right: 8.w,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(6.r),
+                                ),
+                                child: Text(
+                                  serving.servingTypeName ?? '',
+                                  style: TextStyle(color: Colors.white, fontSize: 10.sp, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.all(10.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              serving.title,
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontSize: 13.5.sp,
+                                fontWeight: FontWeight.bold,
+                                color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 4.h),
+                            Row(
+                              children: [
+                                Icon(Icons.timer_outlined, color: AppColors.primaryColor, size: 12.sp),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  "${serving.costAmount} ${serving.unitName ?? ''}",
+                                  style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 6.h),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on_outlined, color: AppColors.greyColor, size: 12.sp),
+                                SizedBox(width: 2.w),
+                                Expanded(
+                                  child: Text(
+                                    serving.locationAddress ?? '',
+                                    style: TextStyle(color: AppColors.greyColor, fontSize: 11.sp),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ).animate().fade(duration: 400.ms).scale(begin: const Offset(0.9, 0.9));
             },
           ),
         ),
-        const SizedBox(height: 14),
-        Divider(color: AppColors.greyColor.withOpacity(0.2)),
+        const SizedBox(height: 16),
+        Divider(color: AppColors.greyColor.withOpacity(0.1), thickness: 1, indent: 20, endIndent: 20),
         const SizedBox(height: 8),
       ],
     );
   }
-
   Widget _buildFooter(ThemeData theme, bool isDarkMode) {
     if (_isLoadingMore) {
       return const Padding(
@@ -578,7 +686,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextButton(
-            onPressed: () => _openPaginationDialog(context, isDarkMode),
+            onPressed: _loadMore,
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
             ),

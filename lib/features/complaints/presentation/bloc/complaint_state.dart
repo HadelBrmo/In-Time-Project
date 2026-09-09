@@ -18,6 +18,15 @@ class ComplaintSuccess extends ComplaintState {
   List<Object?> get props => [response];
 }
 
+class ComplaintUploading extends ComplaintState {}
+
+class ComplaintUploadSuccess extends ComplaintState {
+  final int complaintId;
+  const ComplaintUploadSuccess(this.complaintId);
+  @override
+  List<Object?> get props => [complaintId];
+}
+
 class ComplaintError extends ComplaintState {
   final String message;
   const ComplaintError(this.message);

@@ -13,6 +13,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetProposedServingsUseCase getProposedServingsUseCase;
   final UpdateAvailabilityUseCase updateAvailabilityUseCase;
 
+  List<ServiceEntity> _cachedProposedServings = [];
+
   HomeBloc({
     required this.searchServingsUseCase,
     required this.getNearbyServingsUseCase,
@@ -22,7 +24,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<FetchHomeServingsEvent>((event, emit) async {
       List<ServiceEntity> oldServings = [];
-      if (!event.isRefresh && state is HomeSuccessState) {
+      
+      if (state is HomeSuccessState && !event.isRefresh) {
         oldServings = (state as HomeSuccessState).servings;
       }
 
@@ -46,8 +49,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         
         emit(HomeSuccessState(
           servings: fullList,
-          proposedServings: state is HomeSuccessState ? (state as HomeSuccessState).proposedServings : [],
-          hasReachedMax: activeNewServings.isEmpty,
+          proposedServings: _cachedProposedServings,
+          hasReachedMax: event.take != null ? activeNewServings.length < event.take! : activeNewServings.isEmpty,
           timestamp: DateTime.now(),
         ));
       } catch (e) {
@@ -57,7 +60,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<FetchNearbyServingsEvent>((event, emit) async {
       List<ServiceEntity> oldServings = [];
-      if (!event.isRefresh && state is HomeSuccessState) {
+
+      if (state is HomeSuccessState && !event.isRefresh) {
         oldServings = (state as HomeSuccessState).servings;
       }
 
@@ -80,8 +84,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           
           emit(HomeSuccessState(
             servings: fullList,
-            proposedServings: state is HomeSuccessState ? (state as HomeSuccessState).proposedServings : [],
-            hasReachedMax: activeNewServings.isEmpty,
+            proposedServings: _cachedProposedServings,
+            hasReachedMax: activeNewServings.length < event.take,
             timestamp: DateTime.now(),
           ));
         },
@@ -89,32 +93,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<FetchProposedServingsEvent>((event, emit) async {
-      final currentState = state;
-      List<ServiceEntity> currentServings = [];
-      if (currentState is HomeSuccessState) {
-        currentServings = currentState.servings;
-      }
-
       final failureOrData = await getProposedServingsUseCase(
         skip: event.skip,
         take: event.take,
       );
 
       failureOrData.fold(
-            (failure) => null, // Silently fail for proposed services or handle as needed
+            (failure) => null, 
             (proposedServings) {
           final activeProposed = proposedServings.where((s) => s.status == 'active' || s.status == null).toList();
+          _cachedProposedServings = activeProposed;
+          
           if (state is HomeSuccessState) {
             emit((state as HomeSuccessState).copyWith(proposedServings: activeProposed));
-          } else {
-            emit(HomeSuccessState(
-              servings: currentServings,
-              proposedServings: activeProposed,
-            ));
           }
         },
       );
     });
+
 
     on<RequestServiceEvent>((event, emit) {
       if (state is HomeSuccessState) {
@@ -131,6 +127,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           return serving;
         }).toList();
+        _cachedProposedServings = updatedProposed;
         emit(currentState.copyWith(
           servings: updatedServings,
           proposedServings: updatedProposed,
@@ -153,6 +150,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           return serving;
         }).toList();
+        _cachedProposedServings = updatedProposed;
         emit(currentState.copyWith(
           servings: updatedServings,
           proposedServings: updatedProposed,

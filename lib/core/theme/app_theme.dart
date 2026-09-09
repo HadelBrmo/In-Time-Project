@@ -64,6 +64,7 @@ class AppTheme {
       background: AppColors.blackColor,
       primary: AppColors.primaryColor,
     ),
+    primaryColor: AppColors.primaryColor,
     textTheme: TextTheme(
       bodySmall: TextStyle(
         fontFamily: 'ArchivoBlack',

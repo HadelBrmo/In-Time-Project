@@ -1,69 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:in_time/core/constants/app_routes.dart';
 import '../../../../../core/constants/media_query.dart';
-import '../../../../core/widgets/custom_button.dart';
+import '../../../../../core/localization/app_localizations.dart';
 
 class BalanceCard extends StatelessWidget {
   final int currentHours;
-  final int targetHours;
 
   const BalanceCard({
     super.key,
     required this.currentHours,
-    required this.targetHours,
   });
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQueryHelper(context);
-    double progress = targetHours > 0 ? (currentHours / targetHours).clamp(0.0, 1.0) : 0.0;
 
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(media.width * 0.06),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryColor,
+            AppColors.primaryColor.withOpacity(0.8),
+            const Color(0xFF26A69A),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryColor.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          // Decorative background pattern
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Icon(
+              Icons.account_balance_wallet_rounded,
+              size: media.width * 0.4,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+          Column(
             children: [
-              Icon(
-                Icons.access_time_rounded,
-                size: media.width * 0.18,
-                color: AppColors.whiteColor,
-              ),
-              SizedBox(width: media.width * 0.05),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "رصيد ساعاتك",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
+                  Text(
+                    context.tr('hours_wallet'),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      context.tr('active'),
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: media.height * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.access_time_filled_rounded,
+                    size: 32,
+                    color: AppColors.yellowColor,
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        "$currentHours",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 55,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        textBaseline: TextBaseline.alphabetic,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        children: [
+                          Text(
+                            "$currentHours",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 60,
+                              fontWeight: FontWeight.bold,
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            _getHourLabel(context, currentHours),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
                       Text(
-                        currentHours == 1 ? "ساعة" : (currentHours == 2 ? "ساعتان" : "ساعات"),
+                        context.tr('total_available_balance'),
                         style: const TextStyle(
-                          color: AppColors.whiteColor,
+                          color: Colors.white70,
                           fontSize: 14,
                         ),
                       ),
@@ -71,53 +123,63 @@ class BalanceCard extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: media.height * 0.03),
+              const Divider(color: Colors.white24),
+              SizedBox(height: media.height * 0.03),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.myRequestsPage);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: AppColors.primaryColor,
+                  elevation: 0,
+                  padding: EdgeInsets.symmetric(horizontal: media.width * 0.12, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Text(
+                  context.tr('view_transaction_history'),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
-          ),
-          SizedBox(height: media.height * 0.02),
-
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 10,
-              backgroundColor: Colors.white.withOpacity(0.4),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFFB74D)),
-            ),
-          ),
-          SizedBox(height: media.height * 0.015),
-
-          Text(
-            "الهدف الشهري  $targetHours / $currentHours ساعة",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: media.height * 0.02),
-          ElevatedButton(
-            onPressed: () {
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.2),
-              elevation: 0,
-              padding: EdgeInsets.symmetric(horizontal: media.width * 0.08, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-                side: const BorderSide(color: Colors.white, width: 1),
-              ),
-            ),
-            child: const Text(
-              "عرض الأنشطة",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildStatItem(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white60,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getHourLabel(BuildContext context, int hours) {
+    if (hours == 1) return context.tr('hour');
+    if (hours == 2) return context.tr('hours_2');
+    if (hours >= 3 && hours <= 10) return context.tr('hours_plural');
+    return context.tr('hour');
   }
 }

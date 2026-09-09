@@ -38,14 +38,16 @@ class ChatUserEntity extends Equatable {
   final String fullName;
   final String? profilePicture;
   final String? role;
+  final bool isVerified;
 
   const ChatUserEntity({
     required this.id,
     required this.fullName,
     this.profilePicture,
     this.role,
+    this.isVerified = false,
   });
 
   @override
-  List<Object?> get props => [id, fullName, profilePicture, role];
+  List<Object?> get props => [id, fullName, profilePicture, role, isVerified];
 }

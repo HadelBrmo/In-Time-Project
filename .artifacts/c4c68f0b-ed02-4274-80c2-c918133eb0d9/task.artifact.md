@@ -1,0 +1,8 @@
+- [ ] Update Data Source to return Record `(List<RewardModel>, int)`
+- [ ] Update Repository and UseCase signatures
+- [ ] Update Rewards Bloc and State
+- [ ] Add new strings to `ar.json`
+- [ ] Create `MyRewardsPage` with unique design
+- [ ] Update `RewardsSection` to include navigation and total summary
+- [ ] Redesign `RewardCard` with glassmorphism and gradients
+- [ ] Register new route in `AppRoutes`

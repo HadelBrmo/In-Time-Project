@@ -1,0 +1,2 @@
+- `[x]` Update `_buildProposedServicesSection` in `home_screen.dart` with animations and adjusted width.
+- `[x]` Verify design consistency in the Home Screen.

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../core/constants/enums.dart';
 
 class ReceivedRequestGroupEntity extends Equatable {
   final int servingId;
@@ -20,7 +21,7 @@ class ReceivedRequestItemEntity extends Equatable {
   final int requesterId;
   final String requesterFullName;
   final String message;
-  final String status;
+  final RequestStatus status;
   final String createdAt;
 
   const ReceivedRequestItemEntity({

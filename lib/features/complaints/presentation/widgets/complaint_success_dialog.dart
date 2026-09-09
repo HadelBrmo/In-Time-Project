@@ -1,188 +1,89 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/localization/app_localizations.dart';
 
 class ComplaintSuccessDialog {
-
-  static void show(
-      BuildContext context) {
-
+  static void show(BuildContext context) {
     showGeneralDialog(
-
       context: context,
-
       barrierDismissible: true,
-
       barrierLabel: '',
-
-      pageBuilder:
-          (_, __, ___) {
-
+      pageBuilder: (_, __, ___) {
         return BackdropFilter(
-
-          filter: ImageFilter.blur(
-
-            sigmaX: 4,
-
-            sigmaY: 4,
-          ),
-
+          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
           child: Material(
-
             color: Colors.transparent,
-
             child: Center(
-
               child: Container(
-
-                margin:
-                    const EdgeInsets.symmetric(
-                  horizontal: 28,
-                ),
-
-                padding:
-                    const EdgeInsets.symmetric(
-
-                  horizontal: 30,
-
-                  vertical: 40,
-                ),
-
+                margin: const EdgeInsets.symmetric(horizontal: 28),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
                 decoration: BoxDecoration(
-
-                  color:AppColors.whiteColor,
-
-                  borderRadius:
-                      BorderRadius.circular(40),
-
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(40),
                   boxShadow: [
-
                     BoxShadow(
-
-                      color:
-                          AppColors.blackColor,
-
+                      color: AppColors.blackColor.withOpacity(0.2),
                       blurRadius: 20,
                     ),
                   ],
                 ),
-
                 child: Column(
-
-                  mainAxisSize:
-                      MainAxisSize.min,
-
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-
                     Container(
-
                       width: 130,
-
                       height: 130,
-
-                      decoration:
-                          const BoxDecoration(
-
-                        color:
-                            AppColors.yellowColor,
-
-                        shape:
-                            BoxShape.circle,
+                      decoration: const BoxDecoration(
+                        color: AppColors.yellowColor,
+                        shape: BoxShape.circle,
                       ),
-
                       child: const Icon(
-
                         Icons.check,
-
                         color: AppColors.whiteColor,
-
                         size: 90,
                       ),
                     ),
-
-                    const SizedBox(
-                        height: 28),
-
-                    const Text(
-
-                      'تم إرسال شكوتك بنجاح',
-
-                      textAlign:
-                          TextAlign.center,
-
-                      style: TextStyle(
+                    const SizedBox(height: 28),
+                    Text(
+                      context.tr('complaint_sent_success'),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
                         color: AppColors.blackColor,
-
                         fontSize: 20,
-
-                        fontWeight:
-                           FontWeight.w500,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-
-                    const SizedBox(
-                        height: 14),
-
-                    const Text(
-                      'سيتم مراجعة شكوتك من قبل الإدارة',
-                      style: TextStyle(
+                    const SizedBox(height: 14),
+                    Text(
+                      context.tr('complaint_review_message'),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
                         color: AppColors.blackColor,
-
-                        fontSize: 20,
-
-                        fontWeight:
-                            FontWeight.w500,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-
-                    const SizedBox(
-                        height: 35),
-
+                    const SizedBox(height: 35),
                     SizedBox(
-
                       width: 220,
-
-                      height: 65,
-
+                      height: 55,
                       child: ElevatedButton(
-
-                        style:
-                            ElevatedButton.styleFrom(
-
-                          backgroundColor:
-                              AppColors
-                                  .primaryColor,
-
-                          shape:
-                              RoundedRectangleBorder(
-
-                            borderRadius:
-                                BorderRadius
-                                    .circular(
-                                        18),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
                           ),
                         ),
-
                         onPressed: () {
-
-                          Navigator.pop(
-                              context);
+                          Navigator.pop(context);
                         },
-
-                        child: const Text(
-
-                          'تم',
-
-                          style: TextStyle(
-
-                            color:AppColors.whiteColor,
-
-                            fontSize: 25,
-
-                            fontWeight:
-                                FontWeight.bold,
+                        child: Text(
+                          context.tr('done'),
+                          style: const TextStyle(
+                            color: AppColors.whiteColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -195,4 +96,5 @@ class ComplaintSuccessDialog {
         );
       },
     );
-  }}
+  }
+}

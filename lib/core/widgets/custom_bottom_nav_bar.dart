@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/utils/auth_utils.dart';
@@ -9,8 +10,10 @@ import 'package:in_time/core/constants/app_routes.dart';
 import 'package:in_time/core/widgets/responsive_layout.dart';
 
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
+import '../../features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
+import '../../features/chat/presentation/bloc/chat_bloc/bloc_state.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
-import '../../features/rewards/presentation/pages/leaderboard_page.dart';
+import '../../features/leaderboard/presentation/pages/leaderboard_page.dart';
 import '../../features/wallet/presentation/pages/hours_balance_page.dart';
 import '../../injection_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,6 +107,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     required int index,
     required bool isDarkMode,
     required ThemeData theme,
+    int badgeCount = 0,
   }) {
     final bool isSelected = _currentIndex == index;
 
@@ -131,10 +135,40 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  icon,
-                  color: itemColor,
-                  size: 24.sp,
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      icon,
+                      color: itemColor,
+                      size: 24.sp,
+                    ),
+                    if (badgeCount > 0)
+                      Positioned(
+                        right: -6.w,
+                        top: -6.h,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 14.w,
+                            minHeight: 14.h,
+                          ),
+                          child: Text(
+                            '$badgeCount',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 SizedBox(height: 2.h),
                 Text(
@@ -206,7 +240,18 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               Expanded(
                 child: Row(
                   children: [
-                    _buildNavItem(theme: theme, icon: Icons.chat, label: context.tr('chat_nav'), index: 0, isDarkMode: isDarkMode),
+                    BlocBuilder<ChatBloc, ChatState>(
+                      builder: (context, state) {
+                        return _buildNavItem(
+                          theme: theme,
+                          icon: Icons.chat,
+                          label: context.tr('chat_nav'),
+                          index: 0,
+                          isDarkMode: isDarkMode,
+                          badgeCount: state.totalUnreadCount,
+                        );
+                      },
+                    ),
                     _buildNavItem(theme: theme, icon: Icons.emoji_events_outlined, label: context.tr('leaderboard_nav'), index: 1, isDarkMode: isDarkMode),
                   ],
                 ),
@@ -266,7 +311,41 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             ),
             destinations: [
               NavigationRailDestination(
-                icon: const Icon(Icons.chat),
+                icon: BlocBuilder<ChatBloc, ChatState>(
+                  builder: (context, state) {
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        const Icon(Icons.chat),
+                        if (state.totalUnreadCount > 0)
+                          Positioned(
+                            right: -5.w,
+                            top: -5.h,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 16.w,
+                                minHeight: 16.h,
+                              ),
+                              child: Text(
+                                '${state.totalUnreadCount}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
                 label: Text(context.tr('chat_nav')),
               ),
               NavigationRailDestination(

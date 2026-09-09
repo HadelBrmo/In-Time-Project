@@ -11,13 +11,13 @@ import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.d
 import '../../features/servings/presentation/pages/my_servings/my_servings_view.dart';
 import '../../features/servings/presentation/pages/saved_services/saved_services_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../features/auth/presentation/pages/sign_up/sign_up_page_03.dart';
+import '../../features/verification/presentation/pages/verification_page.dart';
 import '../../injection_container.dart';
 import '../localization/app_localizations.dart';
 import '../utils/auth_utils.dart';
 import '../utils/dialog_utils.dart';
 import '../widgets/global_particles_wrapper.dart';
-import 'package:in_time/features/complaints/presentation/pages/complaint_status_list_page.dart'; 
+import 'package:in_time/features/complaints/presentation/pages/complaint_status_list_page.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -32,6 +32,7 @@ class CustomDrawer extends StatelessWidget {
     final String fullName = prefs.getString('full_name') ?? context.tr('guest');
     final String email = prefs.getString('email') ?? "guest@in-time.com";
     final String? profilePic = prefs.getString('profile_picture');
+    final bool isVerified = prefs.getBool('is_identity_verified') ?? false;
 
     final String? fullImageUrl = (profilePic != null && profilePic.isNotEmpty)
         ? (profilePic.startsWith('http')
@@ -68,12 +69,21 @@ class CustomDrawer extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10.h),
-                    Text(
-                      fullName,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: AppColors.whiteColor,
-                        fontSize: 20.sp,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          fullName,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            color: AppColors.whiteColor,
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                        if (isVerified) ...[
+                          SizedBox(width: 5.w),
+                          const Icon(Icons.verified, color: Colors.blueAccent, size: 20),
+                        ],
+                      ],
                     ),
                     Text(
                       email,
@@ -172,11 +182,10 @@ class CustomDrawer extends StatelessWidget {
                     text: context.tr('identity_verification'),
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.push(
+                      Navigator.pushNamed(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpPage3(),
-                        ),
+                        AppRoutes.verificationPage,
+                        arguments: {'isFromSignup': false},
                       );
                     },
                   ),

@@ -1,4 +1,3 @@
-// features/auth/data/datasources/auth_remote_data_source.dart
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -22,10 +21,6 @@ abstract class AuthRemoteDataSource {
     required String birthDate,
     File? profilePicture,
   });
-  Future<Unit> verifyIdentity({
-    required String documentType,
-    required File documentImage,
-  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -47,15 +42,15 @@ data: {
 if (response.statusCode == 200 || response.statusCode == 201) {
 return LoginAuthModel.fromJson(response.data);
 } else {
-throw ServerExceptionWithDetails(
-statusCode: response.statusCode,
-message: response.data['message'] ?? 'فشل تسجيل الدخول',
+throw ServerExceptionWithDetails.fromResponse(
+response,
+fallback: response.data['message'] ?? 'فشل تسجيل الدخول',
 );
 }
 } on DioException catch (e) {
-throw ServerExceptionWithDetails(
-statusCode: e.response?.statusCode,
-message: e.response?.data['message'] ?? 'تأكد من الاتصال بالشبكة وأعد المحاولة',
+throw ServerExceptionWithDetails.fromDioException(
+  e,
+  fallback: 'تأكد من الاتصال بالشبكة وأعد المحاولة',
 );
 } catch (e) {
 throw ServerExceptionWithDetails(
@@ -77,15 +72,15 @@ data: {
 if (response.statusCode == 200 || response.statusCode == 201) {
 return LoginAuthModel.fromJson(response.data);
 } else {
-throw ServerExceptionWithDetails(
-statusCode: response.statusCode,
-message: response.data['message'] ?? 'فشل تجديد التوكن',
+throw ServerExceptionWithDetails.fromResponse(
+response,
+fallback: response.data['message'] ?? 'فشل تجديد التوكن',
 );
 }
 } on DioException catch (e) {
-throw ServerExceptionWithDetails(
-statusCode: e.response?.statusCode,
-message: e.response?.data['message'] ?? 'فشل الاتصال لتجديد التوكن',
+throw ServerExceptionWithDetails.fromDioException(
+  e,
+  fallback: 'فشل الاتصال لتجديد التوكن',
 );
 } catch (e) {
 throw ServerExceptionWithDetails(
@@ -96,10 +91,30 @@ message: 'حدث خطأ غير متوقع أثناء تجديد التوكن',
 
 @override
 Future<Response> sendOtp({required String email}) async {
-return await dio.post(
-ApiStringConstants.sendOtpUrl,
-data: {"email": email},
-);
+  try {
+    final response = await dio.post(
+      ApiStringConstants.sendOtpUrl,
+      data: {"email": email},
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response;
+    }
+
+    throw ServerExceptionWithDetails.fromResponse(
+      response,
+      fallback: 'فشل إرسال رمز التحقق',
+    );
+  } on DioException catch (e) {
+    throw ServerExceptionWithDetails.fromDioException(
+      e,
+      fallback: 'تعذر إرسال رمز التحقق، حاول مرة أخرى',
+    );
+  } catch (e) {
+    throw ServerExceptionWithDetails(
+      message: 'حدث خطأ غير متوقع أثناء إرسال رمز التحقق',
+    );
+  }
 }
 
 @override
@@ -151,15 +166,15 @@ sendTimeout: const Duration(seconds: 60),
 if(response.statusCode == 200 || response.statusCode == 201) {
   return unit;
 } else {
-  throw ServerExceptionWithDetails(
-    statusCode: response.statusCode,
-    message: response.data['message'] ?? 'فشل عملية التسجيل',
+  throw ServerExceptionWithDetails.fromResponse(
+    response,
+    fallback: response.data['message'] ?? 'فشل عملية التسجيل',
   );
 }
 } on DioException catch (e) {
-  throw ServerExceptionWithDetails(
-    statusCode: e.response?.statusCode,
-    message: e.response?.data['message'] ?? 'تأكد من الاتصال بالشبكة وأعد المحاولة',
+  throw ServerExceptionWithDetails.fromDioException(
+    e,
+    fallback: 'تأكد من الاتصال بالشبكة وأعد المحاولة',
   );
 } catch (e) {
   throw ServerExceptionWithDetails(
@@ -168,42 +183,5 @@ if(response.statusCode == 200 || response.statusCode == 201) {
 }
 }
 
-@override
-Future<Unit> verifyIdentity({
-  required String documentType,
-  required File documentImage,
-}) async {
-  try {
-    final formData = FormData.fromMap({
-      "document_type": documentType,
-      "document_image": await MultipartFile.fromFile(
-        documentImage.path,
-        filename: documentImage.path.split('/').last,
-      ),
-    });
 
-    final response = await dio.post(
-      ApiStringConstants.verifyIdentityUrl,
-      data: formData,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return unit;
-    } else {
-      throw ServerExceptionWithDetails(
-        statusCode: response.statusCode,
-        message: response.data['message'] ?? 'فشل إرسال طلب التحقق',
-      );
-    }
-  } on DioException catch (e) {
-    throw ServerExceptionWithDetails(
-      statusCode: e.response?.statusCode,
-      message: e.response?.data['message'] ?? 'تأكد من الاتصال بالشبكة وأعد المحاولة',
-    );
-  } catch (e) {
-    throw ServerExceptionWithDetails(
-      message: 'حدث خطأ غير متوقع أثناء إرسال طلب التحقق',
-    );
-  }
-}
 }

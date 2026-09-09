@@ -58,19 +58,29 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
     String? message,
     int? automaticallyCancelAfter,
   }) async {
-    final response = await dio.post(
-      ApiStringConstants.createRequestUrl,
-      data: {
-        'serving_id': servingId,
-        if (message != null) 'message': message,
-        if (automaticallyCancelAfter != null) 'automatically_cancel_after': automaticallyCancelAfter,
-      },
-    );
+    try {
+      final response = await dio.post(
+        ApiStringConstants.createRequestUrl,
+        data: {
+          'serving_id': servingId,
+          if (message != null) 'message': message,
+          if (automaticallyCancelAfter != null) 'automatically_cancel_after': automaticallyCancelAfter,
+        },
+      );
 
-    if (response.statusCode == 201) {
-      return response.data['message'] ?? "Request created successfully";
-    } else {
-      throw ServerException();
+      if (response.statusCode == 201) {
+        return response.data['message'] ?? "Request created successfully";
+      }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل إنشاء الطلب',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر إنشاء الطلب، حاول مرة أخرى',
+      );
     }
   }
 
@@ -119,17 +129,37 @@ class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
 
   @override
   Future<void> acceptRequest(int id) async {
-    final response = await dio.put(ApiStringConstants.acceptRequestUrl(id));
-    if (response.statusCode != 200) {
-      throw ServerException();
+    try {
+      final response = await dio.put(ApiStringConstants.acceptRequestUrl(id));
+      if (response.statusCode != 200) {
+        throw ServerExceptionWithDetails.fromResponse(
+          response,
+          fallback: 'فشل قبول الطلب',
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر قبول الطلب',
+      );
     }
   }
 
   @override
   Future<void> rejectRequest(int id) async {
-    final response = await dio.put(ApiStringConstants.rejectRequestUrl(id));
-    if (response.statusCode != 200) {
-      throw ServerException();
+    try {
+      final response = await dio.put(ApiStringConstants.rejectRequestUrl(id));
+      if (response.statusCode != 200) {
+        throw ServerExceptionWithDetails.fromResponse(
+          response,
+          fallback: 'فشل رفض الطلب',
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر رفض الطلب',
+      );
     }
   }
 

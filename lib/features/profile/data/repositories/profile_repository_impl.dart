@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/api_result.dart';
 import '../../domain/entities/portfolio_item_entity.dart';
@@ -26,6 +27,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
       final profile = await remoteDataSource.getUserProfile(userId);
       await localDataSource.saveProfile(profile);
       return Success(profile);
+    } on ServerExceptionWithDetails catch (e) {
+      return FailureResult(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return FailureResult(ServerFailure());
     }
@@ -37,6 +40,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
       final updatedProfile = await remoteDataSource.updateProfile(profileData);
       await localDataSource.saveProfile(updatedProfile);
       return Success(updatedProfile);
+    } on ServerExceptionWithDetails catch (e) {
+      return FailureResult(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return FailureResult(ServerFailure());
     }
@@ -47,6 +52,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
     try {
       final portfolio = await remoteDataSource.getPortfolio(userId);
       return Success(portfolio);
+    } on ServerExceptionWithDetails catch (e) {
+      return FailureResult(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return FailureResult(ServerFailure());
     }
@@ -65,6 +72,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
         title: title,
       );
       return const Success(null);
+    } on ServerExceptionWithDetails catch (e) {
+      return FailureResult(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return FailureResult(ServerFailure());
     }
@@ -83,6 +92,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
         title: title,
       );
       return const Success(null);
+    } on ServerExceptionWithDetails catch (e) {
+      return FailureResult(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return FailureResult(ServerFailure());
     }
@@ -101,6 +112,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
         title: title,
       );
       return const Success(null);
+    } on ServerExceptionWithDetails catch (e) {
+      return FailureResult(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return FailureResult(ServerFailure());
     }

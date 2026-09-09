@@ -46,7 +46,7 @@ class ServiceDetailsPage extends StatelessWidget {
             builder: (context, state) {
               if (state is ServiceDetailsLoaded) {
                 return Text(
-                  state.service.title,
+                  state.service.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
                   style: theme.textTheme.titleSmall?.copyWith(fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 );

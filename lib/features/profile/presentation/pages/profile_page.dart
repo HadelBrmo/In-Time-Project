@@ -188,12 +188,25 @@ class ProfileView extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      Text(
-                        profile.fullName,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontSize: 24,
-                          color: textColor,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            profile.fullName,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontSize: 24,
+                              color: textColor,
+                            ),
+                          ),
+                          if (profile.isVerified) ...[
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.verified,
+                              color: Colors.blue,
+                              size: 24,
+                            ),
+                          ],
+                        ],
                       ),
                       SizedBox(height: media.height * 0.03),
                       ProfileInfoRow(icon: Icons.work_outline, text: displayValue(profile.currentJob)),

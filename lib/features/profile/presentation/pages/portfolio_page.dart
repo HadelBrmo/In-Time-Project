@@ -6,6 +6,7 @@ import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_error_view.dart';
+import '../../../../core/widgets/custom_image_view.dart';
 import '../../domain/entities/portfolio_item_entity.dart';
 import '../bloc/portfolio/portfolio_bloc.dart';
 import '../bloc/portfolio/portfolio_event.dart';
@@ -138,14 +139,12 @@ class _PortfolioCard extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: firstFileUrl != null
-                  ? Image.network(
-                      firstFileUrl,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _iconPlaceholder(),
-                    )
-                  : _iconPlaceholder(),
+              child: CustomImageView(
+                imageUrl: firstFileUrl,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorWidget: _iconPlaceholder(),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

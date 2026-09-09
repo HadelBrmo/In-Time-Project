@@ -16,7 +16,11 @@ class CommentRepositoryImpl implements CommentRepository {
     try {
       final remoteComments = await remoteDataSource.getCommentsForServing(servingId);
       return Right(remoteComments);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -26,7 +30,11 @@ class CommentRepositoryImpl implements CommentRepository {
     try {
       await remoteDataSource.addCommentOnServing(servingId, content);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -36,7 +44,11 @@ class CommentRepositoryImpl implements CommentRepository {
     try {
       await remoteDataSource.replyToComment(commentId, content);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -46,7 +58,11 @@ class CommentRepositoryImpl implements CommentRepository {
     try {
       final remoteReplies = await remoteDataSource.getCommentsForServing(commentId); // أو التابع المخصص للردود
       return Right(remoteReplies);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -56,7 +72,11 @@ class CommentRepositoryImpl implements CommentRepository {
     try {
       await remoteDataSource.reactLike(commentId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
@@ -66,7 +86,11 @@ class CommentRepositoryImpl implements CommentRepository {
     try {
       await remoteDataSource.reactDislike(commentId);
       return const Right(unit);
-    } on ServerException {
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure());
     }
   }

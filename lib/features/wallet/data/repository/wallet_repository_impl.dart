@@ -15,8 +15,10 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final remoteWallets = await remoteDataSource.getMyWallets();
       return Right(remoteWallets);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     }
   }
 }

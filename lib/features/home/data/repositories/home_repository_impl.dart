@@ -42,6 +42,9 @@ class HomeRepositoryImpl implements HomeRepository {
       if (localServings.isNotEmpty) {
         return Right(localServings);
       }
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+      }
       return Left(ServerFailure());
     }
   }
@@ -67,6 +70,9 @@ class HomeRepositoryImpl implements HomeRepository {
       if (localData.isNotEmpty) {
         return Right(localData);
       }
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+      }
       return Left(ServerFailure());
     }
   }
@@ -83,6 +89,9 @@ class HomeRepositoryImpl implements HomeRepository {
       );
       return Right(remoteData);
     } catch (e) {
+      if (e is ServerExceptionWithDetails) {
+        return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
+      }
       return Left(ServerFailure());
     }
   }
@@ -95,8 +104,8 @@ class HomeRepositoryImpl implements HomeRepository {
     try {
       await remoteDataSource.updateServiceAvailability(serviceId: serviceId, data: data);
       return const Right(null);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerExceptionWithDetails catch (e) {
+      return Left(ServerFailureWithDetails(statusCode: e.statusCode, message: e.message));
     } catch (e) {
       return Left(ServerFailure());
     }

@@ -44,25 +44,35 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     int? skip,
     int? take,
   }) async {
-    final Map<String, dynamic> requestBody = {
-      if (servingTypeId != null) 'serving_type_id': servingTypeId,
-      if (paymentUnitId != null) 'payment_unit_id': paymentUnitId,
-      if (servingCategoryId != null) 'serving_category_id': servingCategoryId,
-      if (name != null && name.trim().isNotEmpty) 'name': name,
-      if (skip != null) 'skip': skip,
-      if (take != null) 'take': take,
-    };
+    try {
+      final Map<String, dynamic> requestBody = {
+        if (servingTypeId != null) 'serving_type_id': servingTypeId,
+        if (paymentUnitId != null) 'payment_unit_id': paymentUnitId,
+        if (servingCategoryId != null) 'serving_category_id': servingCategoryId,
+        if (name != null && name.trim().isNotEmpty) 'name': name,
+        if (skip != null) 'skip': skip,
+        if (take != null) 'take': take,
+      };
 
-    final response = await dio.post(
-      ApiStringConstants.searchServingsUrl,
-      data: requestBody,
-    );
+      final response = await dio.post(
+        ApiStringConstants.searchServingsUrl,
+        data: requestBody,
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = response.data['data'];
-      return responseData.map((json) => ServiceModel.fromJson(json)).toList();
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = response.data['data'];
+        return responseData.map((json) => ServiceModel.fromJson(json)).toList();
+      }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل البحث عن الخدمات',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر البحث عن الخدمات',
+      );
     }
   }
 
@@ -73,21 +83,31 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     required int skip,
     required int take,
   }) async {
-    final response = await dio.post(
-      'servings/nearby',
-      data: {
-        'lat': lat,
-        'lng': lng,
-        'skip': skip,
-        'take': take,
-      },
-    );
+    try {
+      final response = await dio.post(
+        'servings/nearby',
+        data: {
+          'lat': lat,
+          'lng': lng,
+          'skip': skip,
+          'take': take,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = response.data['data'];
-      return responseData.map((json) => ServiceModel.fromJson(json)).toList();
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = response.data['data'];
+        return responseData.map((json) => ServiceModel.fromJson(json)).toList();
+      }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل تحميل الخدمات القريبة',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر تحميل الخدمات القريبة',
+      );
     }
   }
 
@@ -96,19 +116,29 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     required int skip,
     required int take,
   }) async {
-    final response = await dio.get(
-      ApiStringConstants.proposedServingsUrl,
-      queryParameters: {
-        'skip': skip,
-        'take': take,
-      },
-    );
+    try {
+      final response = await dio.get(
+        ApiStringConstants.proposedServingsUrl,
+        queryParameters: {
+          'skip': skip,
+          'take': take,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = response.data['data'];
-      return responseData.map((json) => ServiceModel.fromJson(json)).toList();
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = response.data['data'];
+        return responseData.map((json) => ServiceModel.fromJson(json)).toList();
+      }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل تحميل الخدمات المقترحة',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر تحميل الخدمات المقترحة',
+      );
     }
   }
 
@@ -117,15 +147,25 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     required int serviceId,
     required Map<String, dynamic> data,
   }) async {
-    final response = await dio.put(
-      ApiStringConstants.updateAvailabilityUrl(serviceId),
-      data: data,
-    );
+    try {
+      final response = await dio.put(
+        ApiStringConstants.updateAvailabilityUrl(serviceId),
+        data: data,
+      );
 
-    if (response.statusCode == 200 && response.data['success'] == true) {
-      return;
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return;
+      }
+
+      throw ServerExceptionWithDetails.fromResponse(
+        response,
+        fallback: 'فشل تحديث توفر الخدمة',
+      );
+    } on DioException catch (e) {
+      throw ServerExceptionWithDetails.fromDioException(
+        e,
+        fallback: 'تعذر تحديث توفر الخدمة',
+      );
     }
   }
 }

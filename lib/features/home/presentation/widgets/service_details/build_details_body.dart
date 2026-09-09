@@ -10,6 +10,7 @@ import '../../../../../core/utils/snackbar_utils.dart';
 import '../../../../../core/utils/auth_utils.dart';
 import '../../../../../core/widgets/build_animated_item.dart';
 import '../../../../../core/widgets/loading_widget.dart';
+import '../../../../../core/widgets/custom_image_view.dart';
 import '../../../../../injection_container.dart';
 
 import '../../../../chat/presentation/bloc/chat_bloc/bloc_event.dart';
@@ -17,9 +18,11 @@ import '../../../../chat/presentation/bloc/chat_bloc/bloc_state.dart';
 import '../../../../chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import '../../../../servings/domain/entity/service_entity.dart';
 import '../../../../servings/presentation/bloc/comment/comment_bloc.dart';
+import 'package:in_time/features/servings/presentation/bloc/service/services_bloc.dart';
 import '../../../../servings/presentation/pages/comment/service_comments_page.dart';
 import '../home_widget/build_grid_info_row.dart';
 import 'service_availability_manager.dart';
+import 'package:in_time/features/servings/presentation/widgets/services/rating_dialog.dart';
 import '../../../../requests/presentation/bloc/request_bloc.dart';
 import '../../../../requests/presentation/bloc/request_state.dart';
 import '../../../../requests/presentation/widgets/build_disabled_button.dart';
@@ -119,9 +122,21 @@ Widget buildDetailsBody(
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              service.userFullName ?? context.tr('system_user'),
-                              style: theme.textTheme.titleMedium?.copyWith(fontSize: 17, fontWeight: FontWeight.bold, color: textColor),
+                            Row(
+                              children: [
+                                Text(
+                                  service.userFullName ?? context.tr('system_user'),
+                                  style: theme.textTheme.titleMedium?.copyWith(fontSize: 17, fontWeight: FontWeight.bold, color: textColor),
+                                ),
+                                if (service.isUserVerified == true) ...[
+                                  const SizedBox(width: 8),
+                                  const Icon(
+                                    Icons.verified,
+                                    color: Colors.blue,
+                                    size: 18,
+                                  ),
+                                ],
+                              ],
                             ),
                             if (service.userEmail != null && service.userEmail!.isNotEmpty)
                               Text(
@@ -132,7 +147,10 @@ Widget buildDetailsBody(
                         ),
                       ],
                     ),
-                    isOwner
+                    (isOwner ||
+                            service.servingTypeId == 1 ||
+                            service.servingTypeName?.toLowerCase() == 'paid' ||
+                            service.servingTypeName == 'مدفوعة')
                         ? const SizedBox.shrink()
                         : isAlreadyRequested
                         ? buildDisabledButton(media, isDarkMode, context.tr('requested'))
@@ -202,9 +220,10 @@ Widget buildDetailsBody(
                       borderRadius: BorderRadius.circular(20),
                       child: Hero(
                         tag: 'service-img-${service.id ?? 0}',
-                        child: service.imageUrl != null && service.imageUrl!.isNotEmpty
-                            ? Image.network(service.imageUrl!, fit: BoxFit.cover)
-                            : Image.asset(AssetsImage.constantImageForService, fit: BoxFit.cover),
+                        child: CustomImageView(
+                          imageUrl: service.imageUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -240,7 +259,7 @@ Widget buildDetailsBody(
                           children: [
                             Expanded(
                               child: Text(
-                                service.title,
+                                service.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
                                 style: theme.textTheme.headlineSmall?.copyWith(fontSize: 20, fontWeight: FontWeight.bold, color: textColor),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -374,8 +393,13 @@ Widget buildDetailsBody(
                               String dayName = "";
                               if (slot['day_of_week'] != null) {
                                 final Map<int, String> numberToDayMap = {
-                                  1: context.tr('monday'), 2: context.tr('tuesday'), 3: context.tr('wednesday'),
-                                  4: context.tr('thursday'), 5: context.tr('friday'), 6: context.tr('saturday'), 7: context.tr('sunday')
+                                  0: context.tr('sunday'),
+                                  1: context.tr('monday'),
+                                  2: context.tr('tuesday'),
+                                  3: context.tr('wednesday'),
+                                  4: context.tr('thursday'),
+                                  5: context.tr('friday'),
+                                  6: context.tr('saturday'),
                                 };
                                 dayName = numberToDayMap[slot['day_of_week']] ?? "";
                               } else if (slot['date'] != null) {

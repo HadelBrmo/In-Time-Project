@@ -69,58 +69,55 @@ class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProvid
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          title: isSearching
-              ? TextField(
-            controller: _searchController,
-            autofocus: true,
-            style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 16.sp),
-            decoration: InputDecoration(
-              hintText: context.tr('search_for_service'),
-              hintStyle: const TextStyle(color: Colors.white70),
-              border: InputBorder.none,
-            ),
-            onChanged: (value) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: CustomAppBar(
+        title: isSearching
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                style: theme.textTheme.titleMedium?.copyWith(color: AppColors.whiteColor, fontSize: 16.sp),
+                decoration: InputDecoration(
+                  hintText: context.tr('search_for_service'),
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
+              )
+            : Text(context.tr('activity_history')),
+        actions: [
+          IconButton(
+            icon: Icon(isSearching ? Icons.close : Icons.search, color: AppColors.whiteColor),
+            onPressed: () {
               setState(() {
-                searchQuery = value;
+                if (isSearching) {
+                  isSearching = false;
+                  searchQuery = "";
+                  _searchController.clear();
+                } else {
+                  isSearching = true;
+                }
               });
             },
           )
-              : Text(context.tr('activity_history')),
-          actions: [
-            IconButton(
-              icon: Icon(isSearching ? Icons.close : Icons.search, color: AppColors.whiteColor),
-              onPressed: () {
-                setState(() {
-                  if (isSearching) {
-                    isSearching = false;
-                    searchQuery = "";
-                    _searchController.clear();
-                  } else {
-                    isSearching = true;
-                  }
-                });
-              },
-            )
-          ],
-        ),
-        body: ResponsiveLayout(
-          mobileBody: _buildContent(media, theme, isDarkMode),
-          tabletBody: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: _buildContent(media, theme, isDarkMode),
-            ),
+        ],
+      ),
+      body: ResponsiveLayout(
+        mobileBody: _buildContent(media, theme, isDarkMode),
+        tabletBody: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: _buildContent(media, theme, isDarkMode),
           ),
-          desktopBody: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1000),
-              child: _buildContent(media, theme, isDarkMode),
-            ),
+        ),
+        desktopBody: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1000),
+            child: _buildContent(media, theme, isDarkMode),
           ),
         ),
       ),
@@ -196,7 +193,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProvid
                       const Icon(Icons.fact_check_outlined, size: 18),
                       SizedBox(width: 8.w),
                       Text(
-                        "Confirmations",
+                        context.tr('confirmations'),
                         style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Arial',
                           fontSize: 14.sp,
                         ),
@@ -275,7 +272,10 @@ class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProvid
                               Navigator.pushNamed(
                                 context,
                                 AppRoutes.serviceDetailsPage,
-                                arguments: request.serving,
+                                arguments: {
+                                  'serviceId': request.serving.id ?? 0,
+                                  'isFromRequests': true,
+                                },
                               );
                             },
                             onLongPress: () {
@@ -324,7 +324,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProvid
           Padding(
             padding: EdgeInsets.only(left: 8.w),
             child: ChoiceChip(
-              label: const Text('الكل'),
+              label: Text(context.tr('all')),
               selected: selectedStatus == null,
               selectedColor: AppColors.primaryColor,
               checkmarkColor: Colors.white,
@@ -352,7 +352,7 @@ class _MyRequestsPageState extends State<MyRequestsPage> with SingleTickerProvid
             return Padding(
               padding: EdgeInsets.only(left: 8.w),
               child: ChoiceChip(
-                label: Text(status.translation),
+                label: Text(context.tr(status.name)),
                 selected: isSelected,
                 selectedColor: status.color,
                 checkmarkColor: Colors.white,

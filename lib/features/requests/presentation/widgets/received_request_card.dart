@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/media_query.dart';
+import '../../../../core/constants/enums.dart';
 import '../../domain/entity/received_request_entity.dart';
 
 class ReceivedRequestCard extends StatelessWidget {
@@ -75,7 +76,7 @@ class ReceivedRequestCard extends StatelessWidget {
                     ),
                     SizedBox(height: media.height * 0.005),
                     Text(
-                      "طلب على خدمة: $servingTitle",
+                      "طلب على خدمة: ${servingTitle.trim().split(RegExp(r'\s+')).take(2).join(' ')}",
                       style: TextStyle(
                         fontSize: media.width * 0.041,
                         color: AppColors.primaryColor,
@@ -115,7 +116,7 @@ class ReceivedRequestCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(MediaQueryHelper media) {
-    if (request.status == 'accepted') {
+    if (request.status == RequestStatus.accepted) {
       return Row(
         children: [
           Expanded(
@@ -153,7 +154,7 @@ class ReceivedRequestCard extends StatelessWidget {
       );
     }
 
-    if (request.status == 'rejected') {
+    if (request.status == RequestStatus.rejected) {
       return SizedBox(
         width: double.infinity,
         height: media.height * 0.045,
@@ -168,6 +169,66 @@ class ReceivedRequestCard extends StatelessWidget {
           child: const Text(
             "تم رفض الطلب",
             style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    if (request.status == RequestStatus.completion_requested) {
+      return SizedBox(
+        width: double.infinity,
+        height: media.height * 0.045,
+        child: ElevatedButton(
+          onPressed: null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.orange.withOpacity(0.12),
+            disabledBackgroundColor: Colors.orange.withOpacity(0.12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 0,
+          ),
+          child: const Text(
+            "في انتظار تأكيد المستفيد",
+            style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    if (request.status == RequestStatus.completed) {
+      return SizedBox(
+        width: double.infinity,
+        height: media.height * 0.045,
+        child: ElevatedButton(
+          onPressed: null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green.withOpacity(0.12),
+            disabledBackgroundColor: Colors.green.withOpacity(0.12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 0,
+          ),
+          child: const Text(
+            "الطلب مكتمل",
+            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    if (request.status == RequestStatus.canceled) {
+      return SizedBox(
+        width: double.infinity,
+        height: media.height * 0.045,
+        child: ElevatedButton(
+          onPressed: null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey.withOpacity(0.12),
+            disabledBackgroundColor: Colors.grey.withOpacity(0.12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 0,
+          ),
+          child: const Text(
+            "الطلب ملغي",
+            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -217,3 +278,4 @@ class ReceivedRequestCard extends StatelessWidget {
     );
   }
 }
+

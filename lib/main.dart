@@ -1,9 +1,10 @@
 ﻿import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/localization/app_localizations.dart';
 import 'firebase_options.dart';
@@ -27,11 +28,15 @@ import 'package:in_time/features/servings/presentation/bloc/service/services_blo
 import 'package:in_time/features/servings/presentation/bloc/saved_services/saved_services_bloc.dart';
 import 'package:in_time/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:in_time/features/wallet/presentation/bloc/wallet_event.dart';
+import 'package:in_time/features/rewards/presentation/bloc/rewards_bloc.dart';
+import 'package:in_time/features/rewards/presentation/bloc/rewards_event.dart';
 import 'features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'features/notifications/presentation/bloc/notifications_event.dart';
 import 'core/services/pusher_service.dart';
 import 'core/services/fcm_service.dart';
 import 'core/services/notification_service.dart';
+import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/home/presentation/bloc/home_event.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
@@ -56,9 +61,15 @@ void main() async {
     sl<PusherService>().init();
   }
 
-  final String initialRoute = (token != null && token.isNotEmpty) ? '/home' : '/';
+  final String initialRoute = (token != null && token.isNotEmpty) ? '/homeScreen' : '/';
 
-  runApp(MyApp(initialRoute: initialRoute));
+  runApp(
+    // DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) => MyApp(initialRoute: initialRoute),
+    // ),
+    MyApp(initialRoute: initialRoute),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -89,7 +100,7 @@ class _MyAppState extends State<MyApp> {
               create: (context) => sl<SignUpBloc>(),
             ),
             BlocProvider<ChatBloc>(
-              create: (context) => sl<ChatBloc>(),
+              create: (context) => sl<ChatBloc>()..add(const GetChatsEvent(isSilent: true)),
             ),
             BlocProvider<LocaleBloc>(
               create: (context) => sl<LocaleBloc>()..add(const GetSavedLocaleEvent()),
@@ -111,12 +122,19 @@ class _MyAppState extends State<MyApp> {
             BlocProvider<WalletBloc>(
               create: (context) => sl<WalletBloc>()..add(GetMyWalletsEvent()),
             ),
+            BlocProvider<RewardsBloc>(
+              create: (context) => sl<RewardsBloc>()..add(GetMyRewardsEvent()),
+            ),
+            BlocProvider<HomeBloc>(
+              create: (context) => sl<HomeBloc>()..add(const FetchHomeServingsEvent(isRefresh: true)),
+            ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, themeState) {
               return BlocBuilder<LocaleBloc, LocaleState>(
                 builder: (context, localeState) {
                   return MaterialApp(
+                    useInheritedMediaQuery: true,
                     localizationsDelegates: const [
                       AppLocalizations.delegate,
                       GlobalMaterialLocalizations.delegate,
@@ -156,7 +174,7 @@ class _MyAppState extends State<MyApp> {
                         ),
                       );
                     },
-                    initialRoute: '/',
+                    initialRoute: widget.initialRoute,
                     onGenerateRoute: AppRoutes.generateRoute,
                   );
                 },

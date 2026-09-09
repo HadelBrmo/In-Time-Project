@@ -63,13 +63,19 @@ import 'core/network/decorators/logging_interceptor.dart';
 // Auth Features 🚀
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
-import 'features/auth/domain/usecases/verify_identity_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
-import 'features/auth/presentation/bloc/identity_verification/identity_verification_cubit.dart';
+
+// Verification Feature ✅
+import 'features/verification/domain/usecases/get_identity_status_usecase.dart';
+import 'features/verification/domain/usecases/verify_identity_usecase.dart';
+import 'features/verification/domain/repositories/verification_repository.dart';
+import 'features/verification/data/repositories/verification_repository_impl.dart';
+import 'features/verification/data/datasources/verification_remote_data_source.dart';
+import 'features/verification/presentation/bloc/identity_verification_cubit.dart';
 
 // Servings Feature 🛠️
 import 'features/servings/data/datasources/comment_remote_data_source.dart';
@@ -105,7 +111,10 @@ import 'features/complaints/data/repositories/complaint_repository_impl.dart';
 import 'features/complaints/domain/repositories/i_complaint_repository.dart';
 import 'features/complaints/domain/usecases/submit_complaint_usecase.dart';
 import 'features/complaints/domain/usecases/get_complaint_status_usecase.dart';
+import 'features/complaints/domain/usecases/get_complaints_against_me_usecase.dart';
+import 'features/complaints/domain/usecases/upload_complaint_documents_usecase.dart';
 import 'features/complaints/presentation/bloc/complaint_bloc.dart';
+import 'features/complaints/presentation/bloc/complaints_against_me_cubit.dart';
 
 // Profile Feature 👤
 import 'features/profile/data/datasources/profile_remote_data_source.dart';
@@ -127,12 +136,19 @@ import 'features/theme/presentation/bloc/theme_bloc.dart';
 import 'features/settings/data/datasources/settings_local_data_source.dart';
 import 'features/settings/presentation/bloc/settings_bloc.dart';
 
+// Leaderboard Feature 🏅
+import 'features/leaderboard/data/datasources/leaderboard_remote_data_source.dart';
+import 'features/leaderboard/data/repositories/leaderboard_repository_impl.dart';
+import 'features/leaderboard/domain/repositories/leaderboard_repository.dart';
+import 'features/leaderboard/domain/usecases/get_leaderboard_usecase.dart';
+import 'features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
+
 // Rewards Feature 🏆
-import 'features/rewards/data/datasources/leaderboard_remote_data_source.dart';
-import 'features/rewards/data/repositories/leaderboard_repository_impl.dart';
-import 'features/rewards/domain/repositories/leaderboard_repository.dart';
-import 'features/rewards/domain/usecases/get_leaderboard_usecase.dart';
-import 'features/rewards/presentation/bloc/leaderboard_bloc.dart';
+import 'features/rewards/data/datasources/rewards_remote_data_source.dart';
+import 'features/rewards/data/repositories/rewards_repository_impl.dart';
+import 'features/rewards/domain/repositories/rewards_repository.dart';
+import 'features/rewards/domain/usecases/get_rewards_usecase.dart';
+import 'features/rewards/presentation/bloc/rewards_bloc.dart';
 
 // Saved Services 📑
 import 'features/servings/data/datasources/saved_services_local_datasource.dart';
@@ -187,6 +203,9 @@ Future<void> init() async {
 
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
+            print("🔑 [Dio] Token added to request: ${options.path}");
+          } else {
+            print("⚠️ [Dio] No token found for request: ${options.path}");
           }
           return handler.next(options);
         },
@@ -268,14 +287,19 @@ Future<void> init() async {
     updateServingUseCase: sl(),
     toggleServingStatusUseCase: sl(),
   ));
-  // ✅ تسجيل الـ UseCase الجديد أولاً (إذا لم تكن قد سجلته)
     // sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
 
-    // ✅ تحديث الـ Bloc ليأخذ كلا المتطلبين
     sl.registerFactory(
       () => ComplaintBloc(
         submitComplaintUseCase: sl(),
-        getComplaintStatusUseCase: sl(), // 👈 السطر الذي كان ناقصاً
+        getComplaintStatusUseCase: sl(),
+        getComplaintsAgainstMeUseCase: sl(),
+        uploadComplaintDocumentsUseCase: sl(),
+      ),
+    );
+    sl.registerFactory(
+      () => ComplaintsAgainstMeCubit(
+        getComplaintsAgainstMeUseCase: sl(),
       ),
     );
   // sl.registerFactory(() => ComplaintBloc(submitComplaintUseCase: sl()));
@@ -289,7 +313,7 @@ Future<void> init() async {
     uploadPortfolioFileUseCase: sl(),
     uploadPortfolioLinkUseCase: sl(),
   ));
-  sl.registerFactory(() => IdentityVerificationCubit(sl()));
+  sl.registerFactory(() => IdentityVerificationCubit(sl(), sl()));
 
   sl.registerLazySingleton(() => NotificationsBloc(
     getMyNotificationsUseCase: sl(),
@@ -302,6 +326,7 @@ Future<void> init() async {
   sl.registerFactory(() => SavedServicesBloc(repository: sl()));
 
   sl.registerFactory(() => LeaderboardBloc(getLeaderboardUseCase: sl()));
+  sl.registerFactory(() => RewardsBloc(getRewardsUseCase: sl()));
 
   // 🌟 حقن البلوك الخاص باللغة
   sl.registerFactory(() => LocaleBloc(localDataSource: sl()));
@@ -332,6 +357,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerifyIdentityUseCase(sl()));
+  sl.registerLazySingleton(() => GetIdentityStatusUseCase(sl()));
   sl.registerLazySingleton(() => GetPaymentUnitsUseCase(sl()));
   sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetServiceDetailsUseCase(sl()));
@@ -367,6 +393,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ToggleServingStatusUseCase(sl()));
   sl.registerLazySingleton(() => SubmitComplaintUseCase(sl()));
   sl.registerLazySingleton(() => GetComplaintStatusUseCase(sl()));
+  sl.registerLazySingleton(() => GetComplaintsAgainstMeUseCase(sl()));
+  sl.registerLazySingleton(() => UploadComplaintDocumentsUseCase(sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
   sl.registerLazySingleton(() => GetPortfolioUseCase(sl()));
@@ -377,6 +405,7 @@ Future<void> init() async {
   // Notifications Use Cases
   sl.registerLazySingleton(() => GetMyNotificationsUseCase(sl()));
   sl.registerLazySingleton(() => GetLeaderboardUseCase(sl()));
+  sl.registerLazySingleton(() => GetRewardsUseCase(sl()));
   sl.registerLazySingleton(() => MarkNotificationAsReadUseCase(sl()));
   sl.registerLazySingleton(() => MarkAllNotificationsAsReadUseCase(sl()));
   sl.registerLazySingleton(() => GetUnreadNotificationsCountUseCase(sl()));
@@ -386,6 +415,7 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl(), sharedPreferences: sl()));
+  sl.registerLazySingleton<VerificationRepository>(() => VerificationRepositoryImpl(remoteDataSource: sl(), sharedPreferences: sl()));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<RequestRepository>(() => RequestRepositoryImpl(remoteDataSource: sl()));
@@ -403,6 +433,8 @@ Future<void> init() async {
 
   sl.registerLazySingleton<LeaderboardRepository>(
       () => LeaderboardRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<RewardsRepository>(
+      () => RewardsRepositoryImpl(remoteDataSource: sl()));
 
   // ==================== 4. Data Sources (LazySingleton) ====================
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(dio: sl()));
@@ -410,6 +442,7 @@ Future<void> init() async {
   sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ServicesLocalDataSource>(() => ServicesLocalDataSourceImpl());
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<VerificationRemoteDataSource>(() => VerificationRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl());
   sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl()));
@@ -428,6 +461,8 @@ Future<void> init() async {
 
   sl.registerLazySingleton<LeaderboardRemoteDataSource>(
       () => LeaderboardRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<RewardsRemoteDataSource>(
+      () => RewardsRemoteDataSourceImpl(dio: sl()));
 
   sl.registerLazySingleton<LocaleLocalDataSource>(() => LocaleLocalDataSourceImpl(box: sl<Box>()));
   sl.registerLazySingleton<ThemeLocalDataSource>(() => ThemeLocalDataSourceImpl(box: sl<Box>()));

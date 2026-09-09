@@ -20,7 +20,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: const Text("حدد موقعك"),
       ),
       body: Stack(

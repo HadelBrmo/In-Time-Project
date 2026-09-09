@@ -7,6 +7,7 @@ class ChatUserModel extends ChatUserEntity {
     required super.fullName,
     super.profilePicture,
     super.role,
+    super.isVerified,
   });
 
   factory ChatUserModel.fromJson(Map<String, dynamic> json) {
@@ -15,6 +16,9 @@ class ChatUserModel extends ChatUserEntity {
       fullName: json['full_name'] as String,
       profilePicture: json['profile_picture'] as String?,
       role: json['role'] as String?,
+      isVerified: json['is_identity_verified'] is bool
+          ? json['is_identity_verified']
+          : (json['is_identity_verified'] == 1 || json['is_identity_verified'] == true),
     );
   }
 

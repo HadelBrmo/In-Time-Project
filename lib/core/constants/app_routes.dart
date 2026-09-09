@@ -4,7 +4,7 @@ import 'package:in_time/features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_page_01.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_page_02.dart';
-import '../../features/auth/presentation/pages/sign_up/sign_up_page_03.dart';
+import '../../features/verification/presentation/pages/verification_page.dart';
 import '../../features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/chat/presentation/pages/chats/chat_room_page.dart';
@@ -16,11 +16,13 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/servings/domain/entity/service_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/bloc/home_event.dart';
+import '../../features/servings/presentation/bloc/service/services_bloc.dart';
 import '../../features/requests/presentation/bloc/received_requests/received_requests_bloc.dart';
 import '../../features/requests/domain/entity/request_entity.dart';
 import '../../features/requests/presentation/bloc/request_bloc.dart';
 import '../../features/requests/presentation/pages/my_requests_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/rewards/presentation/pages/my_rewards_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/servings/presentation/pages/services/paid_strategy.dart';
 import '../../features/notifications/presentation/pages/notifications_page.dart';
@@ -36,7 +38,7 @@ class AppRoutes {
   static const String initialRoute = splash;
   static const String signUpPage1 = '/signUpPage1';
   static const String signUpPage2 = '/signUpPage2';
-  static const String signUpPage3 = '/signUpPage3';
+  static const String verificationPage = '/verificationPage';
   static const String chatListScreen = '/chatListScreen';
   static const String homeScreen = '/homeScreen';
   static const String paidStrategyPage = '/paidStrategyPage';
@@ -48,6 +50,7 @@ class AppRoutes {
   static const String profilePage = '/profilePage';
   static const String videoCallPage = '/videoCallPage';
   static const String notificationsPage = '/notificationsPage';
+  static const String myRewardsPage = '/myRewardsPage';
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -68,8 +71,13 @@ class AppRoutes {
       case signUpPage2:
         return _buildPageRoute(page: const SignUpPage2(), settings: settings);
 
-      case signUpPage3:
-        return _buildPageRoute(page: const SignUpPage3(), settings: settings);
+      case verificationPage:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final isFromSignup = args?['isFromSignup'] as bool? ?? true;
+        return _buildPageRoute(
+          page: VerificationPage(isFromSignup: isFromSignup),
+          settings: settings,
+        );
 
       case createGroupScreen:
         return _buildPageRoute(page: const CreateGroupPage(), settings: settings);
@@ -119,6 +127,7 @@ class AppRoutes {
             providers: [
               BlocProvider(create: (context) => sl<RequestsBloc>()),
               BlocProvider(create: (context) => sl<ReceivedRequestsBloc>()),
+              BlocProvider(create: (context) => sl<ServicesBloc>()),
             ],
             child: const MyRequestsPage(),
           ),
@@ -163,6 +172,12 @@ class AppRoutes {
           settings: settings,
         );
 
+      case myRewardsPage:
+        return _buildPageRoute(
+          page: const MyRewardsPage(),
+          settings: settings,
+        );
+
       default:
         return _buildPageRoute(
           page: const Scaffold(body: Center(child: Text('Page not found'))),
@@ -197,7 +212,6 @@ class AppRoutes {
           curve: Curves.easeIn,
         ));
 
-        // دمج الحركتين معاً لخروج ناعم ومنبثق من الشاشة
         return ScaleTransition(
           scale: scaleAnimation,
           child: FadeTransition(

@@ -60,26 +60,29 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   Future<void> _saveAuthData(LoginAuthEntity authData) async {
-    if (authData.userId != 0) {
-      await sharedPreferences.setInt("user_id", authData.userId);
-    }
-    await sharedPreferences.setString("full_name", authData.fullName);
-    await sharedPreferences.setString("email", authData.email);
-    if (authData.profilePicture != null) {
-      await sharedPreferences.setString("profile_picture", authData.profilePicture!);
-    }
-    if (authData.token.isNotEmpty) {
-      await localDataSource.saveToken(authData.token);
-      await sharedPreferences.setString("token", authData.token);
-    }
-    if (authData.refreshToken != null) {
-      await sharedPreferences.setString("refresh_token", authData.refreshToken!);
-    }
-    if (authData.expiresIn != null) {
-      await sharedPreferences.setInt("expires_in", authData.expiresIn!);
-      // اختيارياً: حفظ وقت الانتهاء الفعلي
-      final expiryTime = DateTime.now().add(Duration(seconds: authData.expiresIn!));
-      await sharedPreferences.setString("expiry_date", expiryTime.toIso8601String());
+    try {
+      if (authData.userId != 0) {
+        await sharedPreferences.setInt("user_id", authData.userId);
+      }
+      await sharedPreferences.setString("full_name", authData.fullName);
+      await sharedPreferences.setString("email", authData.email);
+      await sharedPreferences.setBool("is_identity_verified", authData.isIdentityVerified);
+      if (authData.profilePicture != null) {
+        await sharedPreferences.setString("profile_picture", authData.profilePicture!);
+      }
+      if (authData.token.isNotEmpty) {
+        await localDataSource.saveToken(authData.token);
+        await sharedPreferences.setString("token", authData.token);
+      }
+      if (authData.refreshToken != null) {
+        await sharedPreferences.setString("refresh_token", authData.refreshToken!);
+      }
+      if (authData.expiresIn != null) {
+        await sharedPreferences.setInt("expires_in", authData.expiresIn!);
+        final expiryTime = DateTime.now().add(Duration(seconds: authData.expiresIn!));
+        await sharedPreferences.setString("expiry_date", expiryTime.toIso8601String());
+      }
+    } catch (_) {
     }
   }
 
@@ -89,11 +92,20 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await remoteDataSource.sendOtp(email: email);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return;
-      } else {
-        throw Exception("فشل إرسال رمز التحقق");
       }
+      throw ServerExceptionWithDetails(
+        statusCode: response.statusCode,
+        message: 'فشل إرسال رمز التحقق',
+      );
+    } on ServerExceptionWithDetails catch (e) {
+      throw ServerExceptionWithDetails(
+        statusCode: e.statusCode,
+        message: e.message,
+      );
     } catch (e) {
-      throw Exception("حدث خطأ في الاتصال: $e");
+      throw ServerExceptionWithDetails(
+        message: 'حدث خطأ غير متوقع أثناء إرسال رمز التحقق',
+      );
     }
   }
 
@@ -134,24 +146,5 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, Unit>> verifyIdentity({
-    required String documentType,
-    required File documentImage,
-  }) async {
-    try {
-      await remoteDataSource.verifyIdentity(
-        documentType: documentType,
-        documentImage: documentImage,
-      );
-      return const Right(unit);
-    } on ServerExceptionWithDetails catch (e) {
-      return Left(ServerFailureWithDetails(
-        statusCode: e.statusCode,
-        message: e.message,
-      ));
-    } catch (e) {
-      return Left(ServerFailure());
-    }
-  }
+
 }
