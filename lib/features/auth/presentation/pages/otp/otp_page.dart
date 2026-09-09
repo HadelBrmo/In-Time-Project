@@ -1,0 +1,318 @@
+import '../../../../../core/constants/app_routes.dart';
+import '../../../../../core/utils/snackbar_utils.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/localization/app_localizations.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../core/widgets/loading_widget.dart';
+import '../../../../../core/widgets/responsive_layout.dart';
+import '../../bloc/sign_up_bloc/sign_up_state.dart';
+import '../../bloc/sign_up_bloc/sign_up_bloc.dart';
+import '../../bloc/sign_up_bloc/sign_up_event.dart';
+import '../../bloc/otp_bloc/otp_event.dart';
+import '../../bloc/otp_bloc/otp_state.dart';
+import '../../bloc/otp_bloc/otp_bloc.dart';
+
+class OtpPage extends StatefulWidget {
+  final String email;
+
+  const OtpPage({super.key, required this.email});
+
+  @override
+  State<OtpPage> createState() => _OtpPageState();
+}
+
+class _OtpPageState extends State<OtpPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  final List<TextEditingController> _otpControllers = List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+
+  Timer? _timer;
+  int _secondsRemaining = 60;
+  bool _canResend = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+    // Trigger sending OTP once when page opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<OtpBloc>().add(SendOtpRequestedEvent(email: widget.email));
+      }
+    });
+  }
+
+  void _startTimer() {
+    setState(() {
+      _secondsRemaining = 60;
+      _canResend = false;
+    });
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsRemaining == 0) {
+        setState(() {
+          _canResend = true;
+          _timer?.cancel();
+        });
+      } else {
+        setState(() {
+          _secondsRemaining--;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    for (var controller in _otpControllers) {
+      controller.dispose();
+    }
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  String _getCompleteOtp() {
+    return _otpControllers.map((c) => c.text).join();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQueryHelper(context);
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<OtpBloc, OtpState>(
+            listener: (context, state) {
+              if (state.status == OtpStatus.success) {
+                _startTimer();
+                SnackBarUtils.showSuccess(context, context.tr('otp_sent_success'));
+              }
+              if (state.status == OtpStatus.error) {
+                SnackBarUtils.showError(context, state.errorMessage);
+              }
+            },
+          ),
+          BlocListener<SignUpBloc, SignUpState>(
+            listener: (context, state) {
+              if (state.status == SignUpStatus.success) {
+                SnackBarUtils.showSuccess(context, context.tr('registration_success'));
+                Navigator.pushNamedAndRemoveUntil(context, AppRoutes.homeScreen, (route) => false);
+              }
+              if (state.status == SignUpStatus.error) {
+                SnackBarUtils.showError(context, state.errorMessage);
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<OtpBloc, OtpState>(
+          builder: (context, otpState) {
+            return BlocBuilder<SignUpBloc, SignUpState>(
+              builder: (context, signUpState) {
+                return ResponsiveLayout(
+                  mobileBody: _buildOtpContent(context, media, theme, otpState, signUpState),
+                  tabletBody: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: _buildOtpContent(context, media, theme, otpState, signUpState),
+                    ),
+                  ),
+                  desktopBody: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      child: _buildOtpContent(context, media, theme, otpState, signUpState),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOtpContent(BuildContext context, MediaQueryHelper media, ThemeData theme, OtpState otpState, SignUpState signUpState) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: media.width * 0.06),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: media.height * 0.02),
+              Container(
+                padding: EdgeInsets.all(media.width * 0.05),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.security_outlined,
+                  size: media.width * 0.18,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+              SizedBox(height: media.height * 0.04),
+              Text(
+                context.tr('account_verification'),
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontSize: 22.sp,
+                ),
+              ),
+              SizedBox(height: media.height * 0.015),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 14.sp,
+                    height: 1.5,
+                  ),
+                  children: [
+                    TextSpan(text: context.tr('otp_instruction')),
+                    TextSpan(
+                      text: widget.email,
+                      style: const TextStyle(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: media.height * 0.05),
+
+              // OTP Inputs Row - Always LTR
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(6, (index) {
+                    return SizedBox(
+                      width: 50, // Fixed width for better grid alignment
+                      child: TextFormField(
+                        controller: _otpControllers[index],
+                        focusNode: _focusNodes[index],
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        maxLength: 1,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontSize: 20.sp,
+                          color: AppColors.primaryColor,
+                        ),
+                        cursorColor: AppColors.primaryColor,
+                        decoration: InputDecoration(
+                          counterText: "",
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: AppColors.greyColor,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: AppColors.primaryColor,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (value.length == 1 && index < 5) {
+                            _focusNodes[index + 1].requestFocus();
+                          }
+                          if (value.isEmpty && index > 0) {
+                            _focusNodes[index - 1].requestFocus();
+                          }
+                        },
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              SizedBox(height: media.height * 0.04),
+              Center(
+                child: _canResend
+                    ? TextButton(
+                  onPressed: otpState.status == OtpStatus.loading
+                      ? null
+                      : () {
+                    context.read<OtpBloc>().add(
+                      SendOtpRequestedEvent(email: widget.email),
+                    );
+                  },
+                  child: Text(
+                    context.tr('resend_code'),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                )
+                    : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 16.sp,
+                      color: AppColors.greyColor,
+                    ),
+                    SizedBox(width: media.width * 0.01),
+                    Text(
+                      "${context.tr('resend_in')} $_secondsRemaining ${context.tr('seconds')}",
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: media.height * 0.05),
+              (otpState.status == OtpStatus.loading || signUpState.status == SignUpStatus.loading)
+                  ? const LoadingWidget()
+                  : CustomButton(
+                width: 250,
+                text: context.tr('confirm_continue'),
+                onPressed: () {
+                  String otpCode = _getCompleteOtp();
+                  if (otpCode.length < 6) {
+                    SnackBarUtils.showWarning(context, context.tr('enter_full_otp'));
+                    return;
+                  }
+                  context.read<SignUpBloc>().add(
+                    UpdateSignUpFieldsEvent(otp: otpCode, email: widget.email),
+                  );
+                  context.read<SignUpBloc>().add(const SignUpSubmittedEvent());
+                },
+                color: AppColors.primaryColor,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

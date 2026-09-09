@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../widgets/buildLandscapeLayout.dart';
-import '../widgets/buildPortraitLayout.dart';
-import '../widgets/navigateToBoarding.dart';
+import '../widgets/build_landscape_layout.dart';
+import '../widgets/build_portrait_layout.dart';
+import '../widgets/navigate_to_boarding.dart';
+
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -19,17 +20,22 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     navigateToBoarding(context);
   }
+
   @override
   Widget build(BuildContext context) {
-    final orientation=MediaQuery.of(context).orientation;
-    final isLandscape=orientation==Orientation.landscape;
+    final orientation = MediaQuery.of(context).orientation;
+    final isLandscape = orientation == Orientation.landscape;
+
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return SafeArea(
       child: Scaffold(
-        body:Center(
+          backgroundColor: Colors.transparent,
+          body: Center(
           child: isLandscape
               ? buildLandscapeLayout()
               : buildPortraitLayout(),
-        ) ,
+        ),
       ),
     );
   }

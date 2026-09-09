@@ -1,4 +1,0 @@
-﻿class GetServiceDetailsUseCase {}
-
-class GetServiceParams {}
-

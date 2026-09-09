@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:in_time/core/localization/app_localizations.dart';
 import 'package:in_time/core/widgets/custom_button.dart';
 import 'package:in_time/features/onboarding/presentation/pages/page1.dart';
 import 'package:in_time/features/onboarding/presentation/pages/page2.dart';
@@ -6,7 +7,9 @@ import 'package:in_time/features/onboarding/presentation/pages/page3.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/mediaQuery.dart';
+import '../../../../core/constants/app_routes.dart';
+import '../../../../core/constants/media_query.dart';
+import '../../../../core/utils/auth_utils.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -24,10 +27,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final media = MediaQueryHelper(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
-          // PageView - يأخذ المساحة المتبقية
           Expanded(
             child: PageView(
               controller: pageController,
@@ -46,31 +48,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: media.width * 0.05,
-              vertical: media.height * 0.07,
+              vertical: media.height * 0.04,
             ),
             child: Column(
               children: [
                 CustomButton(
-                  text: onlastPage ? "ابدأ الآن" : "التالي",
+                  text: onlastPage ? context.tr('start_now') : context.tr('next'),
                   onPressed: () {
                     if (onlastPage) {
-                      Navigator.pushReplacementNamed(context, '/login');
+                      if (AuthUtils.isLoggedIn()) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+                      } else {
+                        Navigator.pushNamed(context, AppRoutes.login);
+                      }
                     } else {
                       pageController.nextPage(
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeInOut,
                       );
                     }
-                  },
+                  }, 
+                  color: AppColors.primaryColor,
                 ),
-                SizedBox(height: media.height * 0.08),
+                SizedBox(height: media.height * 0.06),
 
                 SmoothPageIndicator(
                   controller: pageController,
                   count: 3,
-                  effect: WormEffect(
+                  effect: const WormEffect(
                     activeDotColor: AppColors.primaryColor,
-                    dotColor: Colors.grey,
+                    dotColor: AppColors.greyColor,
                     dotHeight: 10,
                     dotWidth: 10,
                     spacing: 20,

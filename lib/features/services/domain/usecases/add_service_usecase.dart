@@ -1,4 +1,0 @@
-﻿class AddServiceUseCase {}
-
-class AddServiceParams {}
-

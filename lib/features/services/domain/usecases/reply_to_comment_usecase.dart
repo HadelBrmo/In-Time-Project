@@ -1,4 +1,0 @@
-﻿class ReplyToCommentUseCase {}
-
-class ReplyParams {}
-

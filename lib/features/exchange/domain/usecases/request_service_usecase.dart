@@ -1,4 +1,0 @@
-﻿class RequestServiceUseCase {}
-
-class RequestParams {}
-

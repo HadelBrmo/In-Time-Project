@@ -1,0 +1,289 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/responsive_layout.dart';
+import '../../../localization/presentation/bloc/locale_bloc.dart';
+import '../../../localization/presentation/bloc/locale_event.dart';
+import '../../../localization/presentation/bloc/locale_state.dart';
+import '../../../theme/presentation/bloc/theme_bloc.dart';
+import '../../../theme/presentation/bloc/theme_event.dart';
+import '../../../theme/presentation/bloc/theme_state.dart';
+import '../bloc/settings_bloc.dart';
+import '../bloc/settings_event.dart';
+import '../bloc/settings_state.dart';
+
+import '../widgets/build_language_option.dart';
+import '../widgets/build_section_card.dart';
+import '../widgets/build_security_action_row.dart';
+
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
+  bool _isNotificationsEnabled = true;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final isDark = context.read<ThemeBloc>().state.themeMode == ThemeMode.dark;
+      if (isDark) {
+        _controller.value = 0.0;
+      } else {
+        _controller.value = 0.5;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocBuilder<LocaleBloc, LocaleState>(
+      builder: (context, localeState) {
+        final currentLang = localeState.locale.languageCode;
+
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(80.h),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.r),
+                  bottomRight: Radius.circular(30.r),
+                ),
+              ),
+              child: CustomAppBar(
+                title: Text(
+                  context.tr('settings'),
+                  style: theme.textTheme.titleSmall,
+                ),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.whiteColor),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ),
+          ),
+          body: ResponsiveLayout(
+            mobileBody: _buildSettingsContent(context, theme, currentLang),
+            tabletBody: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: _buildSettingsContent(context, theme, currentLang),
+              ),
+            ),
+            desktopBody: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 700),
+                child: _buildSettingsContent(context, theme, currentLang),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSettingsContent(BuildContext context, ThemeData theme, String currentLang) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+      child: Column(
+        children: [
+          buildSectionCard(
+            context: context,
+            title: context.tr('language'),
+            icon: Icons.language_outlined,
+            child: Column(
+              children: [
+                buildLanguageOption(
+                  title: context.tr('arabic'),
+                  flag: '🇸🇦',
+                  isSelected: currentLang == 'ar',
+                  onTap: () {
+                    context.read<LocaleBloc>().add(const ChangeLocaleEvent('ar'));
+                  },
+                  context: context,
+                ),
+                const Divider(),
+                buildLanguageOption(
+                  title: context.tr('english'),
+                  flag: '🇬🇧',
+                  isSelected: currentLang == 'en',
+                  onTap: () {
+                    context.read<LocaleBloc>().add(const ChangeLocaleEvent('en'));
+                  },
+                  context: context,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('notifications'),
+            icon: Icons.notifications_none_outlined,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.tr('enable_notifications'),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Switch(
+                  value: _isNotificationsEnabled,
+                  activeTrackColor: AppColors.primaryColor,
+                  onChanged: (value) {
+                    setState(() => _isNotificationsEnabled = value);
+                  },
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('app_animations'),
+            icon: Icons.animation,
+            child: BlocBuilder<SettingsBloc, SettingsState>(
+              builder: (blocContext, settingsState) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.tr('enable_animations'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Switch(
+                      value: settingsState.animationsEnabled,
+                      activeTrackColor: AppColors.primaryColor,
+                      onChanged: (value) {
+                        blocContext.read<SettingsBloc>().add(ToggleAnimationsEvent(value));
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('appearance'),
+            icon: Icons.palette_outlined,
+            child: BlocBuilder<SettingsBloc, SettingsState>(
+              builder: (context, settingsState) {
+                return BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, themeState) {
+                    final isDarkMode = themeState.themeMode == ThemeMode.dark;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          isDarkMode ? context.tr('dark_mode') : context.tr('light_mode'),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            if (settingsState.animationsEnabled) {
+                              if (isDarkMode) {
+                                _controller.animateTo(0.5, duration: const Duration(milliseconds: 500));
+                              } else {
+                                _controller.animateTo(0.0, duration: const Duration(milliseconds: 500));
+                              }
+                            } else {
+                              // تحديث فوري للقيمة بدون حركة
+                              _controller.value = isDarkMode ? 0.5 : 0.0;
+                            }
+                            context.read<ThemeBloc>().add(ToggleThemeEvent());
+                          },
+                          child: SizedBox(
+                            height: 50.h,
+                            width: 80.w,
+                            child: settingsState.animationsEnabled 
+                              ? Lottie.asset(
+                                  'assets/animations/Dark Mode Animation.json',
+                                  controller: _controller,
+                                  onLoaded: (composition) {
+                                    _controller.duration = composition.duration;
+                                  },
+                                )
+                              : Icon(
+                                  isDarkMode ? Icons.nightlight_round : Icons.wb_sunny_rounded,
+                                  color: isDarkMode ? Colors.amberAccent : Colors.orange,
+                                  size: 30.sp,
+                                ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          buildSectionCard(
+            context: context,
+            title: context.tr('security_and_protection'),
+            icon: Icons.lock_outline_rounded,
+            child: Column(
+              children: [
+                buildSecurityActionRow(
+                  context: context,
+                  title: context.tr('change_password'),
+                  subtitle: context.tr('change_password_subtitle'),
+                  icon: Icons.key_rounded,
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          SizedBox(
+            width: double.infinity,
+            height: 50.h,
+            child: CustomButton(
+              text: context.tr('save'),
+              fontSize: 18,
+              color: AppColors.primaryColor,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

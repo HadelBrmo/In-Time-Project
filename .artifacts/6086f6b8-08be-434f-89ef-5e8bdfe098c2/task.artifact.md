@@ -1,0 +1,3 @@
+- [x] Update `ProfileRepositoryImpl` to sync data with `SharedPreferences`
+- [x] Update `injection_container.dart` for DI
+- [ ] Verification

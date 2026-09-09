@@ -1,4 +1,0 @@
-﻿class AddCommentUseCase {}
-
-class AddCommentParams {}
-
