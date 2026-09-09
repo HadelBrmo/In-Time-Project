@@ -11,7 +11,7 @@ import '../../features/servings/presentation/bloc/my_servings/my_servings_bloc.d
 import '../../features/servings/presentation/pages/my_servings/my_servings_view.dart';
 import '../../features/servings/presentation/pages/saved_services/saved_services_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../features/auth/presentation/pages/sign_up/sign_up_page_03.dart';
+import '../../features/verification/presentation/pages/verification_page.dart';
 import '../../injection_container.dart';
 import '../localization/app_localizations.dart';
 import '../utils/auth_utils.dart';
@@ -182,11 +182,10 @@ class CustomDrawer extends StatelessWidget {
                     text: context.tr('identity_verification'),
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.push(
+                      Navigator.pushNamed(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpPage3(isFromSignup: false),
-                        ),
+                        AppRoutes.verificationPage,
+                        arguments: {'isFromSignup': false},
                       );
                     },
                   ),

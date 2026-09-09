@@ -50,7 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(HomeSuccessState(
           servings: fullList,
           proposedServings: _cachedProposedServings,
-          hasReachedMax: activeNewServings.isEmpty,
+          hasReachedMax: event.take != null ? activeNewServings.length < event.take! : activeNewServings.isEmpty,
           timestamp: DateTime.now(),
         ));
       } catch (e) {
@@ -85,7 +85,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(HomeSuccessState(
             servings: fullList,
             proposedServings: _cachedProposedServings,
-            hasReachedMax: activeNewServings.isEmpty,
+            hasReachedMax: activeNewServings.length < event.take,
             timestamp: DateTime.now(),
           ));
         },

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_time/core/constants/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/media_query.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../widgets/build_feature_card.dart';
+import '../widgets/build_link_row.dart';
 import '../widgets/build_section_title.dart';
 
 class AboutAppPage extends StatelessWidget {
@@ -18,25 +20,15 @@ class AboutAppPage extends StatelessWidget {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.h),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.primaryColor,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30.r),
-              bottomRight: Radius.circular(30.r),
-            ),
-          ),
-          child: CustomAppBar(
+      appBar: CustomAppBar(
             title: Text(context.tr('about_app')),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.whiteColor),
               onPressed: () => Navigator.pop(context),
             ),
           ),
-        ),
-      ),
+      
+
       body: ResponsiveLayout(
         mobileBody: _buildAboutContent(media, theme, isDarkMode, context),
         tabletBody: Center(
@@ -72,9 +64,10 @@ class AboutAppPage extends StatelessWidget {
                 SizedBox(height: 12.h),
                 Text(
                   'In Time',
-                  style: theme.textTheme.titleLarge?.copyWith(
+                  style: TextStyle(
                     fontSize: 24.sp,
                     letterSpacing: 1.2,
+                    fontFamily: 'Arial',
                   ),
                 ),
                 SizedBox(height: 8.h),
@@ -100,71 +93,46 @@ class AboutAppPage extends StatelessWidget {
 
           buildFeatureCard(
             context: context,
-            title: context.tr('feature_1_title'),
-            description: context.tr('feature_1_desc'),
-            icon: Icons.calendar_month_rounded,
-          ),
-          buildFeatureCard(
-            context: context,
-            title: context.tr('feature_2_title'),
-            description: context.tr('feature_2_desc'),
-            icon: Icons.video_call_rounded,
+            title: context.tr('feature_wallet_title'),
+            description: context.tr('feature_wallet_desc'),
+            icon: Icons.account_balance_wallet_rounded,
           ),
 
-          // 📹 ميزة مكالمات الفيديو المستقرة عبر WebRTC و Firestore
+          buildFeatureCard(
+            context: context,
+            title: context.tr('feature_map_title'),
+            description: context.tr('feature_map_desc'),
+            icon: Icons.map_rounded,
+          ),
+
           buildFeatureCard(
             context: context,
             title: context.tr('feature_webrtc_call_title'),
             description: context.tr('feature_webrtc_call_desc'),
-            icon: Icons.missed_video_call_rounded,
+            icon: Icons.videocam_rounded,
           ),
 
           buildFeatureCard(
             context: context,
             title: context.tr('feature_chat_draft_title'),
             description: context.tr('feature_chat_draft_desc'),
-            icon: Icons.edit_note_rounded,
+            icon: Icons.chat_rounded,
           ),
 
-          buildFeatureCard(
-            context: context,
-            title: context.tr('feature_analytics_dashboard_title'),
-            description: context.tr('feature_analytics_dashboard_desc'),
-            icon: Icons.analytics_rounded,
-          ),
-
-          buildFeatureCard(
-            context: context,
-            title: context.tr('feature_3_title'),
-            description: context.tr('feature_3_desc'),
-            icon: Icons.star_rate_rounded,
-          ),
           buildFeatureCard(
             context: context,
             title: context.tr('feature_4_title'),
             description: context.tr('feature_4_desc'),
             icon: Icons.emoji_events_rounded,
           ),
+
           buildFeatureCard(
             context: context,
-            title: context.tr('feature_5_title'),
-            description: context.tr('feature_5_desc'),
-            icon: Icons.chat_bubble_rounded,
-          ),
-          buildFeatureCard(
-            context: context,
-            title: context.tr('feature_6_title'),
-            description: context.tr('feature_6_desc'),
-            icon: Icons.cloud_done_rounded,
-          ),
-          buildFeatureCard(
-            context: context,
-            title: context.tr('feature_7_title'),
-            description: context.tr('feature_7_desc'),
-            icon: Icons.notifications_active_rounded,
+            title: context.tr('feature_complaints_title'),
+            description: context.tr('feature_complaints_desc'),
+            icon: Icons.gavel_rounded,
           ),
 
-          SizedBox(height: 24.h),
 
           buildSectionTitle(context, context.tr('support_and_privacy')),
           SizedBox(height: 12.h),
@@ -180,9 +148,17 @@ class AboutAppPage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _buildLinkRow(context: context, title: context.tr('privacy_policy'), icon: Icons.privacy_tip_outlined),
+                BuildLinkRow(
+                  title: context.tr('privacy_policy'),
+                  icon: Icons.privacy_tip_outlined,
+                  onTap: () => {},
+                ),
                 const Divider(height: 1),
-                _buildLinkRow(context: context, title: context.tr('help_center'), icon: Icons.help_outline_rounded),
+                BuildLinkRow(
+                  title: context.tr('help_center'),
+                  icon: Icons.help_outline_rounded,
+                  onTap: () => {},
+                ),
               ],
             ),
           ),
@@ -196,38 +172,6 @@ class AboutAppPage extends StatelessWidget {
           ),
           SizedBox(height: 30.h),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLinkRow({required BuildContext context, required String title, required IconData icon}) {
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
-
-    return InkWell(
-      onTap: () {},
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        child: Row(
-          children: [
-            Icon(icon, color: isDarkMode ? AppColors.whiteColor.withOpacity(0.54) : AppColors.darkGreyColor, size: 20.sp),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: isDarkMode ? AppColors.whiteColor.withOpacity(0.38) : AppColors.greyColor.withOpacity(0.4),
-              size: 14.sp,
-            ),
-          ],
-        ),
       ),
     );
   }

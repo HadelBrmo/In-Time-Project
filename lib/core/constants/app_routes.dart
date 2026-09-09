@@ -4,7 +4,7 @@ import 'package:in_time/features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_page_01.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_page_02.dart';
-import '../../features/auth/presentation/pages/sign_up/sign_up_page_03.dart';
+import '../../features/verification/presentation/pages/verification_page.dart';
 import '../../features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import '../../features/chat/presentation/pages/chats/chats_page.dart';
 import '../../features/chat/presentation/pages/chats/chat_room_page.dart';
@@ -38,7 +38,7 @@ class AppRoutes {
   static const String initialRoute = splash;
   static const String signUpPage1 = '/signUpPage1';
   static const String signUpPage2 = '/signUpPage2';
-  static const String signUpPage3 = '/signUpPage3';
+  static const String verificationPage = '/verificationPage';
   static const String chatListScreen = '/chatListScreen';
   static const String homeScreen = '/homeScreen';
   static const String paidStrategyPage = '/paidStrategyPage';
@@ -71,8 +71,13 @@ class AppRoutes {
       case signUpPage2:
         return _buildPageRoute(page: const SignUpPage2(), settings: settings);
 
-      case signUpPage3:
-        return _buildPageRoute(page: const SignUpPage3(), settings: settings);
+      case verificationPage:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final isFromSignup = args?['isFromSignup'] as bool? ?? true;
+        return _buildPageRoute(
+          page: VerificationPage(isFromSignup: isFromSignup),
+          settings: settings,
+        );
 
       case createGroupScreen:
         return _buildPageRoute(page: const CreateGroupPage(), settings: settings);
@@ -207,7 +212,6 @@ class AppRoutes {
           curve: Curves.easeIn,
         ));
 
-        // دمج الحركتين معاً لخروج ناعم ومنبثق من الشاشة
         return ScaleTransition(
           scale: scaleAnimation,
           child: FadeTransition(

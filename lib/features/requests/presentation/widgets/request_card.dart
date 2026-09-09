@@ -30,7 +30,7 @@ Widget buildRequestCard({
       final now = DateTime.now();
 
       if (parsedDate.year == now.year && parsedDate.month == now.month && parsedDate.day == now.day) {
-        return DateFormat('hh:mm a', 'ar').format(parsedDate);
+        return DateFormat('hh:mm a', context.isArabic ? 'ar' : 'en').format(parsedDate);
       } else {
         return DateFormat('yyyy/MM/dd').format(parsedDate);
       }
@@ -95,7 +95,7 @@ Widget buildRequestCard({
                               borderRadius: BorderRadius.circular(media.width * 0.02),
                             ),
                             child: Text(
-                              statusEnum.translation,
+                              context.tr(statusEnum.name),
                               style: TextStyle(
                                 color: statusEnum.color,
                                 fontWeight: FontWeight.bold,

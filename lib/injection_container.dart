@@ -61,16 +61,21 @@ import 'features/requests/presentation/bloc/received_requests/received_requests_
 import 'features/requests/presentation/bloc/request_bloc.dart';
 import 'core/network/decorators/logging_interceptor.dart';
 // Auth Features 🚀
-import 'features/auth/domain/usecases/get_identity_status_usecase.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
-import 'features/auth/domain/usecases/verify_identity_usecase.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 
 import 'features/auth/data/datasources/auth_remote_data_source.dart';
 import 'features/auth/data/datasources/auth_local_data_source.dart';
-import 'features/auth/presentation/bloc/identity_verification/identity_verification_cubit.dart';
+
+// Verification Feature ✅
+import 'features/verification/domain/usecases/get_identity_status_usecase.dart';
+import 'features/verification/domain/usecases/verify_identity_usecase.dart';
+import 'features/verification/domain/repositories/verification_repository.dart';
+import 'features/verification/data/repositories/verification_repository_impl.dart';
+import 'features/verification/data/datasources/verification_remote_data_source.dart';
+import 'features/verification/presentation/bloc/identity_verification_cubit.dart';
 
 // Servings Feature 🛠️
 import 'features/servings/data/datasources/comment_remote_data_source.dart';
@@ -410,6 +415,7 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<ServicesRepository>(() => ServicesRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), localDataSource: sl(), sharedPreferences: sl()));
+  sl.registerLazySingleton<VerificationRepository>(() => VerificationRepositoryImpl(remoteDataSource: sl(), sharedPreferences: sl()));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton<CommentRepository>(() => CommentRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<RequestRepository>(() => RequestRepositoryImpl(remoteDataSource: sl()));
@@ -436,6 +442,7 @@ Future<void> init() async {
   sl.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<ServicesLocalDataSource>(() => ServicesLocalDataSourceImpl());
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<VerificationRemoteDataSource>(() => VerificationRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(dio: sl()));
   sl.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl());
   sl.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(secureStorage: sl()));

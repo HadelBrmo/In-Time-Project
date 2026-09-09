@@ -30,7 +30,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
   }
 
   return Padding(
-    padding: padding ?? EdgeInsets.only(bottom: height * 0.03),
+    padding: padding ?? EdgeInsets.only(bottom: height * 0.02),
     child: GlowingBorder(
       glowColors: const [
         AppColors.primaryColor,
@@ -57,7 +57,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
         onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          height: 110.h,
+          height: 120.h,
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
             color: isDarkMode ? AppColors.blackColor : AppColors.whiteColor,
@@ -78,7 +78,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                 children: [
                   Container(
                     width: 85.w,
-                    height: 94.h,
+                    height: 104.h,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.r),
                       color: AppColors.secondaryColor.withOpacity(0.1),
@@ -125,7 +125,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                   ),
                 ],
               ),
-              SizedBox(width: 10.w),
+              SizedBox(width: 14.w),
 
               Expanded(
                 child: Column(
@@ -142,7 +142,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                                   serving.userFullName ?? context.tr('system_user'),
                                   style: theme.textTheme.headlineSmall?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 13.5.sp,
+                                    fontSize: 13.sp,
                                     color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
                                   ),
                                   maxLines: 1,
@@ -150,7 +150,7 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                                 ),
                               ),
                               if (serving.isUserVerified == true) ...[
-                                SizedBox(width: 3.w),
+                                SizedBox(width: 7.w),
                                 Icon(
                                   Icons.verified,
                                   color: Colors.blue,
@@ -160,100 +160,92 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
                             ],
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h),
-                          decoration: BoxDecoration(
-                            color: serving.meetingType == 'online'
-                                ? AppColors.accentColor.withOpacity(0.1)
-                                : AppColors.primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Text(
-                            serving.meetingType == 'online' ? context.tr('online') : context.tr('direct'),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 9.sp,
-                              color: serving.meetingType == 'online'
-                                  ? (isDarkMode ? const Color(0xFF64FFDA) : AppColors.accentColor)
-                                  : (isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _buildBadge(context, serving, isDarkMode),
                       ],
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 9.h),
                     Text(
-                      serving.title.trim().split(RegExp(r'\s+')).take(2).join(' '),
+                      serving.title.trim(),
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontSize: 12.sp,
                         color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
                         fontWeight: FontWeight.bold,
+                        height: 1.2,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (serving.categoryName != null && serving.categoryName!.isNotEmpty) ...[
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                          Icon(Icons.grid_view_rounded, size: 10.sp, color: AppColors.primaryColor),
-                          SizedBox(width: 4.w),
-                          Text(
-                            serving.categoryName!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontSize: 10.sp,
-                              color: isDarkMode ? AppColors.greyColor : AppColors.darkGreyColor,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
+                      SizedBox(height: 7.h),
+                      Text(
+                        serving.categoryName!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 11.5.sp,
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                     const Spacer(),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                          decoration: BoxDecoration(
-                            color: typeColor.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(5.r),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.monetization_on_outlined,
-                                color: typeColor,
-                                size: 13.sp,
-                              ),
-                              SizedBox(width: 3.w),
-                              Text(
-                                "${serving.costAmount} ${serving.unitName ?? ''}",
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                        Flexible(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: typeColor.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(5.r),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.timer_outlined,
                                   color: typeColor,
-                                  fontSize: 11.sp,
+                                  size: 12.sp,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 4.w),
+                                Flexible(
+                                  child: Text(
+                                    "${serving.costAmount} ${serving.unitName ?? ''}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: typeColor,
+                                      fontSize: 12.sp,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        Row(
-                          children: [
-                            Text(
-                              displayAddress,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 10.sp,
-                                color: AppColors.greyColor,
+                        SizedBox(width: 8.w),
+                        Flexible(
+                          flex: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  displayAddress,
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: AppColors.greyColor,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(width: 3.w),
-                            Icon(Icons.location_on_outlined, color: AppColors.greyColor, size: 11.sp),
-                          ],
+                              SizedBox(width: 2.w),
+                              Icon(Icons.location_on_outlined, color: AppColors.greyColor, size: 11.sp),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -263,6 +255,27 @@ Widget buildServiceCard(BuildContext context, ServiceEntity serving, double widt
             ],
           ),
         ),
+      ),
+    ),
+  );
+}
+
+Widget _buildBadge(BuildContext context, ServiceEntity serving, bool isDarkMode) {
+  final isOnline = serving.meetingType == 'online';
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h),
+    decoration: BoxDecoration(
+      color: isOnline ? Colors.teal.withOpacity(0.1) : AppColors.primaryColor.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(4.r),
+    ),
+    child: Text(
+      isOnline ? context.tr('online') : context.tr('direct'),
+      style: TextStyle(
+        fontSize: 8.sp,
+        color: isOnline 
+            ? (isDarkMode ? const Color(0xFF64FFDA) : Colors.teal)
+            : (isDarkMode ? AppColors.secondaryColor : AppColors.primaryColor),
+        fontWeight: FontWeight.bold,
       ),
     ),
   );

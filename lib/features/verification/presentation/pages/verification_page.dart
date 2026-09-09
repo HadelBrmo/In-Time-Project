@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_routes.dart';
-import '../../../../../core/constants/media_query.dart';
-import '../../../../../core/localization/app_localizations.dart';
-import '../../../../../core/widgets/custom_button.dart';
-import '../../../../../injection_container.dart';
-import '../../bloc/identity_verification/identity_verification_cubit.dart';
-import '../../bloc/identity_verification/identity_verification_state.dart';
-import '../../widgets/signup_widgets/build_header_for_sign_up.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_routes.dart';
+import '../../../../core/constants/media_query.dart';
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../injection_container.dart';
+import '../bloc/identity_verification_cubit.dart';
+import '../bloc/identity_verification_state.dart';
+import '../../../auth/presentation/widgets/signup_widgets/build_header_for_sign_up.dart';
 
-class SignUpPage3 extends StatefulWidget {
+class VerificationPage extends StatefulWidget {
   final bool isFromSignup;
-  const SignUpPage3({super.key, this.isFromSignup = true});
+  const VerificationPage({super.key, this.isFromSignup = true});
 
   @override
-  State<SignUpPage3> createState() => _SignUpPage3State();
+  State<VerificationPage> createState() => _VerificationPageState();
 }
 
-class _SignUpPage3State extends State<SignUpPage3> with WidgetsBindingObserver {
+class _VerificationPageState extends State<VerificationPage> with WidgetsBindingObserver {
   late IdentityVerificationCubit _cubit;
 
   @override

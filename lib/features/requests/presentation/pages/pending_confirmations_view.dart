@@ -59,7 +59,7 @@ class _PendingConfirmationsViewState extends State<PendingConfirmationsView> {
                   Icon(Icons.assignment_turned_in_outlined, size: 64, color: AppColors.greyColor.withOpacity(0.5)),
                   const SizedBox(height: 16),
                   Text(
-                    "لا توجد تأكيدات معلقة حالياً",
+                    context.tr('no_pending_confirmations'),
                     style: theme.textTheme.titleMedium?.copyWith(color: AppColors.greyColor),
                   ),
                 ],

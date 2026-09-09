@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../constants/app_strings.dart';
 import '../constants/assets_image.dart';
 
 class CustomImageView extends StatelessWidget {
@@ -26,40 +27,19 @@ class CustomImageView extends StatelessWidget {
       return _buildPlaceholder();
     }
 
-    final trimmedUrl = imageUrl!.trim();
+    String trimmedUrl = imageUrl!.trim();
 
-    // 1. Handle Network Images
+    // 1. Handle Network Images (starting with http)
     if (trimmedUrl.startsWith('http')) {
-      return Image.network(
-        trimmedUrl,
-        width: width,
-        height: height,
-        fit: fit,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return placeholder ?? _buildLoadingPlaceholder();
-        },
-        errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
-      );
+      return _buildNetworkImage(trimmedUrl);
     }
 
-    // 2. Handle File URIs or Absolute Paths
-    if (trimmedUrl.startsWith('file://') || trimmedUrl.startsWith('/') || _isWindowsPath(trimmedUrl)) {
-      try {
-        final path = trimmedUrl.startsWith('file://') 
-            ? Uri.parse(trimmedUrl).toFilePath() 
-            : trimmedUrl;
-            
-        return Image.file(
-          File(path),
-          width: width,
-          height: height,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
-        );
-      } catch (e) {
-        return _buildErrorWidget();
-      }
+    // 2. Handle Relative Server Paths (e.g., /storage/... or storage/...)
+    if (trimmedUrl.startsWith('/storage') || trimmedUrl.startsWith('storage/')) {
+      final String fullUrl = trimmedUrl.startsWith('/')
+          ? '${ApiStringConstants.baseStorageUrl.replaceAll('/storage/', '')}$trimmedUrl'
+          : '${ApiStringConstants.baseStorageUrl}$trimmedUrl';
+      return _buildNetworkImage(fullUrl);
     }
 
     // 3. Handle Assets
@@ -73,13 +53,50 @@ class CustomImageView extends StatelessWidget {
       );
     }
 
-    // 4. Fallback to network if scheme is unknown but not local
+    // 4. Handle Local Files
+    if (trimmedUrl.startsWith('file://') || trimmedUrl.startsWith('/') || _isWindowsPath(trimmedUrl)) {
+      try {
+        final path = trimmedUrl.startsWith('file://') 
+            ? Uri.parse(trimmedUrl).toFilePath() 
+            : trimmedUrl;
+            
+        final file = File(path);
+        if (file.existsSync()) {
+          return Image.file(
+            file,
+            width: width,
+            height: height,
+            fit: fit,
+            errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+          );
+        }
+      } catch (e) {
+        debugPrint("Error loading local file: $e");
+      }
+    }
+
+    // 5. Final Fallback: try as network image if it looks like a path, otherwise placeholder
+    if (trimmedUrl.contains('/') || trimmedUrl.contains('.')) {
+      return _buildNetworkImage(trimmedUrl);
+    }
+
+    return _buildPlaceholder();
+  }
+
+  Widget _buildNetworkImage(String url) {
     return Image.network(
-      trimmedUrl,
+      url,
       width: width,
       height: height,
       fit: fit,
-      errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return placeholder ?? _buildLoadingPlaceholder();
+      },
+      errorBuilder: (context, error, stackTrace) {
+        debugPrint("Image.network error for URL: $url - Error: $error");
+        return _buildErrorWidget();
+      },
     );
   }
 

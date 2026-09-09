@@ -64,10 +64,11 @@ void main() async {
   final String initialRoute = (token != null && token.isNotEmpty) ? '/homeScreen' : '/';
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(initialRoute: initialRoute),
-    ),
+    // DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) => MyApp(initialRoute: initialRoute),
+    // ),
+    MyApp(initialRoute: initialRoute),
   );
 }
 
@@ -140,7 +141,7 @@ class _MyAppState extends State<MyApp> {
                       GlobalWidgetsLocalizations.delegate,
                       GlobalCupertinoLocalizations.delegate,
                     ],
-                    locale: DevicePreview.locale(context),
+                    locale: localeState.locale,
                     supportedLocales: const [
                       Locale('ar', 'SA'),
                       Locale('en', 'US'),
@@ -151,7 +152,6 @@ class _MyAppState extends State<MyApp> {
                     themeMode: themeState.themeMode,
                     navigatorKey: AppRoutes.navigatorKey,
                     builder: (context, child) {
-                    //  child = DevicePreview.appBuilder(context, child);
                       final isDarkMode = themeState.themeMode == ThemeMode.dark;
                       final backgroundColor = isDarkMode ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
 

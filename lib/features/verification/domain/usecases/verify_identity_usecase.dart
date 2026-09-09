@@ -1,10 +1,9 @@
-import 'dart:io';
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../repositories/auth_repository.dart';
+import '../repositories/verification_repository.dart';
 
 class VerifyIdentityUseCase {
-  final AuthRepository repository;
+  final VerificationRepository repository;
 
   VerifyIdentityUseCase(this.repository);
 

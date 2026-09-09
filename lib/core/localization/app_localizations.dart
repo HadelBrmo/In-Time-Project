@@ -60,4 +60,5 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 
 extension TranslateX on BuildContext {
   String tr(String key) => AppLocalizations.of(this)?.translate(key) ?? key;
+  bool get isArabic => Localizations.localeOf(this).languageCode == 'ar';
 }

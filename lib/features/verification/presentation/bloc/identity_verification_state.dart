@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/identity_status_entity.dart';
+import '../../domain/entities/identity_status_entity.dart';
 
 sealed class IdentityVerificationState extends Equatable {
   const IdentityVerificationState();

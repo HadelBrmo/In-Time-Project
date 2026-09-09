@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/get_identity_status_usecase.dart';
-import '../../../domain/usecases/verify_identity_usecase.dart';
+import '../../domain/usecases/get_identity_status_usecase.dart';
+import '../../domain/usecases/verify_identity_usecase.dart';
 import 'identity_verification_state.dart';
 
 class IdentityVerificationCubit extends Cubit<IdentityVerificationState> {

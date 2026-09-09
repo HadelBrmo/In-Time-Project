@@ -6,7 +6,6 @@ class GlowingBorder extends StatefulWidget {
   final List<Color> glowColors;
   final double borderRadius;
   final double strokeWidth;
-  final BoxShape shape;
 
   const GlowingBorder({
     super.key,
@@ -14,7 +13,6 @@ class GlowingBorder extends StatefulWidget {
     this.glowColors = const [Colors.purple, Colors.blue, Colors.cyan, Colors.purple],
     this.borderRadius = 15.0,
     this.strokeWidth = 2.5,
-    this.shape = BoxShape.rectangle,
   });
 
   @override
@@ -50,7 +48,6 @@ class _GlowingBorderState extends State<GlowingBorder> with SingleTickerProvider
             colors: widget.glowColors,
             radius: widget.borderRadius,
             strokeWidth: widget.strokeWidth,
-            shape: widget.shape,
           ),
           child: Padding(
             padding: EdgeInsets.all(widget.strokeWidth / 2),
@@ -58,12 +55,10 @@ class _GlowingBorderState extends State<GlowingBorder> with SingleTickerProvider
           ),
         );
       },
-      child: widget.shape == BoxShape.circle
-          ? ClipOval(child: widget.child)
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-              child: widget.child,
-            ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(widget.borderRadius),
+        child: widget.child,
+      ),
     );
   }
 }
@@ -73,20 +68,19 @@ class _GlowPainter extends CustomPainter {
   final List<Color> colors;
   final double radius;
   final double strokeWidth;
-  final BoxShape shape;
 
   _GlowPainter({
     required this.angle,
     required this.colors,
     required this.radius,
     required this.strokeWidth,
-    required this.shape,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    
+    final RRect rrect = RRect.fromRectAndRadius(rect, Radius.circular(radius));
+
     final paint = Paint()
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
@@ -104,14 +98,8 @@ class _GlowPainter extends CustomPainter {
       ).createShader(rect)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
-    if (shape == BoxShape.circle) {
-      canvas.drawCircle(rect.center, size.width / 2, shadowPaint);
-      canvas.drawCircle(rect.center, size.width / 2, paint);
-    } else {
-      final RRect rrect = RRect.fromRectAndRadius(rect, Radius.circular(radius));
-      canvas.drawRRect(rrect, shadowPaint);
-      canvas.drawRRect(rrect, paint);
-    }
+    canvas.drawRRect(rrect, shadowPaint);
+    canvas.drawRRect(rrect, paint);
   }
 
   @override
